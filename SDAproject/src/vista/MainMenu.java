@@ -58,7 +58,7 @@ public class MainMenu extends JFrame implements ActionListener {
 
 		// MENU DE CONFIGURACION (TAB1)
 		JPanel panel1 = new JPanel();
-		tabbedPane.addTab("Men\u00FA de Configuraci\u00F3n", null, panel1, null);
+		tabbedPane.addTab("Configuration menu", null, panel1, null);
 		panel1.setLayout(null);
 
 		JLabel label = new JLabel("IP");
@@ -71,7 +71,7 @@ public class MainMenu extends JFrame implements ActionListener {
 		tfIp.setColumns(10);
 		panel1.add(tfIp);
 
-		JLabel lblPuerto = new JLabel("Puerto");
+		JLabel lblPuerto = new JLabel("Port");
 		lblPuerto.setFont(new Font("Consolas", Font.PLAIN, 33));
 		lblPuerto.setBounds(12, 94, 118, 37);
 		panel1.add(lblPuerto);
@@ -91,12 +91,12 @@ public class MainMenu extends JFrame implements ActionListener {
 		tfID.setBounds(143, 147, 177, 37);
 		panel1.add(tfID);
 
-		JButton btnIniciar = new JButton("Iniciar/Parar");
+		JButton btnIniciar = new JButton("Start/Stop");
 		btnIniciar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Comprobación de si la IP introducida es válida mediante una expresión regular");
 				if (!validate(tfIp.getText())) {
-					JOptionPane.showMessageDialog(panel1, "IP inválida", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(panel1, "Invalid IP", "Error", JOptionPane.ERROR_MESSAGE);
 					tfIp.setText("");
 				}
 			}
@@ -107,7 +107,7 @@ public class MainMenu extends JFrame implements ActionListener {
 
 		// GESTOR DE TRACKERS (TAB2)
 		JPanel panel2 = new JPanel();
-		tabbedPane.addTab("Gestor de Trackers", null, panel2, null);
+		tabbedPane.addTab("Tracker gestor", null, panel2, null);
 		panel2.setLayout(null);
 
 		// headers for the table
@@ -141,13 +141,13 @@ public class MainMenu extends JFrame implements ActionListener {
 		tabbedPane.addTab("Gestor de Peers", null, panel3, null);
 		panel3.setLayout(null);
 
-		JLabel lblSwarmsActivos = new JLabel("Swarms activos");
+		JLabel lblSwarmsActivos = new JLabel("Active Swarms");
 		lblSwarmsActivos.setFont(new Font("Consolas", Font.PLAIN, 33));
 		lblSwarmsActivos.setBounds(62, 50, 266, 37);
 		panel3.add(lblSwarmsActivos);
 
 		// headers for the table
-		String[] columnsTabla2 = new String[] { "Id", "Nombre del contenido", "Tamaño", "Número total de seeders",
+		String[] columnsTabla2 = new String[] { "Id", "Content name", "Size", "Number of seeders",
 				"Leechers" };
 
 		// actual data for the table in a 2d array
@@ -187,7 +187,7 @@ public class MainMenu extends JFrame implements ActionListener {
 				{new Integer(1), "aaaaa", new Integer(1231), new Integer(4), new Integer(8)},
 			},
 			new String[] {
-				"Id", "Nombre del contenido", "Tama\u00F1o", "Seeders", "Leechers"
+				"Id", "Content name", "Size", "Seeders", "Leechers"
 			}
 		));
 		JScrollPane scrollPaneTabla2 = new JScrollPane(tableSwarms);
@@ -224,7 +224,7 @@ public class MainMenu extends JFrame implements ActionListener {
 				{null, null, null, null, null},
 			},
 			new String[] {
-				"ID", "ip", "Puerto", "Bytes Pendientes", "Bytes Descargados"
+				"ID", "ip", "Port", "Bytes pending", "Downloaded Bytes"
 			}
 		) {
 			Class[] columnTypes = new Class[] {
