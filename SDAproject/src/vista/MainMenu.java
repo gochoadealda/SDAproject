@@ -43,7 +43,7 @@ public class MainMenu extends JFrame implements ActionListener {
 	private void configurarVentana() {
 		dim = super.getToolkit().getScreenSize();
 		super.setSize(dim);
-		this.setTitle("Menú Principal");
+		this.setTitle("Main Menu");
 		this.setExtendedState(MAXIMIZED_BOTH);
 		getContentPane().setLayout(null);
 		this.setResizable(true);
