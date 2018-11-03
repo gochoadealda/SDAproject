@@ -262,9 +262,4 @@ public class MainMenu extends JFrame implements ActionListener {
 		// JOptionPane.showMessageDialog(this, "Hola " + nombre + "."); // mostramos un
 		// mensaje (frame, mensaje)
 	}
-
-	public static void main(String[] args) {
-		MainMenu V = new MainMenu(); // creamos una ventana
-		V.setVisible(true); // hacemos visible la ventana creada
-	}
 }

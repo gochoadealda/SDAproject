@@ -2,6 +2,8 @@ package modelo;
 
 import java.util.ArrayList;
 
+import vista.MainMenu;
+
 public class Tracker {
 	
 	private String IP;
@@ -9,17 +11,10 @@ public class Tracker {
 	private int ID;
 	private boolean master;
 	private int masterID;
-	public int getMasterID() {
-		return masterID;
-	}
-
-	public void setMasterID(int masterID) {
-		this.masterID = masterID;
-	}
-
 	private int keepAliveTimer;
 	private ArrayList<Integer> trackerList;
 	private TrackerDAO trackerDB;
+	private MainMenu view;
 	
 	public Tracker(String iP, int puertoCom, int iD, int keepAliveTimer,
 			TrackerDAO trackerDB) {
@@ -29,6 +24,9 @@ public class Tracker {
 		ID = iD;
 		this.keepAliveTimer = keepAliveTimer;
 		this.trackerDB = trackerDB;
+		this.view = new MainMenu();
+		ViewThread trackerView = new ViewThread(view);
+		trackerView.start();
 	}
 
 	public String getIP() {
@@ -87,6 +85,14 @@ public class Tracker {
 		this.trackerDB = trackerDB;
 	}
 	
+	public int getMasterID() {
+		return masterID;
+	}
+
+	public void setMasterID(int masterID) {
+		this.masterID = masterID;
+	}
+
 	
 	
 	
