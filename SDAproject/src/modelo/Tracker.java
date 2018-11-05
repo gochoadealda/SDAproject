@@ -2,6 +2,11 @@ package modelo;
 
 import java.util.ArrayList;
 
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+
+import mensajes.KeepAliveListener;
+import mensajes.KeepAliveReciever;
+import mensajes.KeepAliveSender;
 import vista.MainMenu;
 
 public class Tracker {
@@ -16,19 +21,42 @@ public class Tracker {
 	private TrackerDAO trackerDB;
 	private MainMenu view;
 	
-	public Tracker(String iP, int puertoCom, int iD, int keepAliveTimer,
-			TrackerDAO trackerDB) {
+	public Tracker(String iP, int puertoCom, TrackerDAO trackerDB) {
 		super();
 		IP = iP;
 		this.puertoCom = puertoCom;
-		ID = iD;
-		this.keepAliveTimer = keepAliveTimer;
+		this.keepAliveTimer = 1;
 		this.trackerDB = trackerDB;
 		this.view = new MainMenu();
 		ViewThread trackerView = new ViewThread(view);
 		trackerView.start();
+		KeepAliveReciever kaRecive = new KeepAliveReciever(true);
+		kaRecive.start();
+		try {
+			Thread.sleep(2000);
+		}catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		//ID = idSelector(this.trackerList);
+		KeepAliveSender kaSend = new KeepAliveSender(true);
+		kaSend.start();
+		
 	}
 
+	private int idSelector(ArrayList<Integer> idList) {
+		int maxID=0;
+		if (idList.size()==0) {
+			maxID=1;
+		}else {
+			for (int i = 0; i < idList.size(); i++) {
+				if (idList.get(i)>maxID) {
+					maxID=idList.get(i);
+				}
+			}
+		}
+		return maxID + 1;
+	}
+	
 	public String getIP() {
 		return IP;
 	}
