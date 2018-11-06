@@ -20,6 +20,7 @@ public class Tracker {
 	private ArrayList<Integer> trackerList;
 	private TrackerDAO trackerDB;
 	private MainMenu view;
+	private boolean active;
 	
 	public Tracker(String iP, int puertoCom, TrackerDAO trackerDB) {
 		super();
@@ -27,6 +28,7 @@ public class Tracker {
 		this.puertoCom = puertoCom;
 		this.keepAliveTimer = 1;
 		this.trackerDB = trackerDB;
+		this.trackerList = new ArrayList<>();
 		this.view = new MainMenu();
 		ViewThread trackerView = new ViewThread(view);
 		trackerView.start();
@@ -37,8 +39,8 @@ public class Tracker {
 		}catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		//ID = idSelector(this.trackerList);
-		KeepAliveSender kaSend = new KeepAliveSender(true);
+		ID = idSelector(this.trackerList);
+		KeepAliveSender kaSend = new KeepAliveSender(true, this.ID);
 		kaSend.start();
 		
 	}
@@ -50,11 +52,11 @@ public class Tracker {
 		}else {
 			for (int i = 0; i < idList.size(); i++) {
 				if (idList.get(i)>maxID) {
-					maxID=idList.get(i);
+					maxID=idList.get(i) + 1;
 				}
 			}
 		}
-		return maxID + 1;
+		return maxID;
 	}
 	
 	public String getIP() {
@@ -121,6 +123,21 @@ public class Tracker {
 		this.masterID = masterID;
 	}
 
+	public MainMenu getView() {
+		return view;
+	}
+
+	public void setView(MainMenu view) {
+		this.view = view;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 	
 	
 	
