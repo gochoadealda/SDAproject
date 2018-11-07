@@ -1,5 +1,7 @@
 package mensajes;
 
+import java.util.UUID;
+
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
@@ -14,16 +16,20 @@ import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import modelo.Tracker;
+
 
 
 
 public class KeepAliveReciever extends Thread{
 
 	private boolean active;
+	private Tracker myTracker;
 	
-	public KeepAliveReciever(boolean active) {
+	public KeepAliveReciever(boolean active, Tracker myTracker) {
 		super();
 		this.active = active;
+		this.myTracker = myTracker;
 	}
 
 	@Override
@@ -48,7 +54,10 @@ public class KeepAliveReciever extends Thread{
 			//Connections			
 			topicConnection = topicConnectionFactory.createTopicConnection();
 			//Set an ID to create a durable connection (optional)
-			topicConnection.setClientID("SSDD_TopicSubscriber");
+			String uuid = UUID.randomUUID().toString();
+			System.out.println(uuid);
+					
+			topicConnection.setClientID("Client-"+uuid);
 			System.out.println("- Topic Connection created!");
 			
 			//Sessions
@@ -59,19 +68,16 @@ public class KeepAliveReciever extends Thread{
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
 			
 			//Topic Listener
-			KeepAliveListener listener = new KeepAliveListener();
+			KeepAliveListener listener = new KeepAliveListener(myTracker);
 			
 			//Set the same message listener for the non-durable subscriber
 			topicNONDurableSubscriber.setMessageListener(listener);
 			
 			//Begin message delivery
 			topicConnection.start();
-			Thread.sleep(2000);
 			while(active) {
-				System.out.println("- Waiting 1 second for messages...");
-				Thread.sleep(1000);
+				
 			}
-			
 		} catch (Exception e) {
 			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
 		} finally {

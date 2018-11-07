@@ -25,38 +25,43 @@ public class Tracker {
 	public Tracker(String iP, int puertoCom, TrackerDAO trackerDB) {
 		super();
 		IP = iP;
+		this.ID = -1;
 		this.puertoCom = puertoCom;
 		this.keepAliveTimer = 1;
 		this.trackerDB = trackerDB;
 		this.trackerList = new ArrayList<>();
 		this.view = new MainMenu();
 		ViewThread trackerView = new ViewThread(view);
-		trackerView.start();
-		KeepAliveReciever kaRecive = new KeepAliveReciever(true);
-		kaRecive.start();
-		try {
-			Thread.sleep(2000);
-		}catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		ID = idSelector(this.trackerList);
-		KeepAliveSender kaSend = new KeepAliveSender(true, this.ID);
-		kaSend.start();
-		
+		//trackerView.start();
 	}
 
-	private int idSelector(ArrayList<Integer> idList) {
-		int maxID=0;
+	public void idSelector() {
+		ArrayList<Integer> idList = this.trackerList;
+		int maxid=0;
 		if (idList.size()==0) {
-			maxID=1;
+			master = true;
+			ID = 0;
 		}else {
 			for (int i = 0; i < idList.size(); i++) {
-				if (idList.get(i)>maxID) {
-					maxID=idList.get(i) + 1;
+				if (idList.get(i)>maxid) {
+					maxid=idList.get(i);
 				}
 			}
+			ID=maxid + 1;
 		}
-		return maxID;
+	}
+	
+	public void start(Tracker myTracker) {
+		KeepAliveReciever kaRecive = new KeepAliveReciever(true, myTracker);
+		kaRecive.start();
+		try {
+			Thread.sleep(10000);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		idSelector();
+		KeepAliveSender kaSend = new KeepAliveSender(true, this.ID);
+		kaSend.start();
 	}
 	
 	public String getIP() {
@@ -103,8 +108,8 @@ public class Tracker {
 		return trackerList;
 	}
 
-	public void setTrackerList(ArrayList<Integer> trackerList) {
-		this.trackerList = trackerList;
+	public void setTrackerList(int id) {
+		this.trackerList.add(id);
 	}
 
 	public TrackerDAO getTrackerDB() {

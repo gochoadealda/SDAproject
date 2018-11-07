@@ -63,6 +63,7 @@ public class KeepAliveSender extends Thread{
 			System.out.println("- TopicPublisher created!");
 			
 			
+			
 			while(active) {
 			
 				//Text Message
@@ -71,8 +72,9 @@ public class KeepAliveSender extends Thread{
 				textMessage.setText("KeepAlive "+ID);
 				topicPublisher.publish(textMessage);
 				System.out.println("- TextMessage sent to the Queue!");
-				Thread.sleep(1000);
+				Thread.sleep(5000);
 			}
+			
 		} catch (Exception e) {
 			System.err.println("# TopicPublisherTest Error: " + e.getMessage());
 		} finally {
