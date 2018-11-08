@@ -5,12 +5,34 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-
 
 public class TrackerDAO implements TrackerDAOInterface {
 
 	private Connection con;
+
+	public void createDatabase(String dbname) {
+		String url = "jdbc:sqlite:db/" + dbname;
+
+		String sql1 = "CREATE TABLE IF NOT EXISTS Peer (\n" + "	idPeer integer PRIMARY KEY,\n" + "	ip text NOT NULL,\n"
+				+ "	bytesDes real,\n" + "	bytesPen real,\n" + "	puerto integer,\n"
+				+ " swarm_idTracker integer, FOREIGN KEY (swarm_idTracker) REFERENCES Swarm(idSwarm)" + ");";
+		String sql2 = "CREATE TABLE IF NOT EXISTS Swarm (\n" + "	idSwarm integer PRIMARY KEY,\n"
+				+ "	nomCont text NOT NULL,\n" + "	tamano integer,\n" + "	seeders integer,\n" + "	leechers integer\n"
+				+ ");";
+		try (Connection conn = DriverManager.getConnection(url); Statement stmt = conn.createStatement()) {
+			// create a new table
+			System.out.println("Database created");
+			stmt.execute(sql2);
+			stmt.execute(sql1);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	public TrackerDAO() {
+		
+	}
 
 	public TrackerDAO(String dbname) {
 		// super();
@@ -69,7 +91,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 	public void insertS(Swarm s) {
 		if (s != null) {
 
-			String sqlString = "INSERT INTO Swarm ('idSwarm', 'nomCont', 'tamaño', 'seeders', 'lechers') VALUES (?,?,?,?,?)";
+			String sqlString = "INSERT INTO Swarm ('idSwarm', 'nomCont', 'tamano', 'seeders', 'lechers') VALUES (?,?,?,?,?)";
 
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 				stmt.setString(1, String.valueOf(s.getID()));
@@ -123,7 +145,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 		try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				swarm = new Swarm(rs.getInt("idSwarm"), rs.getString("nomCont"), rs.getInt("tamaño"),
+				swarm = new Swarm(rs.getInt("idSwarm"), rs.getString("nomCont"), rs.getInt("tamano"),
 						rs.getInt("seeders"), rs.getInt("leechers"));
 				System.out.println("Swarm ID:" + swarm.getID() + " nomCont:" + swarm.getNomCont() + " Tamaño:"
 						+ swarm.getTamaño());
@@ -165,7 +187,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 	public void updateS(Swarm s) {
 		if (s != null) {
 
-			String sqlString = "UPDATE Swarm SET tamaño = ?,seeders=?,leechers=? WHERE idSwarm =?";
+			String sqlString = "UPDATE Swarm SET tamano = ?,seeders=?,leechers=? WHERE idSwarm =?";
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 				stmt.setString(1, String.valueOf(s.getTamaño()));
 				stmt.setString(2, String.valueOf(s.getSeeders()));
