@@ -34,31 +34,34 @@ public class KeepAliveListener implements MessageListener {
 					String idString = ((TextMessage)message).getText();
 					int arrivedID = Integer.parseInt(idString.substring(10));
 					ArrayList<Integer> IDlist = myTracker.getTrackerList();
+					System.out.println(myTracker.isMaster());
 					System.out.println(myTracker.getID());
 					System.out.println(IDlist.size());
-					if (myTracker.getID() != arrivedID) {
-						int ID;
-						int i = 0;
-						boolean count=true;
-						if (IDlist.size()==0) {
+					int ID;
+					int i = 0;
+					boolean count=true;
+					System.currentTimeMillis();
+					if (IDlist.size()==0) {
+						myTracker.setTrackerList(arrivedID);
+						myTracker.putTrackerMap(arrivedID, System.currentTimeMillis());
+					} else {
+						boolean save = true;
+						while (i < IDlist.size() && count) {
+							ID = IDlist.get(i);
+							if (ID == arrivedID) {
+								save = false;
+								count = false;
+							}
+							i++;
+						}
+						if (save == true) {
 							myTracker.setTrackerList(arrivedID);
+							myTracker.putTrackerMap(arrivedID, System.currentTimeMillis());
 						} else {
-							
-							
-							boolean save = true;
-							while (i < IDlist.size() && count) {
-								ID = IDlist.get(i);
-								if (ID == arrivedID) {
-									save = false;
-									count = false;
-								}
-								i++;
-							}
-							if (save == true) {
-								myTracker.setTrackerList(arrivedID);
-							}
+							myTracker.putTrackerMap(arrivedID, System.currentTimeMillis());
 						}
 					}
+					
 				} 
 			
 			} catch (Exception ex) {

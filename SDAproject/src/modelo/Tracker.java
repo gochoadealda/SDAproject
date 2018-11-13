@@ -1,12 +1,15 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
 import mensajes.KeepAliveListener;
-import mensajes.KeepAliveReciever;
-import mensajes.KeepAliveSender;
+import mensajes.KeepAliveSubscriber;
+import mensajes.NewMasterPublisher;
+import mensajes.NewMasterSubscriber;
+import mensajes.KeepAlivePublisher;
 import vista.MainMenu;
 
 public class Tracker {
@@ -17,18 +20,23 @@ public class Tracker {
 	private boolean master;
 	private int masterID;
 	private int keepAliveTimer;
+	private HashMap<Integer, Long> trackerMap;
 	private ArrayList<Integer> trackerList;
 	private TrackerDAO trackerDB;
 	private MainMenu view;
 	private boolean active;
+	public KeepAliveSubscriber kaRecive;
+	public KeepAlivePublisher kaSend; 
+	public NewMasterSubscriber nmRecieve;
+	public NewMasterPublisher nmSend;
 	
-	public Tracker(String iP, int puertoCom, TrackerDAO trackerDB) {
+	public Tracker(String iP, int puertoCom) {
 		super();
 		IP = iP;
 		this.ID = -1;
 		this.puertoCom = puertoCom;
+		this.trackerDB = new TrackerDAO("db/tracker.db");
 		this.keepAliveTimer = 1;
-		this.trackerDB = trackerDB;
 		this.trackerList = new ArrayList<>();
 		this.view = new MainMenu();
 		ViewThread trackerView = new ViewThread(view);
@@ -52,7 +60,7 @@ public class Tracker {
 	}
 	
 	public void start(Tracker myTracker) {
-		KeepAliveReciever kaRecive = new KeepAliveReciever(true, myTracker);
+		kaRecive = new KeepAliveSubscriber(true, myTracker);
 		kaRecive.start();
 		try {
 			Thread.sleep(10000);
@@ -60,7 +68,7 @@ public class Tracker {
 			// TODO: handle exception
 		}
 		idSelector();
-		KeepAliveSender kaSend = new KeepAliveSender(true, this.ID);
+		kaSend = new KeepAlivePublisher(true, myTracker);
 		kaSend.start();
 	}
 	
@@ -143,9 +151,14 @@ public class Tracker {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	
-	
-	
+	public HashMap<Integer, Long> getTrackerMap() {
+		return trackerMap;
+	}
+
+	public void putTrackerMap(int ID, long time) {
+		this.trackerMap.put(ID, time);
+	}
+
 	
 	
 

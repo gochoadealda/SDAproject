@@ -1,10 +1,5 @@
 package mensajes;
 
-import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
@@ -15,18 +10,14 @@ import javax.jms.TopicSession;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+public class NewMasterPublisher extends Thread{
 
-
-public class KeepAliveSender extends Thread{
-	
-	private boolean active;
 	private int ID;
 	
 	
-	public KeepAliveSender(boolean active, int ID) {
+	public NewMasterPublisher(int iD) {
 		super();
-		this.active = active;
-		this.ID=ID;
+		ID = iD;
 	}
 
 
@@ -34,7 +25,7 @@ public class KeepAliveSender extends Thread{
 	public void run() {
 		String connectionFactoryName = "TopicConnectionFactory";
 		//This name is defined in jndi.properties file
-		String topicJNDIName = "jndi.keepalive.topic";		
+		String topicJNDIName = "jndi.newmaster.topic";		
 		
 		TopicConnection topicConnection = null;
 		TopicSession topicSession = null;
@@ -61,19 +52,14 @@ public class KeepAliveSender extends Thread{
 			//Message Publisher
 			topicPublisher = topicSession.createPublisher(myTopic);
 			System.out.println("- TopicPublisher created!");
+			//Text Message
+			TextMessage textMessage = topicSession.createTextMessage();
+			//Message Body
+			textMessage.setText(String.valueOf(ID));
+			topicPublisher.publish(textMessage);
+			System.out.println("- TextMessage sent to the Queue!");
 			
-			
-			
-			while(active) {
-			
-				//Text Message
-				TextMessage textMessage = topicSession.createTextMessage();
-				//Message Body
-				textMessage.setText("KeepAlive "+ID);
-				topicPublisher.publish(textMessage);
-				System.out.println("- TextMessage sent to the Queue!");
-				Thread.sleep(5000);
-			}
+
 			
 		} catch (Exception e) {
 			System.err.println("# TopicPublisherTest Error: " + e.getMessage());

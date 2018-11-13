@@ -2,11 +2,6 @@ package mensajes;
 
 import java.util.UUID;
 
-import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueReceiver;
-import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
@@ -18,17 +13,12 @@ import javax.naming.InitialContext;
 
 import modelo.Tracker;
 
-
-
-
-public class KeepAliveReciever extends Thread{
-
-	private boolean active;
-	private Tracker myTracker;
+public class NewMasterSubscriber extends Thread{
 	
-	public KeepAliveReciever(boolean active, Tracker myTracker) {
+	private Tracker myTracker;
+
+	public NewMasterSubscriber(Tracker myTracker) {
 		super();
-		this.active = active;
 		this.myTracker = myTracker;
 	}
 
@@ -36,7 +26,7 @@ public class KeepAliveReciever extends Thread{
 	public void run() {
 		String connectionFactoryName = "TopicConnectionFactory";
 		//This name is defined in jndi.properties file
-		String topicJNDIName = "jndi.keepalive.topic";
+		String topicJNDIName = "jndi.newmaster.topic";
 		
 		TopicConnection topicConnection = null;
 		TopicSession topicSession = null;
@@ -68,16 +58,14 @@ public class KeepAliveReciever extends Thread{
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
 			
 			//Topic Listener
-			KeepAliveListener listener = new KeepAliveListener(myTracker);
+			NewMasterListener listener = new NewMasterListener(myTracker);
 			
 			//Set the same message listener for the non-durable subscriber
 			topicNONDurableSubscriber.setMessageListener(listener);
 			
 			//Begin message delivery
 			topicConnection.start();
-			while(active) {
-				
-			}
+			
 		} catch (Exception e) {
 			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
 		} finally {
