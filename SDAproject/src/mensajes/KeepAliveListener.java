@@ -11,6 +11,7 @@ import javax.jms.TopicConnection;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.springframework.messaging.simp.broker.SubscriptionRegistry;
 
+import mensajes.fileMessage.DBQueueFileSender;
 import modelo.Tracker;
 
 public class KeepAliveListener implements MessageListener {
@@ -57,6 +58,9 @@ public class KeepAliveListener implements MessageListener {
 						}
 						if (save) {
 							myTracker.setTrackerList(arrivedID);
+							if (myTracker.getID() == myTracker.getMasterID()) {
+								myTracker.sendDB = new DBQueueFileSender(myTracker);
+							}
 							myTracker.putTrackerMap(arrivedID, System.currentTimeMillis());
 						} else {
 							myTracker.putTrackerMap(arrivedID, System.currentTimeMillis());
