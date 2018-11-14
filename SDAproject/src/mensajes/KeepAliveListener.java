@@ -1,6 +1,7 @@
 package mensajes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -38,7 +39,7 @@ public class KeepAliveListener implements MessageListener {
 					System.out.println(myTracker.isMaster());
 					System.out.println(myTracker.getID());
 					System.out.println(IDlist.size());
-					int ID;
+					int ID = 0;
 					int i = 0;
 					boolean count=true;
 					System.currentTimeMillis();
@@ -55,7 +56,7 @@ public class KeepAliveListener implements MessageListener {
 							}
 							i++;
 						}
-						if (save == true) {
+						if (save) {
 							myTracker.setTrackerList(arrivedID);
 							if (myTracker.getID() == myTracker.getMasterID()) {
 								myTracker.sendDB = new DBQueueFileSender(myTracker);
@@ -64,6 +65,21 @@ public class KeepAliveListener implements MessageListener {
 						} else {
 							myTracker.putTrackerMap(arrivedID, System.currentTimeMillis());
 						}
+					}
+					i=0;
+					count = true;
+					boolean delete = false;
+					HashMap<Integer, Long> myMap = myTracker.getTrackerMap();
+					while(i < IDlist.size() && count) {
+						ID = IDlist.get(i);
+						i++;
+						if(myMap.get(ID) - System.currentTimeMillis() > 6000) {
+							count = false;
+							delete = true;
+						}
+					}
+					if (delete) {
+						myTracker.deleteIDfromList(i, ID);
 					}
 					
 				} 

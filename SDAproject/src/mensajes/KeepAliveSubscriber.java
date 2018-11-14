@@ -23,12 +23,10 @@ import modelo.Tracker;
 
 public class KeepAliveSubscriber extends Thread{
 
-	private boolean active;
 	private Tracker myTracker;
 	
-	public KeepAliveSubscriber(boolean active, Tracker myTracker) {
+	public KeepAliveSubscriber(Tracker myTracker) {
 		super();
-		this.active = active;
 		this.myTracker = myTracker;
 	}
 
@@ -75,7 +73,7 @@ public class KeepAliveSubscriber extends Thread{
 			
 			//Begin message delivery
 			topicConnection.start();
-			while(active) {
+			while(myTracker.isActive()) {
 				
 			}
 		} catch (Exception e) {

@@ -26,7 +26,6 @@ public class Tracker {
 	private ArrayList<Integer> trackerList;
 	private ArrayList<Integer> okList;
 	private TrackerDAO trackerDB;
-	private MainMenu view;
 	private boolean active;
 	public KeepAliveSubscriber kaRecive;
 	public KeepAlivePublisher kaSend; 
@@ -43,8 +42,9 @@ public class Tracker {
 		this.trackerDB = new TrackerDAO("db/tracker.db");
 		this.keepAliveTimer = 1;
 		this.trackerList = new ArrayList<>();
-		this.view = new MainMenu();
-		ViewThread trackerView = new ViewThread(view);
+		this.active = true;
+		ViewThread trackerView = new ViewThread(this);
+		
 		//trackerView.start();
 	}
 
@@ -65,7 +65,7 @@ public class Tracker {
 	}
 	
 	public void start(Tracker myTracker) {
-		kaRecive = new KeepAliveSubscriber(true, myTracker);
+		kaRecive = new KeepAliveSubscriber(myTracker);
 		kaRecive.start();
 		try {
 			Thread.sleep(10000);
@@ -73,8 +73,10 @@ public class Tracker {
 			// TODO: handle exception
 		}
 		idSelector();
+
+		kaSend = new KeepAlivePublisher(myTracker);
 		recieveDB = new DBQueueFileReceiver(myTracker);
-		kaSend = new KeepAlivePublisher(true, myTracker);
+		kaSend = new KeepAlivePublisher(myTracker);
 		kaSend.start();
 	}
 	
@@ -150,14 +152,6 @@ public class Tracker {
 		this.masterID = masterID;
 	}
 
-	public MainMenu getView() {
-		return view;
-	}
-
-	public void setView(MainMenu view) {
-		this.view = view;
-	}
-
 	public boolean isActive() {
 		return active;
 	}
@@ -172,7 +166,12 @@ public class Tracker {
 	public void putTrackerMap(int ID, long time) {
 		this.trackerMap.put(ID, time);
 	}
-
+	
+	public void deleteIDfromList(int pos, int ID) {
+		this.trackerList.remove(pos);
+		this.trackerMap.remove(ID);
+	}
+	
 	
 	
 
