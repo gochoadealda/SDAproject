@@ -12,6 +12,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
+
+import modelo.Tracker;
+
 import javax.swing.JDesktopPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
@@ -33,11 +36,13 @@ public class MainMenu extends JFrame implements ActionListener {
 	private JTable tableTrackers, tableSwarms;
 	private DefaultTableModel modelTrackers, modelSwarms;
 	private JTable tablePeers;
+	private Tracker myTracker;
 
-	public MainMenu() {
+	public MainMenu(Tracker myTracker) {
 		super(); // usamos el contructor de la clase padre JFrame
 		configurarVentana(); // configuramos la ventana
 		inicializarComponentes(); // inicializamos los atributos o componentes
+		this.myTracker = myTracker;
 	}
 
 	private void configurarVentana() {
@@ -94,6 +99,7 @@ public class MainMenu extends JFrame implements ActionListener {
 		JButton btnIniciar = new JButton("Start/Stop");
 		btnIniciar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				myTracker.setActive(false);
 				System.out.println("Comprobación de si la IP introducida es válida mediante una expresión regular");
 				if (!validate(tfIp.getText())) {
 					JOptionPane.showMessageDialog(panel1, "Invalid IP", "Error", JOptionPane.ERROR_MESSAGE);

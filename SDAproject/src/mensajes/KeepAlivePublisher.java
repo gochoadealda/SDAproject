@@ -21,13 +21,11 @@ import modelo.Tracker;
 
 public class KeepAlivePublisher extends Thread{
 	
-	private boolean active;
 	private Tracker myTracker;
 	
 	
-	public KeepAlivePublisher(boolean active, Tracker myTracker) {
+	public KeepAlivePublisher(Tracker myTracker) {
 		super();
-		this.active = active;
 		this.myTracker=myTracker;
 	}
 
@@ -66,7 +64,7 @@ public class KeepAlivePublisher extends Thread{
 			
 			
 			
-			while(active) {
+			while(myTracker.isActive()) {
 			
 				//Text Message
 				TextMessage textMessage = topicSession.createTextMessage();

@@ -3,15 +3,16 @@ package modelo;
 import vista.MainMenu;
 
 public class ViewThread extends Thread{
-	private MainMenu view;
+	private Tracker myTracker;
 
-	public ViewThread(MainMenu view) {
+	public ViewThread(Tracker myTracker) {
 		super();
-		this.view = view;
+		this.myTracker = myTracker;
 	}
 
 	@Override
 	public void run() {
+		MainMenu view = new MainMenu(myTracker);
 		view.setVisible(true);
 	}
 	
