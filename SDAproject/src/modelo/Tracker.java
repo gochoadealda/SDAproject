@@ -9,6 +9,8 @@ import mensajes.KeepAliveListener;
 import mensajes.KeepAliveSubscriber;
 import mensajes.NewMasterPublisher;
 import mensajes.NewMasterSubscriber;
+import mensajes.fileMessage.DBQueueFileReceiver;
+import mensajes.fileMessage.DBQueueFileSender;
 import mensajes.KeepAlivePublisher;
 import vista.MainMenu;
 
@@ -22,6 +24,7 @@ public class Tracker {
 	private int keepAliveTimer;
 	private HashMap<Integer, Long> trackerMap;
 	private ArrayList<Integer> trackerList;
+	private ArrayList<Integer> okList;
 	private TrackerDAO trackerDB;
 	private MainMenu view;
 	private boolean active;
@@ -29,6 +32,8 @@ public class Tracker {
 	public KeepAlivePublisher kaSend; 
 	public NewMasterSubscriber nmRecieve;
 	public NewMasterPublisher nmSend;
+	public DBQueueFileReceiver recieveDB;
+	public DBQueueFileSender sendDB;
 	
 	public Tracker(String iP, int puertoCom) {
 		super();
@@ -68,6 +73,7 @@ public class Tracker {
 			// TODO: handle exception
 		}
 		idSelector();
+		recieveDB = new DBQueueFileReceiver(myTracker);
 		kaSend = new KeepAlivePublisher(true, myTracker);
 		kaSend.start();
 	}
@@ -115,9 +121,17 @@ public class Tracker {
 	public ArrayList<Integer> getTrackerList() {
 		return trackerList;
 	}
+	
+	public ArrayList<Integer> getOkList() {
+		return okList;
+	}
 
 	public void setTrackerList(int id) {
 		this.trackerList.add(id);
+	}
+	
+	public void setOkList(int id) {
+		this.okList.add(id);
 	}
 
 	public TrackerDAO getTrackerDB() {

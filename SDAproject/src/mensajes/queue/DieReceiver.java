@@ -9,49 +9,51 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-public class QueueReceiverTest {	
+import modelo.Tracker;
+
+public class DieReceiver {
+
+	private boolean active;
+	private Tracker myTracker;
 	
-	public static void main(String[] args) {
+	public DieReceiver(boolean active, Tracker myTracker) {
+		super();
+		this.active = active;
+		this.myTracker = myTracker;
+	}
+	
+	public void run(){
 		String connectionFactoryName = "QueueConnectionFactory";
-		//This name is defined in jndi.properties file
-		String queueJNDIName = "jndi.ssdd.queue";
+		String queueJNDIName = "jndi.die.queue";
 		
 		QueueConnection queueConnection = null;
 		QueueSession queueSession = null;
-		QueueReceiver queueReceiver = null;			
+		QueueReceiver queueReceiver = null;	
 		
 		try{
-			//JNDI Initial Context
+			
 			Context ctx = new InitialContext();
 		
-			//Connection Factory
 			QueueConnectionFactory queueConnectionFactory = (QueueConnectionFactory) ctx.lookup(connectionFactoryName);			
 			
-			//Message Destination
 			Queue myQueue = (Queue) ctx.lookup(queueJNDIName);			
-	
-			//Connection	
+
 			queueConnection = queueConnectionFactory.createQueueConnection();
 			System.out.println("- Queue Connection created!");
 			
-			//Session
 			queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);			
 			System.out.println("- Queue Session created!");
 			
-			//Define a message Receiver using a filter (the filter is optional)
-			queueReceiver = queueSession.createReceiver(myQueue, "Filter = '2'");
-			System.out.println("- QueueReceiver created!");
 			
-			//Set the message lister for the receiver
-			QueueMessageListener listener = new QueueMessageListener();			
+			OkErrorListener listener = new OkErrorListener(myTracker);			
 			queueReceiver.setMessageListener(listener);
 			
-			//Start receiving messages
+			
 			queueConnection.start();
 			
-			//Wait 10 seconds for messages. After that period the program stops.
-			System.out.println("- Waiting 10 seconds for messages...");
-			Thread.sleep(10000);
+			while(active) {
+				
+			}
 		} catch (Exception e) {
 			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
 		} finally {
@@ -64,6 +66,8 @@ public class QueueReceiverTest {
 			} catch (Exception ex) {
 				System.err.println("# QueueReceiverTest Error: " + ex.getMessage());
 			}
-		}
+		
+	}
+
 	}
 }

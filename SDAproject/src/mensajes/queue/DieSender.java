@@ -1,23 +1,31 @@
 package mensajes.queue;
 
-import java.util.Calendar;
-
-import javax.jms.MapMessage;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-public class QueueSenderTest {
+import modelo.Tracker;
+
+public class DieSender {
+
+	private boolean active;
+	private Tracker myTracker;
 	
-	public static void main(String args[]) {		
+	
+	public DieSender(boolean active, Tracker myTracker) {
+		super();
+		this.active = active;
+		this.myTracker=myTracker;
+	}
+	
+	public void run() {		
 		String connectionFactoryName = "QueueConnectionFactory";
-		String queueJNDIName = "jndi.ssdd.queue";		
+		String queueJNDIName = "jndi.die.queue";		
 		
 		QueueConnection queueConnection = null;
 		QueueSession queueSession = null;
@@ -45,41 +53,31 @@ public class QueueSenderTest {
 			queueSender = queueSession.createSender(myQueue);			
 			System.out.println("- QueueSender created!");
 			
-			//Text Message
-			TextMessage textMessage = queueSession.createTextMessage();
-			//Message Properties (optional - defined by the application)
-			textMessage.setStringProperty("Filter", "1");
-			//Message Body
-			textMessage.setText("Hello World!!");			
-
-			//Send the Message
-			queueSender.send(textMessage);
-			System.out.println("- TextMessage sent to the Queue!");
+			/*
+				//Preguntar si esta alive
+				if(tiene el keepalive){
+				no mandar die				
+				
+				//No esta alive
+				}else if(no devuelve keepalive){
+					mandar die	
+				}
+			*/
 			
-			//Map Message			
-			MapMessage mapMessage = queueSession.createMapMessage();
-			//Message Properties (optional - defined by the application) 
-			mapMessage.setStringProperty("Filter", "2");				
-			//Message Body
-			mapMessage.setString("Text", "Hello World!");
-			mapMessage.setLong("Timestamp", Calendar.getInstance().getTimeInMillis());
-			mapMessage.setBoolean("ACK_required", true);
-						
-			//Send the Message
-			queueSender.send(mapMessage);
-			System.out.println("- MapMessage sent to the Queue!");
+			
 		} catch (Exception e) {
-			System.err.println("# QueueSenderTest Error: " + e.getMessage());
+			System.err.println("# QueueOkErrorSenderTest Error: " + e.getMessage());
 		} finally {
 			try {
-				//Close resources
+				
 				queueSender.close();
 				queueSession.close();
 				queueConnection.close();
-				System.out.println("- Queue resources closed!");				
+				System.out.println("- Queue resources closed!");	
+				myTracker.kaSend = null;
 			} catch (Exception ex) {
-				System.err.println("# QueueSenderTest Error: " + ex.getMessage());
-			}
+				System.err.println("# QueueOkErrorSenderTest Error: " + ex.getMessage());
+			}			
 		}
 	}
 }

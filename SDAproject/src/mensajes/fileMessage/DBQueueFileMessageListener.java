@@ -8,10 +8,22 @@ import javax.jms.MessageListener;
 
 import org.apache.activemq.command.ActiveMQBytesMessage;
 
+import modelo.Tracker;
+
 public class DBQueueFileMessageListener implements MessageListener  {
 
-	private static String DEST_FILE = "./file_out/Test-";
+	private String DEST_FILE = "./db/tracker";
+	private Tracker mytracker;
 	
+	
+	
+	public DBQueueFileMessageListener(Tracker mytracker) {
+		super();
+		this.mytracker = mytracker;
+	}
+
+
+
 	@Override
 	public void onMessage(Message message) {
 		if (message != null) {
@@ -19,7 +31,7 @@ public class DBQueueFileMessageListener implements MessageListener  {
 				System.out.println("   - FileQueueListener: " + message.getClass().getSimpleName() + " received!");
 								
 				if (message instanceof ActiveMQBytesMessage) {
-					String fileName = DBQueueFileMessageListener.DEST_FILE + Calendar.getInstance().getTimeInMillis() + ".xlsx";
+					String fileName = DEST_FILE + mytracker.getID() + ".db";
 					
 					//Read message content as an Array of bytes
 					DBFileAsByteArrayManager.getInstance().writeFile(((ActiveMQBytesMessage)message).getContent().getData(), fileName);
@@ -30,7 +42,7 @@ public class DBQueueFileMessageListener implements MessageListener  {
 				}
 			
 			} catch (Exception ex) {
-				System.err.println("# TopicListener error: " + ex.getMessage());
+				System.err.println("# sendDBListener error: " + ex.getMessage());
 			}
 		}
 	}
