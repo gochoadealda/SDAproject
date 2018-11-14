@@ -1,5 +1,8 @@
 package modelo;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,8 +14,9 @@ import java.util.ArrayList;
 public class TrackerDAO implements TrackerDAOInterface {
 
 	private Connection con;
+	private String dbname;
 
-	public void createDatabase(String dbname) {
+	public void createDatabase() {
 		String url = "jdbc:sqlite:db/" + dbname;
 
 		String sql1 = "CREATE TABLE IF NOT EXISTS Peer (\n" + "	idPeer integer PRIMARY KEY,\n" + "	ip text NOT NULL,\n"
@@ -30,19 +34,15 @@ public class TrackerDAO implements TrackerDAOInterface {
 			System.out.println(e.getMessage());
 		}
 	}
-	public TrackerDAO() {
-		
-	}
 
 	public TrackerDAO(String dbname) {
-		// super();
+		super();
 		con = null;
-
+		this.dbname = dbname;
 		try {
 			Class.forName("org.sqlite.JDBC");
 			con = DriverManager.getConnection("jdbc:sqlite:" + dbname);
 			con.setAutoCommit(false);
-
 			System.out.println(" - Db connection was opened :)");
 		} catch (Exception ex) {
 			System.err.println(" # Unable to create SQLiteDBManager: " + ex.getMessage());
@@ -55,6 +55,17 @@ public class TrackerDAO implements TrackerDAOInterface {
 			System.out.println("\n - Db connection was closed :)");
 		} catch (Exception ex) {
 			System.err.println("\n # Error closing db connection: " + ex.getMessage());
+		}
+	}
+
+	public void deleteDatabase() {
+		try {
+			String pathdbname="db/"+dbname;
+			Files.deleteIfExists(Paths.get(pathdbname));
+			System.out.println("- Db was deleted :)");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("\n # Error deleting the db :(");
 		}
 	}
 
@@ -248,14 +259,14 @@ public class TrackerDAO implements TrackerDAOInterface {
 	}
 
 	public static void main(String[] args) {
-//		System.out.println("Prueba");
-//		TrackerDAO manager = new TrackerDAO("db/tracker.db");
-//		Peer p= new Peer(1, "ipppp", 8080, 90.4, 90.6);
-//		manager.insertP(p);
-//		manager.selectPeers();
-//		manager.updateP(p);
-//		manager.deleteP(0);
-//		manager.deleteP(1);
-//		manager.closeConnection();
+		//		System.out.println("Prueba");
+		//		TrackerDAO manager = new TrackerDAO("db/tracker.db");
+		//		Peer p= new Peer(1, "ipppp", 8080, 90.4, 90.6);
+		//		manager.insertP(p);
+		//		manager.selectPeers();
+		//		manager.updateP(p);
+		//		manager.deleteP(0);
+		//		manager.deleteP(1);
+		//		manager.closeConnection();
 	}
 }
