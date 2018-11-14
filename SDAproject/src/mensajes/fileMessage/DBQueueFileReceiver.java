@@ -9,11 +9,25 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-public class DBQueueFileReceiver {	
+import modelo.Tracker;
+
+public class DBQueueFileReceiver extends Thread{
 	
-	public static void main(String[] args) {
+	private Tracker mytracker;
+	
+	
+	public DBQueueFileReceiver(Tracker mytracker) {
+		super();
+		this.mytracker = mytracker;
+	}
+
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		super.run();
 		String connectionFactoryName = "QueueConnectionFactory";
-		String queueJNDIName = "jndi.ssdd.fileQueue";
+		String queueJNDIName = "jndi.senddb.fileQueue";
 		
 		QueueConnection queueConnection = null;
 		QueueSession queueSession = null;
@@ -41,14 +55,14 @@ public class DBQueueFileReceiver {
 			queueReceiver = queueSession.createReceiver(myQueue);
 			System.out.println("- FileQueueReceiver created!");
 						
-			DBQueueFileMessageListener listener = new DBQueueFileMessageListener();
+			DBQueueFileMessageListener listener = new DBQueueFileMessageListener(mytracker);
 			
 			queueReceiver.setMessageListener(listener);
 			
 			//Start receiving messages
 			queueConnection.start();
 			
-			Thread.sleep(10000);
+			Thread.sleep(5000);
 		} catch (Exception e) {
 			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
 		} finally {
@@ -56,10 +70,12 @@ public class DBQueueFileReceiver {
 				queueReceiver.close();
 				queueSession.close();
 				queueConnection.close();
+				mytracker.recieveDB = null;
 				System.out.println("- Queue resources closed!");				
 			} catch (Exception ex) {
 				System.err.println("# QueueReceiverTest Error: " + ex.getMessage());
 			}
 		}
 	}
+
 }

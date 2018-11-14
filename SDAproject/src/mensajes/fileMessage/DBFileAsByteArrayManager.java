@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Calendar;
 
+import modelo.Tracker;
+
 public class DBFileAsByteArrayManager {
 
 	private static DBFileAsByteArrayManager instance = null;
+
 	
 	private DBFileAsByteArrayManager() {
 	}
@@ -34,9 +37,9 @@ public class DBFileAsByteArrayManager {
     	}
     }
     
-    public static void main(String[] args) {
-    	String src = "./file_in/Test.xlsx";
-    	String dst = "./file_out/offline-Test_" + Calendar.getInstance().getTimeInMillis() + ".xlsx";
+/*    public static void main(String[] args) {
+    	String src = "./db/tracker"+mytracker.getMasterID()+".db";
+    	String dst = "./db/tracker"+mytracker.getID()+".db";
     	
     	try {
     		byte[] bytes = DBFileAsByteArrayManager.getInstance().readFileAsBytes(src);
@@ -45,4 +48,5 @@ public class DBFileAsByteArrayManager {
     		ex.printStackTrace();
     	}
     }
+*/
 }

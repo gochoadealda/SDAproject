@@ -9,6 +9,8 @@ import mensajes.KeepAliveListener;
 import mensajes.KeepAliveSubscriber;
 import mensajes.NewMasterPublisher;
 import mensajes.NewMasterSubscriber;
+import mensajes.fileMessage.DBQueueFileReceiver;
+import mensajes.fileMessage.DBQueueFileSender;
 import mensajes.KeepAlivePublisher;
 import vista.MainMenu;
 
@@ -29,6 +31,8 @@ public class Tracker {
 	public KeepAlivePublisher kaSend; 
 	public NewMasterSubscriber nmRecieve;
 	public NewMasterPublisher nmSend;
+	public DBQueueFileReceiver recieveDB;
+	public DBQueueFileSender sendDB;
 	
 	public Tracker(String iP, int puertoCom) {
 		super();
@@ -68,6 +72,7 @@ public class Tracker {
 			// TODO: handle exception
 		}
 		idSelector();
+		recieveDB = new DBQueueFileReceiver(myTracker);
 		kaSend = new KeepAlivePublisher(true, myTracker);
 		kaSend.start();
 	}

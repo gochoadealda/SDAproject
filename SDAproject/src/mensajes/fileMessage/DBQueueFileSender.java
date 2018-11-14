@@ -10,11 +10,23 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-public class DBQueueFileSender {
+import modelo.Tracker;
+
+
+public class DBQueueFileSender extends Thread {
+	private Tracker mytracker;
 	
-	private static String SRC_FILE = "./file_in/Test.xlsx";
+	public DBQueueFileSender(Tracker mytracker) {
+		super();
+		this.mytracker = mytracker;
+	}
+	private int ID = mytracker.getID();
+	private String SRC_FILE = "./db/tracker"+ID+".db";
 	
-	public static void main(String args[]) {		
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		super.run();
 		String connectionFactoryName = "QueueConnectionFactory";
 		String queueJNDIName = "jndi.ssdd.fileQueue";		
 		
@@ -48,7 +60,7 @@ public class DBQueueFileSender {
 			BytesMessage bytesMessage = queueSession.createBytesMessage();
 			
 			//Message Body obtain the a byte array from a file
-			bytesMessage.writeBytes(DBFileAsByteArrayManager.getInstance().readFileAsBytes(DBQueueFileSender.SRC_FILE));
+			bytesMessage.writeBytes(DBFileAsByteArrayManager.getInstance().readFileAsBytes(SRC_FILE));
 			
 			//Send the Message
 			queueSender.send(bytesMessage);
@@ -62,10 +74,12 @@ public class DBQueueFileSender {
 				queueSender.close();
 				queueSession.close();
 				queueConnection.close();
+				mytracker.sendDB = null;
 				System.out.println("- Queue resources closed!");				
 			} catch (Exception ex) {
 				System.err.println("# QueueSenderTest Error: " + ex.getMessage());
 			}
 		}
 	}
+
 }
