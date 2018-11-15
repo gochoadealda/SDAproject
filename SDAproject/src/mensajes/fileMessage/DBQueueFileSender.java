@@ -25,10 +25,9 @@ public class DBQueueFileSender extends Thread {
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		super.run();
+		System.out.println("Entre al hilo");
 		String connectionFactoryName = "QueueConnectionFactory";
-		String queueJNDIName = "jndi.ssdd.fileQueue";		
+		String queueJNDIName = "jndi.senddb.fileQueue";		
 		
 		QueueConnection queueConnection = null;
 		QueueSession queueSession = null;

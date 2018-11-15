@@ -5,13 +5,13 @@ import java.util.HashMap;
 
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
-import mensajes.KeepAliveListener;
-import mensajes.KeepAliveSubscriber;
-import mensajes.NewMasterPublisher;
-import mensajes.NewMasterSubscriber;
 import mensajes.fileMessage.DBQueueFileReceiver;
 import mensajes.fileMessage.DBQueueFileSender;
-import mensajes.KeepAlivePublisher;
+import mensajes.topic.KeepAliveListener;
+import mensajes.topic.KeepAlivePublisher;
+import mensajes.topic.KeepAliveSubscriber;
+import mensajes.topic.NewMasterPublisher;
+import mensajes.topic.NewMasterSubscriber;
 import vista.MainMenu;
 
 public class Tracker {
@@ -25,6 +25,7 @@ public class Tracker {
 	private HashMap<Integer, Long> trackerMap;
 	private ArrayList<Integer> trackerList;
 	private ArrayList<Integer> okList;
+	private ArrayList<Long> timeList;
 	private TrackerDAO trackerDB;
 	private boolean active;
 	public KeepAliveSubscriber kaRecive;
@@ -39,13 +40,13 @@ public class Tracker {
 		IP = iP;
 		this.ID = -1;
 		this.puertoCom = puertoCom;
-		this.trackerDB = new TrackerDAO("db/tracker.db");
 		this.keepAliveTimer = 1;
 		this.trackerList = new ArrayList<>();
+		this.timeList = new ArrayList<>();
 		this.active = true;
 		ViewThread trackerView = new ViewThread(this);
 		
-		//trackerView.start();
+		trackerView.start();
 	}
 	
 	public void newMaster() {	
@@ -66,6 +67,8 @@ public class Tracker {
 		if (idList.size()==0) {
 			master = true;
 			ID = 0;
+			this.trackerDB = new TrackerDAO("db/tracker"+ID+".db");
+			trackerDB.createDatabase();
 		}else {
 			for (int i = 0; i < idList.size(); i++) {
 				if (idList.get(i)>maxid) {
@@ -85,11 +88,13 @@ public class Tracker {
 			// TODO: handle exception
 		}
 		idSelector();
-
-		kaSend = new KeepAlivePublisher(myTracker);
-		recieveDB = new DBQueueFileReceiver(myTracker);
+		if(!master) {
+			recieveDB = new DBQueueFileReceiver(myTracker);
+			recieveDB.start();
+		}
 		kaSend = new KeepAlivePublisher(myTracker);
 		kaSend.start();
+	
 	}
 	
 	public String getIP() {
@@ -183,9 +188,27 @@ public class Tracker {
 		this.trackerMap.put(ID, time);
 	}
 	
-	public void deleteIDfromList(int pos, int ID) {
+	public void deleteIDfromList(int pos) {
 		this.trackerList.remove(pos);
-		this.trackerMap.remove(ID);
+		this.timeList.remove(pos);
+	}
+	
+	public void sendDB() {
+		System.out.println("LLega");
+		this.sendDB = new DBQueueFileSender(this);
+		this.sendDB.start();
+		
+	}
+	public ArrayList<Long> getTimeList() {
+		return timeList;
+	}
+
+	public void setTimeList(int pos, long time) {
+		this.timeList.set(pos, time);
+	}
+	
+	public void addTimeList(long time) {
+		this.timeList.add(time);
 	}
 	
 	
