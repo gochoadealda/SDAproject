@@ -27,6 +27,7 @@ public class OkErrorSender extends Thread {
 		this.myTracker=myTracker;
 	}
 	
+	@Override
 	public void run() {		
 		String connectionFactoryName = "QueueConnectionFactory";
 		String queueJNDIName = "jndi.okerror.queue";		

@@ -11,7 +11,7 @@ import javax.naming.InitialContext;
 
 import modelo.Tracker;
 
-public class DieReceiver {
+public class DieReceiver extends Thread{
 
 	private boolean active;
 	private Tracker myTracker;
@@ -22,6 +22,7 @@ public class DieReceiver {
 		this.myTracker = myTracker;
 	}
 	
+	@Override 
 	public void run(){
 		String connectionFactoryName = "QueueConnectionFactory";
 		String queueJNDIName = "jndi.die.queue";

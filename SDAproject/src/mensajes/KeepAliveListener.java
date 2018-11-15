@@ -58,8 +58,8 @@ public class KeepAliveListener implements MessageListener {
 						}
 						if (save) {
 							myTracker.setTrackerList(arrivedID);
-							if (myTracker.getID() == myTracker.getMasterID()) {
-								myTracker.sendDB = new DBQueueFileSender(myTracker);
+							if (myTracker.isMaster()) {
+								//myTracker.sendDB = new DBQueueFileSender(myTracker);
 							}
 							myTracker.putTrackerMap(arrivedID, System.currentTimeMillis());
 						} else {
