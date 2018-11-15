@@ -38,13 +38,12 @@ public class Tracker {
 		IP = iP;
 		this.ID = -1;
 		this.puertoCom = puertoCom;
-		this.trackerDB = new TrackerDAO("db/tracker.db");
 		this.keepAliveTimer = 1;
 		this.trackerList = new ArrayList<>();
 		this.active = true;
 		ViewThread trackerView = new ViewThread(this);
 		
-		//trackerView.start();
+		trackerView.start();
 	}
 
 	public void idSelector() {
@@ -53,6 +52,8 @@ public class Tracker {
 		if (idList.size()==0) {
 			master = true;
 			ID = 0;
+			this.trackerDB = new TrackerDAO("db/tracker"+ID+".db");
+			trackerDB.createDatabase();
 		}else {
 			for (int i = 0; i < idList.size(); i++) {
 				if (idList.get(i)>maxid) {
@@ -72,11 +73,13 @@ public class Tracker {
 			// TODO: handle exception
 		}
 		idSelector();
-
-		kaSend = new KeepAlivePublisher(myTracker);
-		recieveDB = new DBQueueFileReceiver(myTracker);
+		if(!master) {
+			recieveDB = new DBQueueFileReceiver(myTracker);
+			recieveDB.start();
+		}
 		kaSend = new KeepAlivePublisher(myTracker);
 		kaSend.start();
+	
 	}
 	
 	public String getIP() {
@@ -161,6 +164,13 @@ public class Tracker {
 	public void deleteIDfromList(int pos, int ID) {
 		this.trackerList.remove(pos);
 		this.trackerMap.remove(ID);
+	}
+	
+	public void sendDB() {
+		System.out.println("LLega");
+		this.sendDB = new DBQueueFileSender(this);
+		this.sendDB.start();
+		
 	}
 	
 	

@@ -24,8 +24,7 @@ public class DBQueueFileReceiver extends Thread{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		super.run();
+		
 		String connectionFactoryName = "QueueConnectionFactory";
 		String queueJNDIName = "jndi.senddb.fileQueue";
 		
@@ -62,7 +61,7 @@ public class DBQueueFileReceiver extends Thread{
 			//Start receiving messages
 			queueConnection.start();
 			
-			Thread.sleep(5000);
+			Thread.sleep(10000);
 		} catch (Exception e) {
 			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
 		} finally {
