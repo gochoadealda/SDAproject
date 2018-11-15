@@ -24,6 +24,7 @@ public class Tracker {
 	private int keepAliveTimer;
 	private HashMap<Integer, Long> trackerMap;
 	private ArrayList<Integer> trackerList;
+	private ArrayList<Integer> okList;
 	private TrackerDAO trackerDB;
 	private boolean active;
 	public KeepAliveSubscriber kaRecive;
@@ -125,9 +126,17 @@ public class Tracker {
 	public ArrayList<Integer> getTrackerList() {
 		return trackerList;
 	}
+	
+	public ArrayList<Integer> getOkList() {
+		return okList;
+	}
 
 	public void setTrackerList(int id) {
 		this.trackerList.add(id);
+	}
+	
+	public void setOkList(int id) {
+		this.okList.add(id);
 	}
 
 	public TrackerDAO getTrackerDB() {
