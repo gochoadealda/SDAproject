@@ -5,13 +5,13 @@ import java.util.HashMap;
 
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
-import mensajes.KeepAliveListener;
-import mensajes.KeepAliveSubscriber;
-import mensajes.NewMasterPublisher;
-import mensajes.NewMasterSubscriber;
 import mensajes.fileMessage.DBQueueFileReceiver;
 import mensajes.fileMessage.DBQueueFileSender;
-import mensajes.KeepAlivePublisher;
+import mensajes.topic.KeepAliveListener;
+import mensajes.topic.KeepAlivePublisher;
+import mensajes.topic.KeepAliveSubscriber;
+import mensajes.topic.NewMasterPublisher;
+import mensajes.topic.NewMasterSubscriber;
 import vista.MainMenu;
 
 public class Tracker {
@@ -25,6 +25,7 @@ public class Tracker {
 	private HashMap<Integer, Long> trackerMap;
 	private ArrayList<Integer> trackerList;
 	private ArrayList<Integer> okList;
+	private ArrayList<Long> timeList;
 	private TrackerDAO trackerDB;
 	private boolean active;
 	public KeepAliveSubscriber kaRecive;
@@ -41,6 +42,7 @@ public class Tracker {
 		this.puertoCom = puertoCom;
 		this.keepAliveTimer = 1;
 		this.trackerList = new ArrayList<>();
+		this.timeList = new ArrayList<>();
 		this.active = true;
 		ViewThread trackerView = new ViewThread(this);
 		
@@ -170,9 +172,9 @@ public class Tracker {
 		this.trackerMap.put(ID, time);
 	}
 	
-	public void deleteIDfromList(int pos, int ID) {
+	public void deleteIDfromList(int pos) {
 		this.trackerList.remove(pos);
-		this.trackerMap.remove(ID);
+		this.timeList.remove(pos);
 	}
 	
 	public void sendDB() {
@@ -180,6 +182,17 @@ public class Tracker {
 		this.sendDB = new DBQueueFileSender(this);
 		this.sendDB.start();
 		
+	}
+	public ArrayList<Long> getTimeList() {
+		return timeList;
+	}
+
+	public void setTimeList(int pos, long time) {
+		this.timeList.set(pos, time);
+	}
+	
+	public void addTimeList(long time) {
+		this.timeList.add(time);
 	}
 	
 	

@@ -1,4 +1,4 @@
-package mensajes;
+package mensajes.topic;
 
 import javax.jms.Session;
 import javax.jms.TextMessage;

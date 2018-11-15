@@ -1,4 +1,4 @@
-package mensajes;
+package mensajes.topic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,13 +39,16 @@ public class KeepAliveListener implements MessageListener {
 					System.out.println(myTracker.isMaster());
 					System.out.println(myTracker.getID());
 					System.out.println(IDlist.size());
+					System.out.println(myTracker.getTimeList().size());
 					int ID = 0;
 					int i = 0;
 					boolean count=true;
-					System.currentTimeMillis();
+					long actualtime;
 					if (IDlist.size()==0) {
 						myTracker.setTrackerList(arrivedID);
-						myTracker.putTrackerMap(arrivedID, System.currentTimeMillis());
+						actualtime = System.currentTimeMillis();
+						myTracker.addTimeList(actualtime);
+						System.out.println(myTracker.getTimeList().size());
 					} else {
 						boolean save = true;
 						while (i < IDlist.size() && count) {
@@ -60,27 +63,32 @@ public class KeepAliveListener implements MessageListener {
 							myTracker.setTrackerList(arrivedID);
 							if (myTracker.isMaster()) {
 								System.out.println("Mandar db");
-								myTracker.sendDB();
+								//myTracker.sendDB();
 							}
-							myTracker.putTrackerMap(arrivedID, System.currentTimeMillis());
+							actualtime = System.currentTimeMillis();
+							myTracker.addTimeList(actualtime);
 						} else {
-							myTracker.putTrackerMap(arrivedID, System.currentTimeMillis());
+							actualtime = System.currentTimeMillis();
+							myTracker.setTimeList(i-1, actualtime);
 						}
 					}
+					
 					i=0;
 					count = true;
 					boolean delete = false;
-					HashMap<Integer, Long> myMap = myTracker.getTrackerMap();
-					while(i < IDlist.size() && count) {
-						ID = IDlist.get(i);
-						i++;
-						if(myMap.get(ID) - System.currentTimeMillis() > 6000) {
+					ArrayList<Long> myTimeList = myTracker.getTimeList();
+					while(i < myTimeList.size() && count) {
+						System.out.println(myTimeList.get(i));
+						long timenow = System.currentTimeMillis();
+						System.out.println(timenow - myTimeList.get(i));
+						if(timenow - myTimeList.get(i) > 6000) {
 							count = false;
 							delete = true;
 						}
+						i++;
 					}
 					if (delete) {
-						myTracker.deleteIDfromList(i, ID);
+						myTracker.deleteIDfromList(i-1);
 					}
 					
 				} 

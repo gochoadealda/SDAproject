@@ -1,4 +1,4 @@
-package mensajes;
+package mensajes.topic;
 
 import java.util.Enumeration;
 

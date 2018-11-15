@@ -1,4 +1,4 @@
-package mensajes;
+package mensajes.topic;
 
 import java.util.UUID;
 
@@ -11,22 +11,13 @@ import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import modelo.Tracker;
-
-public class NewMasterSubscriber extends Thread{
-	
-	private Tracker myTracker;
-
-	public NewMasterSubscriber(Tracker myTracker) {
-		super();
-		this.myTracker = myTracker;
-	}
+public class ReadySubscriber extends Thread{
 
 	@Override
 	public void run() {
 		String connectionFactoryName = "TopicConnectionFactory";
 		//This name is defined in jndi.properties file
-		String topicJNDIName = "jndi.newmaster.topic";
+		String topicJNDIName = "jndi.ready.topic";
 		
 		TopicConnection topicConnection = null;
 		TopicSession topicSession = null;
@@ -58,7 +49,7 @@ public class NewMasterSubscriber extends Thread{
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
 			
 			//Topic Listener
-			NewMasterListener listener = new NewMasterListener(myTracker);
+			ReadyListener listener = new ReadyListener();
 			
 			//Set the same message listener for the non-durable subscriber
 			topicNONDurableSubscriber.setMessageListener(listener);

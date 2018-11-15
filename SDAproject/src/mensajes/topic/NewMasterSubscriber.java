@@ -1,12 +1,7 @@
-package mensajes;
+package mensajes.topic;
 
 import java.util.UUID;
 
-import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueReceiver;
-import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
@@ -18,14 +13,11 @@ import javax.naming.InitialContext;
 
 import modelo.Tracker;
 
-
-
-
-public class KeepAliveSubscriber extends Thread{
-
-	private Tracker myTracker;
+public class NewMasterSubscriber extends Thread{
 	
-	public KeepAliveSubscriber(Tracker myTracker) {
+	private Tracker myTracker;
+
+	public NewMasterSubscriber(Tracker myTracker) {
 		super();
 		this.myTracker = myTracker;
 	}
@@ -34,7 +26,7 @@ public class KeepAliveSubscriber extends Thread{
 	public void run() {
 		String connectionFactoryName = "TopicConnectionFactory";
 		//This name is defined in jndi.properties file
-		String topicJNDIName = "jndi.keepalive.topic";
+		String topicJNDIName = "jndi.newmaster.topic";
 		
 		TopicConnection topicConnection = null;
 		TopicSession topicSession = null;
@@ -66,16 +58,14 @@ public class KeepAliveSubscriber extends Thread{
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
 			
 			//Topic Listener
-			KeepAliveListener listener = new KeepAliveListener(myTracker);
+			NewMasterListener listener = new NewMasterListener(myTracker);
 			
 			//Set the same message listener for the non-durable subscriber
 			topicNONDurableSubscriber.setMessageListener(listener);
 			
 			//Begin message delivery
 			topicConnection.start();
-			while(myTracker.isActive()) {
-				
-			}
+			
 		} catch (Exception e) {
 			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
 		} finally {
@@ -83,8 +73,7 @@ public class KeepAliveSubscriber extends Thread{
 				topicNONDurableSubscriber.close();
 				topicSession.close();
 				topicConnection.close();
-				System.out.println("- Topic resources closed!");
-				myTracker.kaRecive = null;
+				System.out.println("- Topic resources closed!");				
 			} catch (Exception ex) {
 				System.err.println("# TopicSubscriberTest Error: " + ex.getMessage());
 			}

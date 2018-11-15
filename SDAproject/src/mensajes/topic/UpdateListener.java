@@ -1,11 +1,11 @@
-package mensajes;
+package mensajes.topic;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
 import org.apache.activemq.command.ActiveMQTextMessage;
 
-public class ReadyListener implements MessageListener{
+public class UpdateListener implements MessageListener{
 
 	@Override
 	public void onMessage(Message message) {
@@ -23,6 +23,7 @@ public class ReadyListener implements MessageListener{
 				System.err.println("# TopicListener error: " + ex.getMessage());
 			}
 		}
+		
 	}
 
 
