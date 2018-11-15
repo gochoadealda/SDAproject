@@ -47,7 +47,19 @@ public class Tracker {
 		
 		//trackerView.start();
 	}
-
+	
+	public void newMaster() {	
+		/*for (int n: this.trackerList) 
+		    if(n>this.ID) this.setMasterID(this.ID); */
+		
+		for (int i =0; i<this.trackerList.size();i++) {
+			if(this.trackerList.get(i)> this.ID) {
+			}else {
+				this.setMasterID(this.ID);
+			}
+		}
+	}
+	
 	public void idSelector() {
 		ArrayList<Integer> idList = this.trackerList;
 		int maxid=0;
@@ -138,6 +150,10 @@ public class Tracker {
 
 	public TrackerDAO getTrackerDB() {
 		return trackerDB;
+	}
+	
+	public void asignNewMaster() {
+		
 	}
 
 	public void setTrackerDB(TrackerDAO trackerDB) {
