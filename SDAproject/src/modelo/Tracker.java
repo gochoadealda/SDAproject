@@ -22,7 +22,6 @@ public class Tracker {
 	private boolean master;
 	private int masterID;
 	private int keepAliveTimer;
-	private HashMap<Integer, Long> trackerMap;
 	private ArrayList<Integer> trackerList;
 	private ArrayList<Integer> okList;
 	private ArrayList<Long> timeList;
@@ -39,8 +38,7 @@ public class Tracker {
 		super();
 		IP = iP;
 		this.ID = -1;
-		//Quitar posteriormente solo prueba
-		this.masterID = 0;
+		this.masterID = -1;
 		this.puertoCom = puertoCom;
 		this.keepAliveTimer = 1;
 		this.trackerList = new ArrayList<>();
@@ -49,18 +47,6 @@ public class Tracker {
 		ViewThread trackerView = new ViewThread(this);
 		
 		trackerView.start();
-	}
-	
-	public void newMaster() {	
-		/*for (int n: this.trackerList) 
-		    if(n>this.ID) this.setMasterID(this.ID); */
-		
-		for (int i =0; i<this.trackerList.size();i++) {
-			if(this.trackerList.get(i)> this.ID) {
-			}else {
-				this.setMasterID(this.ID);
-			}
-		}
 	}
 	
 	public void idSelector() {
@@ -82,8 +68,8 @@ public class Tracker {
 		}
 	}
 	
-	public void start(Tracker myTracker) {
-		kaRecive = new KeepAliveSubscriber(myTracker);
+	public void start() {
+		kaRecive = new KeepAliveSubscriber(this);
 		kaRecive.start();
 		try {
 			Thread.sleep(10000);
@@ -92,10 +78,10 @@ public class Tracker {
 		}
 		idSelector();
 		if(!master) {
-			recieveDB = new DBQueueFileReceiver(myTracker);
+			recieveDB = new DBQueueFileReceiver(this);
 			recieveDB.start();
 		}
-		kaSend = new KeepAlivePublisher(myTracker);
+		kaSend = new KeepAlivePublisher(this);
 		kaSend.start();
 	
 	}
@@ -183,13 +169,6 @@ public class Tracker {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	public HashMap<Integer, Long> getTrackerMap() {
-		return trackerMap;
-	}
-
-	public void putTrackerMap(int ID, long time) {
-		this.trackerMap.put(ID, time);
-	}
 	
 	public void deleteIDfromList(int pos) {
 		if(this.trackerList.get(pos) == this.masterID) {
@@ -204,6 +183,11 @@ public class Tracker {
 			if(min == this.ID) {
 				this.master = true;
 				this.masterID = this.ID;
+				try {
+					Thread.sleep(1000);
+				}catch (Exception e) {
+					
+				}
 				this.nmSend = new NewMasterPublisher(this.ID);
 				this.nmSend.start();
 			}else {
@@ -219,7 +203,6 @@ public class Tracker {
 	}
 	
 	public void sendDB() {
-		System.out.println("LLega");
 		this.sendDB = new DBQueueFileSender(this);
 		this.sendDB.start();
 		

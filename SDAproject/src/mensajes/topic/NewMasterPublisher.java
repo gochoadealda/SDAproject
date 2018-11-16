@@ -56,7 +56,6 @@ public class NewMasterPublisher extends Thread{
 			TextMessage textMessage = topicSession.createTextMessage();
 			//Message Body
 			textMessage.setText(String.valueOf(ID));
-			Thread.sleep(1000);
 			topicPublisher.publish(textMessage);
 			System.out.println("- TextMessage sent to the Queue!");
 			

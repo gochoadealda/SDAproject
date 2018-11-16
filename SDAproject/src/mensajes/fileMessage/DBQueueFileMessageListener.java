@@ -5,8 +5,10 @@ import java.util.Calendar;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.command.ActiveMQBytesMessage;
+import org.apache.activemq.command.ActiveMQTextMessage;
 
 import modelo.Tracker;
 
@@ -30,7 +32,7 @@ public class DBQueueFileMessageListener implements MessageListener  {
 			try {
 				System.out.println("   - FileQueueListener: " + message.getClass().getSimpleName() + " received!");
 								
-				if (message instanceof ActiveMQBytesMessage) {
+				if (message.getClass().getCanonicalName().equals(ActiveMQBytesMessage.class.getCanonicalName())) {
 					String fileName = DEST_FILE + mytracker.getID() + ".db";
 					
 					//Read message content as an Array of bytes
@@ -39,7 +41,10 @@ public class DBQueueFileMessageListener implements MessageListener  {
 					//Print received file details
 					File file = new File(fileName);					
 					System.out.println("     - Received file:  '" + file.getName() + "' (" + file.length() + " bytes)");
+				}else if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
+					mytracker.setMasterID(Integer.parseInt(((TextMessage)message).getText()));
 				}
+				
 			
 			} catch (Exception ex) {
 				System.err.println("# sendDBListener error: " + ex.getMessage());

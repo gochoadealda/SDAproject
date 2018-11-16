@@ -7,6 +7,7 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
@@ -15,13 +16,15 @@ import modelo.Tracker;
 
 public class DBQueueFileSender extends Thread {
 	private Tracker mytracker;
+	private String SRC_FILE;
 	
 	public DBQueueFileSender(Tracker mytracker) {
 		super();
 		this.mytracker = mytracker;
+		SRC_FILE = "./db/tracker"+mytracker.getID()+".db";
 	}
-	private int ID = mytracker.getID();
-	private String SRC_FILE = "./db/tracker"+ID+".db";
+	//private int ID = mytracker.getID();
+	
 	
 	@Override
 	public void run() {
@@ -60,7 +63,10 @@ public class DBQueueFileSender extends Thread {
 			
 			//Message Body obtain the a byte array from a file
 			bytesMessage.writeBytes(DBFileAsByteArrayManager.getInstance().readFileAsBytes(SRC_FILE));
+			TextMessage textMessage = queueSession.createTextMessage();
+			textMessage.setText(String.valueOf(mytracker.getID()));
 			
+			queueSender.send(textMessage);
 			//Send the Message
 			queueSender.send(bytesMessage);
 			

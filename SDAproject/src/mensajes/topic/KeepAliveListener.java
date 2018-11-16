@@ -36,10 +36,11 @@ public class KeepAliveListener implements MessageListener {
 					String idString = ((TextMessage)message).getText();
 					int arrivedID = Integer.parseInt(idString.substring(10));
 					ArrayList<Integer> IDlist = myTracker.getTrackerList();
-					System.out.println(myTracker.isMaster());
-					System.out.println(myTracker.getID());
-					System.out.println(IDlist.size());
-					System.out.println(myTracker.getTimeList().size());
+					System.out.println("Is master "+myTracker.isMaster());
+					System.out.println("Master ID "+myTracker.getMasterID());
+					System.out.println("My ID "+myTracker.getID());
+					System.out.println("Tracker list size "+IDlist.size());
+					System.out.println("Times list size "+myTracker.getTimeList().size());
 					int ID = 0;
 					int i = 0;
 					boolean count=true;
@@ -61,12 +62,11 @@ public class KeepAliveListener implements MessageListener {
 						}
 						if (save) {
 							myTracker.setTrackerList(arrivedID);
-							if (myTracker.isMaster()) {
-								System.out.println("Mandar db");
-								//myTracker.sendDB();
-							}
 							actualtime = System.currentTimeMillis();
 							myTracker.addTimeList(actualtime);
+							if (myTracker.isMaster()) {
+								myTracker.sendDB();
+							}
 						} else {
 							actualtime = System.currentTimeMillis();
 							myTracker.setTimeList(i-1, actualtime);
@@ -78,7 +78,6 @@ public class KeepAliveListener implements MessageListener {
 					boolean delete = false;
 					ArrayList<Long> myTimeList = myTracker.getTimeList();
 					while(i < myTimeList.size() && count) {
-						System.out.println(myTimeList.get(i));
 						long timenow = System.currentTimeMillis();
 						System.out.println(timenow - myTimeList.get(i));
 						if(timenow - myTimeList.get(i) > 6000) {
