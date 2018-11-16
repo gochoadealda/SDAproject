@@ -39,6 +39,8 @@ public class Tracker {
 		super();
 		IP = iP;
 		this.ID = -1;
+		//Quitar posteriormente solo prueba
+		this.masterID = 0;
 		this.puertoCom = puertoCom;
 		this.keepAliveTimer = 1;
 		this.trackerList = new ArrayList<>();
@@ -67,6 +69,7 @@ public class Tracker {
 		if (idList.size()==0) {
 			master = true;
 			ID = 0;
+			masterID = ID;
 			this.trackerDB = new TrackerDAO("db/tracker"+ID+".db");
 			trackerDB.createDatabase();
 		}else {
@@ -189,8 +192,30 @@ public class Tracker {
 	}
 	
 	public void deleteIDfromList(int pos) {
-		this.trackerList.remove(pos);
-		this.timeList.remove(pos);
+		if(this.trackerList.get(pos) == this.masterID) {
+			this.trackerList.remove(pos);
+			this.timeList.remove(pos);
+			int min = this.trackerList.get(0);
+			for (int i = 0; i < this.trackerList.size(); i++) {
+				if(this.trackerList.get(i) < min) {
+					min = this.trackerList.get(i);
+				}
+			}
+			if(min == this.ID) {
+				this.master = true;
+				this.masterID = this.ID;
+				this.nmSend = new NewMasterPublisher(this.ID);
+				this.nmSend.start();
+			}else {
+				this.master = false;
+				this.nmRecieve = new NewMasterSubscriber(this);
+				this.nmRecieve.start();
+			}
+		}else {
+			this.trackerList.remove(pos);
+			this.timeList.remove(pos);
+		}
+		
 	}
 	
 	public void sendDB() {
