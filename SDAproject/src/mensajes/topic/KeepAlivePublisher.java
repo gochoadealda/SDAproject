@@ -80,10 +80,13 @@ public class KeepAlivePublisher extends Thread{
 		} finally {
 			try {
 				//Close resources
+				myTracker.getTrackerDB().closeConnection();
+				myTracker.getTrackerDB().deleteDatabase();	
 				topicPublisher.close();
 				topicSession.close();
 				topicConnection.close();
-				System.out.println("- Topic resources closed!");	
+				System.out.println("- Topic resources closed!");
+				myTracker.trackerView = null;
 				myTracker.kaSend = null;
 			} catch (Exception ex) {
 				System.err.println("# TopicPublisherTest Error: " + ex.getMessage());

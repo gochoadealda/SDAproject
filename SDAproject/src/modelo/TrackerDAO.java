@@ -41,7 +41,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 		this.dbname = dbname;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			con = DriverManager.getConnection("jdbc:sqlite:" + dbname);
+			con = DriverManager.getConnection("jdbc:sqlite:" +"db/"+ dbname);
 			con.setAutoCommit(false);
 			System.out.println(" - Db connection was opened :)");
 		} catch (Exception ex) {
@@ -60,7 +60,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 
 	public void deleteDatabase() {
 		try {
-			String pathdbname="db/"+dbname;
+			String pathdbname="./db/"+dbname;
 			Files.deleteIfExists(Paths.get(pathdbname));
 			System.out.println("- Db was deleted :)");
 		} catch (IOException e) {

@@ -80,6 +80,7 @@ public class KeepAliveSubscriber extends Thread{
 			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
 		} finally {
 			try {
+				
 				topicNONDurableSubscriber.close();
 				topicSession.close();
 				topicConnection.close();

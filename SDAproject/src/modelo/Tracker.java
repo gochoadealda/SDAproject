@@ -33,6 +33,7 @@ public class Tracker {
 	public NewMasterPublisher nmSend;
 	public DBQueueFileReceiver recieveDB;
 	public DBQueueFileSender sendDB;
+	public ViewThread trackerView;
 	
 	public Tracker(String iP, int puertoCom) {
 		super();
@@ -44,7 +45,7 @@ public class Tracker {
 		this.trackerList = new ArrayList<>();
 		this.timeList = new ArrayList<>();
 		this.active = true;
-		ViewThread trackerView = new ViewThread(this);
+		trackerView = new ViewThread(this);
 		
 		trackerView.start();
 	}
@@ -56,7 +57,7 @@ public class Tracker {
 			master = true;
 			ID = 0;
 			masterID = ID;
-			this.trackerDB = new TrackerDAO("db/tracker"+ID+".db");
+			this.trackerDB = new TrackerDAO("tracker"+ID+".db");
 			trackerDB.createDatabase();
 		}else {
 			for (int i = 0; i < idList.size(); i++) {
@@ -144,10 +145,6 @@ public class Tracker {
 
 	public TrackerDAO getTrackerDB() {
 		return trackerDB;
-	}
-	
-	public void asignNewMaster() {
-		
 	}
 
 	public void setTrackerDB(TrackerDAO trackerDB) {
