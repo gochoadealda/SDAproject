@@ -9,17 +9,18 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 public class OkErrorReceiver extends Thread{
 	
 	private boolean active;
-	private Tracker myTracker;
+	private TrackerController trackerController;
 	
-	public OkErrorReceiver(boolean active, Tracker myTracker) {
+	public OkErrorReceiver(boolean active, Tracker model) {
 		super();
 		this.active = active;
-		this.myTracker = myTracker;
+		this.trackerController = new TrackerController(model);
 	}
 	
 	@Override
@@ -46,7 +47,7 @@ public class OkErrorReceiver extends Thread{
 		System.out.println("- Queue Session created!");
 		
 		
-		OkErrorListener listener = new OkErrorListener(myTracker);			
+		OkErrorListener listener = new OkErrorListener(trackerController.getModel());			
 		queueReceiver.setMessageListener(listener);
 		
 		
@@ -55,21 +56,18 @@ public class OkErrorReceiver extends Thread{
 		while(active) {
 			
 		}
-	} catch (Exception e) {
+		} catch (Exception e) {
 		System.err.println("# QueueReceiverTest Error: " + e.getMessage());
-	} finally {
-		try {
-			//Close resources
-			queueReceiver.close();
-			queueSession.close();
-			queueConnection.close();
-			System.out.println("- Queue resources closed!");				
-		} catch (Exception ex) {
-			System.err.println("# QueueReceiverTest Error: " + ex.getMessage());
+		} finally {
+			try {
+				//Close resources
+				queueReceiver.close();
+				queueSession.close();
+				queueConnection.close();
+				System.out.println("- Queue resources closed!");				
+			} catch (Exception ex) {
+				System.err.println("# QueueReceiverTest Error: " + ex.getMessage());
+			}
 		}
-	
+	}
 }
-
-}
-}
-

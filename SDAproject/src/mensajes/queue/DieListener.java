@@ -6,15 +6,17 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.command.ActiveMQTextMessage;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 public class DieListener implements MessageListener {
 	
-private Tracker myTracker;
+	private TrackerController trackerController;
+
 	
-	public DieListener(Tracker myTracker) {
+	public DieListener(Tracker model) {
 		super();
-		this.myTracker = myTracker;
+		this.trackerController = new TrackerController(model);
 	}
 	
 	public void onMessage(Message message) {
@@ -29,10 +31,10 @@ private Tracker myTracker;
 					int arrivedID = Integer.parseInt(messageString.substring(3));
 					String texto = messageString.substring(1,2);
 					if(texto == "OK"){
-						myTracker.setOkList(arrivedID);
+						trackerController.setOkList(arrivedID);
 						
 					}else if (texto == "ER"){
-						myTracker.getOkList().clear();
+						trackerController.getOkList().clear();
 					
 					}
 					

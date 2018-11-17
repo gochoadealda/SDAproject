@@ -41,9 +41,9 @@ public class TrackerDAO implements TrackerDAOInterface {
 		this.dbname = dbname;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			con = DriverManager.getConnection("jdbc:sqlite:" + dbname);
+			con = DriverManager.getConnection("jdbc:sqlite:" +"db/"+ dbname);
 			con.setAutoCommit(false);
-			System.out.println(" - Db connection was opened :)");
+			System.out.println("- Db connection was opened :)");
 		} catch (Exception ex) {
 			System.err.println(" # Unable to create SQLiteDBManager: " + ex.getMessage());
 		}
@@ -52,20 +52,20 @@ public class TrackerDAO implements TrackerDAOInterface {
 	public void closeConnection() {
 		try {
 			con.close();
-			System.out.println("\n - Db connection was closed :)");
+			System.out.println("- Db connection was closed :)");
 		} catch (Exception ex) {
-			System.err.println("\n # Error closing db connection: " + ex.getMessage());
+			System.err.println("# Error closing db connection: " + ex.getMessage());
 		}
 	}
 
 	public void deleteDatabase() {
 		try {
-			String pathdbname="db/"+dbname;
+			String pathdbname="./db/"+dbname;
 			Files.deleteIfExists(Paths.get(pathdbname));
-			System.out.println("- Db was deleted :)");
+			System.out.println("\n- Db was deleted :)");
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.err.println("\n # Error deleting the db :(");
+			System.err.println("# Error deleting the db :(");
 		}
 	}
 
@@ -90,10 +90,10 @@ public class TrackerDAO implements TrackerDAOInterface {
 					con.rollback();
 				}
 			} catch (Exception ex) {
-				System.err.println("\n # Error storing data in the db: " + ex.getMessage());
+				System.err.println("# Error storing data in the db: " + ex.getMessage());
 			}
 		} else {
-			System.err.println("\n # Error inserting a new Peer: some parameters are 'null' or 'empty'.");
+			System.err.println("# Error inserting a new Peer: some parameters are 'null' or 'empty'.");
 		}
 
 	}
@@ -107,22 +107,22 @@ public class TrackerDAO implements TrackerDAOInterface {
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 				stmt.setString(1, String.valueOf(s.getID()));
 				stmt.setString(2, s.getNomCont());
-				stmt.setString(3, String.valueOf(s.getTamaño()));
+				stmt.setString(3, String.valueOf(s.getTamano()));
 				stmt.setString(4, String.valueOf(s.getSeeders()));
 				stmt.setString(5, String.valueOf(s.getLeechers()));
 
 				if (stmt.executeUpdate() == 1) {
-					System.out.println("\n - A new swarm was inserted. :)");
+					System.out.println("- A new swarm was inserted. :)");
 					con.commit();
 				} else {
-					System.err.println("\n - The swarm wasn't inserted. :(");
+					System.err.println("- The swarm wasn't inserted. :(");
 					con.rollback();
 				}
 			} catch (Exception ex) {
-				System.err.println("\n # Error storing data in the db: " + ex.getMessage());
+				System.err.println("# Error storing data in the db: " + ex.getMessage());
 			}
 		} else {
-			System.err.println("\n # Error inserting a new swarm: some parameters are 'null' or 'empty'.");
+			System.err.println("# Error inserting a new swarm: some parameters are 'null' or 'empty'.");
 		}
 	}
 
@@ -142,7 +142,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			}
 			return peerList;
 		} catch (SQLException ex) {
-			System.err.println("\n # Error retrieving peers from database: " + ex.getMessage());
+			System.err.println("# Error retrieving peers from database: " + ex.getMessage());
 		}
 		return peerList;
 	}
@@ -158,13 +158,13 @@ public class TrackerDAO implements TrackerDAOInterface {
 			while (rs.next()) {
 				swarm = new Swarm(rs.getInt("idSwarm"), rs.getString("nomCont"), rs.getInt("tamano"),
 						rs.getInt("seeders"), rs.getInt("leechers"));
-				System.out.println("Swarm ID:" + swarm.getID() + " nomCont:" + swarm.getNomCont() + " Tamaño:"
-						+ swarm.getTamaño());
+				System.out.println("Swarm ID:" + swarm.getID() + " nomCont:" + swarm.getNomCont() + " Tamaï¿½o:"
+						+ swarm.getTamano());
 				swarmList.add(swarm);
 			}
 			return swarmList;
 		} catch (SQLException ex) {
-			System.err.println("\n # Error retrieving swarms from database: " + ex.getMessage());
+			System.err.println("# Error retrieving swarms from database: " + ex.getMessage());
 		}
 		return swarmList;
 	}
@@ -180,17 +180,17 @@ public class TrackerDAO implements TrackerDAOInterface {
 				stmt.setString(3, String.valueOf(p.getID()));
 
 				if (stmt.executeUpdate() != 0) {
-					System.out.println("\n - Peer's data was updated. :)");
+					System.out.println("- Peer's data was updated. :)");
 					con.commit();
 				} else {
-					System.err.println("\n - Peer's data wasn't updated. :(");
+					System.err.println("- Peer's data wasn't updated. :(");
 					con.rollback();
 				}
 			} catch (Exception ex) {
-				System.err.println("\n # Error updating data in the db: " + ex.getMessage());
+				System.err.println("# Error updating data in the db: " + ex.getMessage());
 			}
 		} else {
-			System.err.println("\n # Error updating Peer's data: some parameters are 'null' or 'empty'.");
+			System.err.println("# Error updating Peer's data: some parameters are 'null' or 'empty'.");
 		}
 	}
 
@@ -200,23 +200,23 @@ public class TrackerDAO implements TrackerDAOInterface {
 
 			String sqlString = "UPDATE Swarm SET tamano = ?,seeders=?,leechers=? WHERE idSwarm =?";
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
-				stmt.setString(1, String.valueOf(s.getTamaño()));
+				stmt.setString(1, String.valueOf(s.getTamano()));
 				stmt.setString(2, String.valueOf(s.getSeeders()));
 				stmt.setString(3, String.valueOf(s.getLeechers()));
 				stmt.setString(4, String.valueOf(s.getID()));
 
 				if (stmt.executeUpdate() != 0) {
-					System.out.println("\n - Swarm's data was updated. :)");
+					System.out.println("- Swarm's data was updated. :)");
 					con.commit();
 				} else {
-					System.err.println("\n - Swarm's data wasn't updated. :(");
+					System.err.println("- Swarm's data wasn't updated. :(");
 					con.rollback();
 				}
 			} catch (Exception ex) {
-				System.err.println("\n # Error updating data in the db: " + ex.getMessage());
+				System.err.println("# Error updating data in the db: " + ex.getMessage());
 			}
 		} else {
-			System.err.println("\n # Error updating Swarm's data: some parameters are 'null' or 'empty'.");
+			System.err.println("# Error updating Swarm's data: some parameters are 'null' or 'empty'.");
 		}
 	}
 
@@ -231,11 +231,11 @@ public class TrackerDAO implements TrackerDAOInterface {
 				System.out.println("Peer deleted.");
 				con.commit();
 			} else {
-				System.out.println("\n - No Peer was deleted.");
+				System.out.println("- No Peer was deleted.");
 				con.rollback();
 			}
 		} catch (Exception ex) {
-			System.err.println("\n # Error cleaning the db: " + ex.getMessage());
+			System.err.println("# Error cleaning the db: " + ex.getMessage());
 		}
 	}
 
@@ -250,11 +250,11 @@ public class TrackerDAO implements TrackerDAOInterface {
 				System.out.println("Swarm deleted.");
 				con.commit();
 			} else {
-				System.out.println("\n - No Swarm was deleted.");
+				System.out.println("- No Swarm was deleted.");
 				con.rollback();
 			}
 		} catch (Exception ex) {
-			System.err.println("\n # Error cleaning the db: " + ex.getMessage());
+			System.err.println("# Error cleaning the db: " + ex.getMessage());
 		}
 	}
 

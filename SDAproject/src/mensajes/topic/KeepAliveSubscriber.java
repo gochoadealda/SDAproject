@@ -16,6 +16,7 @@ import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 
@@ -23,11 +24,11 @@ import modelo.Tracker;
 
 public class KeepAliveSubscriber extends Thread{
 
-	private Tracker myTracker;
+	private TrackerController trackerController;
 	
-	public KeepAliveSubscriber(Tracker myTracker) {
+	public KeepAliveSubscriber(Tracker model) {
 		super();
-		this.myTracker = myTracker;
+		this.trackerController = new TrackerController(model);
 	}
 
 	@Override
@@ -66,25 +67,26 @@ public class KeepAliveSubscriber extends Thread{
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
 			
 			//Topic Listener
-			KeepAliveListener listener = new KeepAliveListener(myTracker);
+			KeepAliveListener listener = new KeepAliveListener(trackerController.getModel());
 			
 			//Set the same message listener for the non-durable subscriber
 			topicNONDurableSubscriber.setMessageListener(listener);
 			
 			//Begin message delivery
 			topicConnection.start();
-			while(myTracker.isActive()) {
+			while(trackerController.isActive()) {
 				
 			}
 		} catch (Exception e) {
 			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
 		} finally {
 			try {
+				
 				topicNONDurableSubscriber.close();
 				topicSession.close();
 				topicConnection.close();
 				System.out.println("- Topic resources closed!");
-				myTracker.kaRecive = null;
+				trackerController.getModel().kaRecive = null;
 			} catch (Exception ex) {
 				System.err.println("# TopicSubscriberTest Error: " + ex.getMessage());
 			}

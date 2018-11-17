@@ -7,21 +7,25 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 
 public class DBQueueFileSender extends Thread {
-	private Tracker mytracker;
+	private TrackerController trackerController;
+	private String SRC_FILE;
 	
-	public DBQueueFileSender(Tracker mytracker) {
+	public DBQueueFileSender(Tracker model) {
 		super();
-		this.mytracker = mytracker;
+		this.trackerController = new TrackerController(model);
+		SRC_FILE = "./db/tracker"+trackerController.getID()+".db";
 	}
-	private int ID = mytracker.getID();
-	private String SRC_FILE = "./db/tracker"+ID+".db";
+	//private int ID = mytracker.getID();
+	
 	
 	@Override
 	public void run() {
@@ -60,7 +64,10 @@ public class DBQueueFileSender extends Thread {
 			
 			//Message Body obtain the a byte array from a file
 			bytesMessage.writeBytes(DBFileAsByteArrayManager.getInstance().readFileAsBytes(SRC_FILE));
+			TextMessage textMessage = queueSession.createTextMessage();
+			textMessage.setText(String.valueOf(trackerController.getID()));
 			
+			queueSender.send(textMessage);
 			//Send the Message
 			queueSender.send(bytesMessage);
 			
@@ -73,7 +80,7 @@ public class DBQueueFileSender extends Thread {
 				queueSender.close();
 				queueSession.close();
 				queueConnection.close();
-				mytracker.sendDB = null;
+				trackerController.getModel().sendDB = null;
 				System.out.println("- Queue resources closed!");				
 			} catch (Exception ex) {
 				System.err.println("# QueueSenderTest Error: " + ex.getMessage());

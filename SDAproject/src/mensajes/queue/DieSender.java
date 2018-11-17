@@ -9,18 +9,19 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 public class DieSender extends Thread{
 
 	private boolean active;
-	private Tracker myTracker;
+	private TrackerController trackerController;
 	
 	
-	public DieSender(boolean active, Tracker myTracker) {
+	public DieSender(boolean active, Tracker model) {
 		super();
 		this.active = active;
-		this.myTracker=myTracker;
+		this.trackerController = new TrackerController(model);
 	}
 	
 	@Override
@@ -75,7 +76,7 @@ public class DieSender extends Thread{
 				queueSession.close();
 				queueConnection.close();
 				System.out.println("- Queue resources closed!");	
-				myTracker.kaSend = null;
+				trackerController.getModel().kaSend = null;
 			} catch (Exception ex) {
 				System.err.println("# QueueOkErrorSenderTest Error: " + ex.getMessage());
 			}			

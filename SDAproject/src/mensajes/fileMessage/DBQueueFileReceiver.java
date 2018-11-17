@@ -9,16 +9,17 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 public class DBQueueFileReceiver extends Thread{
 	
-	private Tracker mytracker;
+	private TrackerController trackerController;
 	
 	
-	public DBQueueFileReceiver(Tracker mytracker) {
+	public DBQueueFileReceiver(Tracker model) {
 		super();
-		this.mytracker = mytracker;
+		this.trackerController = new TrackerController(model);
 	}
 
 
@@ -54,7 +55,7 @@ public class DBQueueFileReceiver extends Thread{
 			queueReceiver = queueSession.createReceiver(myQueue);
 			System.out.println("- FileQueueReceiver created!");
 						
-			DBQueueFileMessageListener listener = new DBQueueFileMessageListener(mytracker);
+			DBQueueFileMessageListener listener = new DBQueueFileMessageListener(trackerController.getModel());
 			
 			queueReceiver.setMessageListener(listener);
 			
@@ -69,7 +70,7 @@ public class DBQueueFileReceiver extends Thread{
 				queueReceiver.close();
 				queueSession.close();
 				queueConnection.close();
-				mytracker.recieveDB = null;
+				trackerController.getModel().recieveDB = null;
 				System.out.println("- Queue resources closed!");				
 			} catch (Exception ex) {
 				System.err.println("# QueueReceiverTest Error: " + ex.getMessage());

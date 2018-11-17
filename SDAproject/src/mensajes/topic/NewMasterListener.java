@@ -1,25 +1,23 @@
 package mensajes.topic;
 
-import java.util.Enumeration;
-
-import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import org.apache.activemq.command.ActiveMQMapMessage;
 import org.apache.activemq.command.ActiveMQTextMessage;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 public class NewMasterListener implements MessageListener{
 
-	private Tracker myTracker;
+	private TrackerController trackerController;
 	
-	public NewMasterListener(Tracker myTracker) {
+	public NewMasterListener(Tracker model) {
 		super();
-		this.myTracker = myTracker;
+		this.trackerController = new TrackerController(model);
 	}
+	
 	@Override
 	public void onMessage(Message message) {
 		if (message != null) {
@@ -30,7 +28,7 @@ public class NewMasterListener implements MessageListener{
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
 					System.out.println("     - TopicListener: TextMessage '" + ((TextMessage)message).getText());
 					int arrivedID = Integer.parseInt(((TextMessage)message).getText());
-					myTracker.setMasterID(arrivedID);
+					trackerController.setMasterID(arrivedID);
 				}
 			
 			} catch (Exception ex) {

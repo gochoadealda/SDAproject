@@ -11,15 +11,16 @@ import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 public class NewMasterSubscriber extends Thread{
 	
-	private Tracker myTracker;
+	private TrackerController trackerController;
 
-	public NewMasterSubscriber(Tracker myTracker) {
+	public NewMasterSubscriber(Tracker model) {
 		super();
-		this.myTracker = myTracker;
+		this.trackerController = new TrackerController(model);
 	}
 
 	@Override
@@ -58,11 +59,11 @@ public class NewMasterSubscriber extends Thread{
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
 			
 			//Topic Listener
-			NewMasterListener listener = new NewMasterListener(myTracker);
+			NewMasterListener listener = new NewMasterListener(trackerController.getModel());
 			
 			//Set the same message listener for the non-durable subscriber
 			topicNONDurableSubscriber.setMessageListener(listener);
-			
+			Thread.sleep(3000);
 			//Begin message delivery
 			topicConnection.start();
 			

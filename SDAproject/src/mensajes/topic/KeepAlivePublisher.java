@@ -1,10 +1,5 @@
 package mensajes.topic;
 
-import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
@@ -15,18 +10,19 @@ import javax.jms.TopicSession;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 
 
 public class KeepAlivePublisher extends Thread{
 	
-	private Tracker myTracker;
+	private TrackerController trackerController;
 	
 	
-	public KeepAlivePublisher(Tracker myTracker) {
+	public KeepAlivePublisher(Tracker model) {
 		super();
-		this.myTracker=myTracker;
+		this.trackerController = new TrackerController(model);
 	}
 
 
@@ -64,12 +60,12 @@ public class KeepAlivePublisher extends Thread{
 			
 			
 			
-			while(myTracker.isActive()) {
+			while(trackerController.isActive()) {
 			
 				//Text Message
 				TextMessage textMessage = topicSession.createTextMessage();
 				//Message Body
-				textMessage.setText("KeepAlive "+myTracker.getID());
+				textMessage.setText("KeepAlive " + trackerController.getID());
 				topicPublisher.publish(textMessage);
 				System.out.println("- TextMessage sent to the Queue!");
 				Thread.sleep(5000);
@@ -80,11 +76,14 @@ public class KeepAlivePublisher extends Thread{
 		} finally {
 			try {
 				//Close resources
+				trackerController.getTrackerDB().closeConnection();
+				trackerController.getTrackerDB().deleteDatabase();	
 				topicPublisher.close();
 				topicSession.close();
 				topicConnection.close();
-				System.out.println("- Topic resources closed!");	
-				myTracker.kaSend = null;
+				System.out.println("- Topic resources closed!");
+				trackerController.getModel().trackerView = null;
+				trackerController.getModel().kaSend = null;
 			} catch (Exception ex) {
 				System.err.println("# TopicPublisherTest Error: " + ex.getMessage());
 			}			

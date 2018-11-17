@@ -3,28 +3,24 @@ package vista;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
-import javax.swing.JDesktopPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.JTable;
-import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
 
@@ -36,12 +32,20 @@ public class MainMenu extends JFrame implements ActionListener {
 	private JTable tableTrackers, tableSwarms;
 	private DefaultTableModel modelTrackers, modelSwarms;
 	private JTable tablePeers;
-	private Tracker myTracker;
+	private TrackerController trackerController;
+	private boolean isTheMaster;
+	private Object[][] dataTabla1;
+	private Class[] columnClassTabla1;
+	private JPanel panel2;
+	private String[] columnsTabla1;
 
-	public MainMenu(Tracker myTracker) {
+
+
+
+	public MainMenu(Tracker model) {
 		super(); // usamos el contructor de la clase padre JFrame
+		this.trackerController = new TrackerController(model);
 		configurarVentana(); // configuramos la ventana
-		this.myTracker = myTracker;
 		inicializarComponentes(); // inicializamos los atributos o componentes
 
 	}
@@ -49,7 +53,6 @@ public class MainMenu extends JFrame implements ActionListener {
 	private void configurarVentana() {
 		dim = super.getToolkit().getScreenSize();
 		super.setSize(dim);
-		this.setTitle("Main Menu");
 		this.setExtendedState(MAXIMIZED_BOTH);
 		getContentPane().setLayout(null);
 		this.setResizable(true);
@@ -75,7 +78,7 @@ public class MainMenu extends JFrame implements ActionListener {
 		tfIp = new JTextField();
 		tfIp.setBounds(142, 42, 177, 37);
 		tfIp.setColumns(10);
-		tfIp.setText(myTracker.getIP());
+		tfIp.setText(trackerController.getIP());
 		panel1.add(tfIp);
 
 		JLabel lblPuerto = new JLabel("Port");
@@ -91,20 +94,20 @@ public class MainMenu extends JFrame implements ActionListener {
 		tfPuerto = new JTextField();
 		tfPuerto.setColumns(10);
 		tfPuerto.setBounds(142, 97, 177, 37);
-		tfPuerto.setText(String.valueOf(myTracker.getPuertoCom()));
+		tfPuerto.setText(String.valueOf(trackerController.getPuertoCom()));
 		panel1.add(tfPuerto);
 
 		tfID = new JTextField();
 		tfID.setColumns(10);
 		tfID.setBounds(143, 147, 177, 37);
-		tfID.setText(String.valueOf(myTracker.getID()));
+		tfID.setText(String.valueOf(trackerController.getID()));
 		panel1.add(tfID);
 
-		JButton btnIniciar = new JButton("Start/Stop");
+		JButton btnIniciar = new JButton("Stop");
 		btnIniciar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				System.out.println("Comprobación de si la IP introducida es válida mediante una expresión regular");
+				System.out.println("Comprobaciï¿½n de si la IP introducida es vï¿½lida mediante una expresiï¿½n regular");
 				if (!validateIP(tfIp.getText())) {
 					JOptionPane.showMessageDialog(panel1, "Invalid IP", "Error", JOptionPane.ERROR_MESSAGE);
 					tfIp.setText("");
@@ -115,13 +118,13 @@ public class MainMenu extends JFrame implements ActionListener {
 					JOptionPane.showMessageDialog(panel1, "Invalid ID", "Error", JOptionPane.ERROR_MESSAGE);
 					tfID.setText("");
 				}else {
-					System.out.println("El tracker esta a "+myTracker.isActive());
-					if(myTracker.isActive()) {
-						myTracker.setActive(false);
+					System.out.println("El tracker esta a " + trackerController.isActive());
+					if(trackerController.isActive()) {
+						trackerController.setActive(false);
 					}else {
-						myTracker.setActive(true);
+						trackerController.setActive(true);
 					}
-					System.out.println("El tracker esta a "+myTracker.isActive());
+					System.out.println("El tracker esta a "+trackerController.isActive());
 				}
 			}
 		});
@@ -130,27 +133,57 @@ public class MainMenu extends JFrame implements ActionListener {
 		panel1.add(btnIniciar);
 
 		// GESTOR DE TRACKERS (TAB2)
-		JPanel panel2 = new JPanel();
+		panel2 = new JPanel();
 		tabbedPane.addTab("Tracker gestor", null, panel2, null);
 		panel2.setLayout(null);
 
 		// headers for the table
-		String[] columnsTabla1 = new String[] { "Id", "Master or Slave", "Last Keepalive", "Active" };
+		columnsTabla1 = new String[] { "Id" };
+
+		
+		//		dataTabla1 = new Object[][] { { myTracker.getID(),isMaster , "1s", isActive }, { 2, "Slave", "1s", true },
+		//			{ 3, "Slave", "1s", true }, { 4, "Slave", "4s", false }, };
+		//
+		columnClassTabla1 = new Class[] { Integer.class };
+		//			modelTrackers = new DefaultTableModel(dataTabla1, columnsTabla1) {
+		//				@Override
+		//				public boolean isCellEditable(int row, int column) {
+		//					return false;
+		//				}
+		//
+		//				@Override
+		//				public Class<?> getColumnClass(int columnIndex) {
+		//					return columnClassTabla1[columnIndex];
+		//				}
+		//			};
+		//
+		//			tableTrackers = new JTable(modelTrackers);
+		//			JScrollPane scrollPaneTabla1 = new JScrollPane(tableTrackers);
+		//			scrollPaneTabla1.setBounds(32, 28, 452, 431);
+		//			panel2.add(scrollPaneTabla1);
+		// panel2.add(table);
+
+		JPanel panel3 = new JPanel();
+		panel3.setForeground(Color.BLACK);
+		tabbedPane.addTab("Gestor de Peers", null, panel3, null);
+		panel3.setLayout(null);
+
+		JLabel lblSwarmsActivos = new JLabel("Active Swarms");
+		lblSwarmsActivos.setFont(new Font("Consolas", Font.PLAIN, 33));
+		lblSwarmsActivos.setBounds(62, 50, 266, 37);
+		panel3.add(lblSwarmsActivos);
+
+		// headers for the table
+		String[] columnsTabla2 = new String[] { "Id", "Content name", "Size", "Number of seeders",
+		"Leechers" };
 
 		// actual data for the table in a 2d array
-		//Prueba muestra primer tracker
-		String isMaster;
-		boolean isActive=myTracker.isActive();
-		if(myTracker.isMaster()){
-			isMaster= "master";
-		}else{
-			isMaster="slave";
-		}
-		Object[][] dataTabla1 = new Object[][] { { myTracker.getID(),isMaster , "1s", isActive }, { 2, "Slave", "1s", true },
-			{ 3, "Slave", "1s", true }, { 4, "Slave", "4s", false }, };
+		Object[][] dataTabla2 = new Object[][] { { 1, "aaaaa", 1231, 4, 8 }, { 2, "bbbbb", 1233, 5, 9 },
+			{ 3, "ccccc", 4244, 6, 10 }, { 4, "ddddd", 5654, 7, 11 }, };
 
-			final Class[] columnClassTabla1 = new Class[] { Integer.class, String.class, String.class, Boolean.class };
-			modelTrackers = new DefaultTableModel(dataTabla1, columnsTabla1) {
+			final Class[] columnClassTabla2 = new Class[] { Integer.class, String.class, Integer.class, Integer.class,
+					Integer.class };
+			modelSwarms = new DefaultTableModel(dataTabla2, columnsTabla2) {
 				@Override
 				public boolean isCellEditable(int row, int column) {
 					return false;
@@ -158,137 +191,99 @@ public class MainMenu extends JFrame implements ActionListener {
 
 				@Override
 				public Class<?> getColumnClass(int columnIndex) {
-					return columnClassTabla1[columnIndex];
+					return columnClassTabla2[columnIndex];
 				}
 			};
 
-			tableTrackers = new JTable(modelTrackers);
-			JScrollPane scrollPaneTabla1 = new JScrollPane(tableTrackers);
-			scrollPaneTabla1.setBounds(32, 28, 452, 431);
-			panel2.add(scrollPaneTabla1);
-			// panel2.add(table);
+			JList swarmList = new JList();
+			swarmList.setFont(new Font("Tahoma", Font.PLAIN, 20));
+			swarmList.setModel(new AbstractListModel() {
+				String[] values = new String[] {"Swarm1", "Swarm2", "Swarm3", "Swarm4"};
+				public int getSize() {
+					return values.length;
+				}
+				public Object getElementAt(int index) {
+					return values[index];
+				}
+			});
+			swarmList.setBounds(62, 116, 254, 387);
+			panel3.add(swarmList);
 
-			JPanel panel3 = new JPanel();
-			panel3.setForeground(Color.BLACK);
-			tabbedPane.addTab("Gestor de Peers", null, panel3, null);
-			panel3.setLayout(null);
-
-			JLabel lblSwarmsActivos = new JLabel("Active Swarms");
-			lblSwarmsActivos.setFont(new Font("Consolas", Font.PLAIN, 33));
-			lblSwarmsActivos.setBounds(62, 50, 266, 37);
-			panel3.add(lblSwarmsActivos);
-
-			// headers for the table
-			String[] columnsTabla2 = new String[] { "Id", "Content name", "Size", "Number of seeders",
-			"Leechers" };
-
-			// actual data for the table in a 2d array
-			Object[][] dataTabla2 = new Object[][] { { 1, "aaaaa", 1231, 4, 8 }, { 2, "bbbbb", 1233, 5, 9 },
-				{ 3, "ccccc", 4244, 6, 10 }, { 4, "ddddd", 5654, 7, 11 }, };
-
-				final Class[] columnClassTabla2 = new Class[] { Integer.class, String.class, Integer.class, Integer.class,
-						Integer.class };
-				modelSwarms = new DefaultTableModel(dataTabla2, columnsTabla2) {
-					@Override
-					public boolean isCellEditable(int row, int column) {
-						return false;
+			tableSwarms = new JTable(new DefaultTableModel(
+					new Object[][] {
+						{new Integer(1), "aaaaa", new Integer(1231), new Integer(4), new Integer(8)},
+					},
+					new String[] {
+							"Id", "Content name", "Size", "Seeders", "Leechers"
 					}
+					));
+			JScrollPane scrollPaneTabla2 = new JScrollPane(tableSwarms);
+			scrollPaneTabla2.setBounds(595, 148, 726, 43);
+			panel3.add(scrollPaneTabla2);
 
-					@Override
-					public Class<?> getColumnClass(int columnIndex) {
-						return columnClassTabla2[columnIndex];
+			JScrollPane scrollPaneTabla3 = new JScrollPane();
+			scrollPaneTabla3.setBounds(595, 309, 726, 347);
+			panel3.add(scrollPaneTabla3);
+
+			tablePeers = new JTable();
+			scrollPaneTabla3.setViewportView(tablePeers);
+			tablePeers.setModel(new DefaultTableModel(
+					new Object[][] {
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+					},
+					new String[] {
+							"ID", "ip", "Port", "Bytes pending", "Downloaded Bytes"
 					}
+					) {
+				Class[] columnTypes = new Class[] {
+						Integer.class, String.class, Integer.class, Double.class, Double.class
 				};
+				public Class getColumnClass(int columnIndex) {
+					return columnTypes[columnIndex];
+				}
+			});
 
-				JList swarmList = new JList();
-				swarmList.setFont(new Font("Tahoma", Font.PLAIN, 20));
-				swarmList.setModel(new AbstractListModel() {
-					String[] values = new String[] {"Swarm1", "Swarm2", "Swarm3", "Swarm4"};
-					public int getSize() {
-						return values.length;
-					}
-					public Object getElementAt(int index) {
-						return values[index];
-					}
-				});
-				swarmList.setBounds(62, 116, 254, 387);
-				panel3.add(swarmList);
+			JLabel lblPeersInfo = new JLabel("Peers Info");
+			lblPeersInfo.setFont(new Font("Tahoma", Font.PLAIN, 25));
+			lblPeersInfo.setBounds(595, 250, 121, 48);
+			panel3.add(lblPeersInfo);
 
-				tableSwarms = new JTable(new DefaultTableModel(
-						new Object[][] {
-							{new Integer(1), "aaaaa", new Integer(1231), new Integer(4), new Integer(8)},
-						},
-						new String[] {
-								"Id", "Content name", "Size", "Seeders", "Leechers"
-						}
-						));
-				JScrollPane scrollPaneTabla2 = new JScrollPane(tableSwarms);
-				scrollPaneTabla2.setBounds(595, 148, 726, 43);
-				panel3.add(scrollPaneTabla2);
-
-				JScrollPane scrollPaneTabla3 = new JScrollPane();
-				scrollPaneTabla3.setBounds(595, 309, 726, 347);
-				panel3.add(scrollPaneTabla3);
-
-				tablePeers = new JTable();
-				scrollPaneTabla3.setViewportView(tablePeers);
-				tablePeers.setModel(new DefaultTableModel(
-						new Object[][] {
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-							{null, null, null, null, null},
-						},
-						new String[] {
-								"ID", "ip", "Port", "Bytes pending", "Downloaded Bytes"
-						}
-						) {
-					Class[] columnTypes = new Class[] {
-							Integer.class, String.class, Integer.class, Double.class, Double.class
-					};
-					public Class getColumnClass(int columnIndex) {
-						return columnTypes[columnIndex];
-					}
-				});
-
-				JLabel lblPeersInfo = new JLabel("Peers Info");
-				lblPeersInfo.setFont(new Font("Tahoma", Font.PLAIN, 25));
-				lblPeersInfo.setBounds(595, 250, 121, 48);
-				panel3.add(lblPeersInfo);
-
-				JLabel lblSwarmInfo = new JLabel("Swarm Info");
-				lblSwarmInfo.setFont(new Font("Tahoma", Font.PLAIN, 25));
-				lblSwarmInfo.setBounds(595, 100, 135, 37);
-				panel3.add(lblSwarmInfo);
-				tablePeers.getColumnModel().getColumn(3).setPreferredWidth(97);
-				tablePeers.getColumnModel().getColumn(4).setPreferredWidth(105);
+			JLabel lblSwarmInfo = new JLabel("Swarm Info");
+			lblSwarmInfo.setFont(new Font("Tahoma", Font.PLAIN, 25));
+			lblSwarmInfo.setBounds(595, 100, 135, 37);
+			panel3.add(lblSwarmInfo);
+			tablePeers.getColumnModel().getColumn(3).setPreferredWidth(97);
+			tablePeers.getColumnModel().getColumn(4).setPreferredWidth(105);
 
 	}
 
-	public static boolean validateIP(final String ip) { // Método para verificar que la IP introducida cumple los
+	public static boolean validateIP(final String ip) { // Mï¿½todo para verificar que la IP introducida cumple los
 		// requisitos de cualquier IPV4
 		String PATTERN = "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
 
 		return ip.matches(PATTERN);
 	}
 
-	public static boolean validatePort(final String port) { // Método para verificar que el port introducida cumple los
+	public static boolean validatePort(final String port) { // Mï¿½todo para verificar que el port introducida cumple los
 		// requisitos de cualquier puerto (valor entre 0 y 65535)
 		boolean validation=false;
 		int number= Integer.parseInt(port);
@@ -298,7 +293,7 @@ public class MainMenu extends JFrame implements ActionListener {
 		return validation;
 	}
 
-	public static boolean validateID(final String id) { // Método para verificar que la Id introducida cumple los
+	public static boolean validateID(final String id) { // Mï¿½todo para verificar que la Id introducida cumple los
 		// requisitos (que sea igual o mayor que 0)
 		boolean validation=false;
 		int number= Integer.parseInt(id);
@@ -307,6 +302,67 @@ public class MainMenu extends JFrame implements ActionListener {
 		}
 		return validation;
 	}
+
+	public Tracker getMyTracker() {
+		return trackerController.getModel();
+	}
+
+	public boolean isTheMaster() {
+		return isTheMaster;
+	}
+
+	public void setTheMaster(boolean isTheMaster) {
+		this.isTheMaster = isTheMaster;
+	}
+
+	public Object[][] getDataTabla1() {
+		return dataTabla1;
+	}
+
+	public void setDataTabla1(Object[][] dataTabla1) {
+		this.dataTabla1 = dataTabla1;
+	}
+
+	public Class[] getColumnClassTabla1() {
+		return columnClassTabla1;
+	}
+
+	public void setColumnClassTabla1(Class[] columnClassTabla1) {
+		this.columnClassTabla1 = columnClassTabla1;
+	}
+
+	public DefaultTableModel getModelTrackers() {
+		return modelTrackers;
+	}
+
+	public void setModelTrackers(DefaultTableModel modelTrackers) {
+		this.modelTrackers = modelTrackers;
+	}
+
+	public JTable getTableTrackers() {
+		return tableTrackers;
+	}
+
+	public void setTableTrackers(JTable tableTrackers) {
+		this.tableTrackers = tableTrackers;
+	}
+
+	public JPanel getPanel2() {
+		return panel2;
+	}
+
+	public void setPanel2(JPanel panel2) {
+		this.panel2 = panel2;
+	}
+	
+	public String[] getColumnsTabla1() {
+		return columnsTabla1;
+	}
+
+	public void setColumnsTabla1(String[] columnsTabla1) {
+		this.columnsTabla1 = columnsTabla1;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 

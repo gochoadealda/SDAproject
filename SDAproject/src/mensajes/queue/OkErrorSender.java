@@ -1,30 +1,27 @@
 package mensajes.queue;
 
-import java.util.Calendar;
-
-import javax.jms.MapMessage;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 public class OkErrorSender extends Thread {
 	
 	private boolean active;
-	private Tracker myTracker;
+	private TrackerController trackerController;
 	
 	
-	public OkErrorSender(boolean active, Tracker myTracker) {
+	public OkErrorSender(boolean active, Tracker model) {
 		super();
 		this.active = active;
-		this.myTracker=myTracker;
+		this.trackerController = new TrackerController(model);
 	}
 	
 	@Override
@@ -88,7 +85,7 @@ public class OkErrorSender extends Thread {
 				queueSession.close();
 				queueConnection.close();
 				System.out.println("- Queue resources closed!");	
-				myTracker.kaSend = null;
+				trackerController.getModel().kaSend = null;
 			} catch (Exception ex) {
 				System.err.println("# QueueOkErrorSenderTest Error: " + ex.getMessage());
 			}			

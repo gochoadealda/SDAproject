@@ -1,18 +1,13 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
 import mensajes.fileMessage.DBQueueFileReceiver;
 import mensajes.fileMessage.DBQueueFileSender;
-import mensajes.topic.KeepAliveListener;
 import mensajes.topic.KeepAlivePublisher;
 import mensajes.topic.KeepAliveSubscriber;
 import mensajes.topic.NewMasterPublisher;
 import mensajes.topic.NewMasterSubscriber;
-import vista.MainMenu;
 
 public class Tracker {
 	
@@ -22,7 +17,6 @@ public class Tracker {
 	private boolean master;
 	private int masterID;
 	private int keepAliveTimer;
-	private HashMap<Integer, Long> trackerMap;
 	private ArrayList<Integer> trackerList;
 	private ArrayList<Integer> okList;
 	private ArrayList<Long> timeList;
@@ -34,31 +28,18 @@ public class Tracker {
 	public NewMasterPublisher nmSend;
 	public DBQueueFileReceiver recieveDB;
 	public DBQueueFileSender sendDB;
+	public ViewThread trackerView;
 	
 	public Tracker(String iP, int puertoCom) {
 		super();
 		IP = iP;
 		this.ID = -1;
+		this.masterID = -1;
 		this.puertoCom = puertoCom;
 		this.keepAliveTimer = 1;
 		this.trackerList = new ArrayList<>();
 		this.timeList = new ArrayList<>();
 		this.active = true;
-		ViewThread trackerView = new ViewThread(this);
-		
-		trackerView.start();
-	}
-	
-	public void newMaster() {	
-		/*for (int n: this.trackerList) 
-		    if(n>this.ID) this.setMasterID(this.ID); */
-		
-		for (int i =0; i<this.trackerList.size();i++) {
-			if(this.trackerList.get(i)> this.ID) {
-			}else {
-				this.setMasterID(this.ID);
-			}
-		}
 	}
 	
 	public void idSelector() {
@@ -67,7 +48,8 @@ public class Tracker {
 		if (idList.size()==0) {
 			master = true;
 			ID = 0;
-			this.trackerDB = new TrackerDAO("db/tracker"+ID+".db");
+			masterID = ID;
+			this.trackerDB = new TrackerDAO("tracker"+ID+".db");
 			trackerDB.createDatabase();
 		}else {
 			for (int i = 0; i < idList.size(); i++) {
@@ -79,8 +61,8 @@ public class Tracker {
 		}
 	}
 	
-	public void start(Tracker myTracker) {
-		kaRecive = new KeepAliveSubscriber(myTracker);
+	public void start() {
+		kaRecive = new KeepAliveSubscriber(this);
 		kaRecive.start();
 		try {
 			Thread.sleep(10000);
@@ -89,10 +71,10 @@ public class Tracker {
 		}
 		idSelector();
 		if(!master) {
-			recieveDB = new DBQueueFileReceiver(myTracker);
+			recieveDB = new DBQueueFileReceiver(this);
 			recieveDB.start();
 		}
-		kaSend = new KeepAlivePublisher(myTracker);
+		kaSend = new KeepAlivePublisher(this);
 		kaSend.start();
 	
 	}
@@ -156,10 +138,6 @@ public class Tracker {
 	public TrackerDAO getTrackerDB() {
 		return trackerDB;
 	}
-	
-	public void asignNewMaster() {
-		
-	}
 
 	public void setTrackerDB(TrackerDAO trackerDB) {
 		this.trackerDB = trackerDB;
@@ -180,21 +158,40 @@ public class Tracker {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	public HashMap<Integer, Long> getTrackerMap() {
-		return trackerMap;
-	}
-
-	public void putTrackerMap(int ID, long time) {
-		this.trackerMap.put(ID, time);
-	}
 	
 	public void deleteIDfromList(int pos) {
-		this.trackerList.remove(pos);
-		this.timeList.remove(pos);
+		if(this.trackerList.get(pos) == this.masterID) {
+			this.trackerList.remove(pos);
+			this.timeList.remove(pos);
+			int min = this.trackerList.get(0);
+			for (int i = 0; i < this.trackerList.size(); i++) {
+				if(this.trackerList.get(i) < min) {
+					min = this.trackerList.get(i);
+				}
+			}
+			if(min == this.ID) {
+				this.master = true;
+				this.masterID = this.ID;
+				try {
+					Thread.sleep(1000);
+				}catch (Exception e) {
+					
+				}
+				this.nmSend = new NewMasterPublisher(this.ID);
+				this.nmSend.start();
+			}else {
+				this.master = false;
+				this.nmRecieve = new NewMasterSubscriber(this);
+				this.nmRecieve.start();
+			}
+		}else {
+			this.trackerList.remove(pos);
+			this.timeList.remove(pos);
+		}
+		
 	}
 	
 	public void sendDB() {
-		System.out.println("LLega");
 		this.sendDB = new DBQueueFileSender(this);
 		this.sendDB.start();
 		

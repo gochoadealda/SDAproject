@@ -1,25 +1,21 @@
 package mensajes.queue;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-
-import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 import org.apache.activemq.command.ActiveMQTextMessage;
 
-import mensajes.fileMessage.DBQueueFileSender;
+import controller.TrackerController;
 import modelo.Tracker;
 
 public class OkErrorListener implements MessageListener {
 	
-	private Tracker myTracker;
+	private TrackerController trackerController;
 	
-	public OkErrorListener(Tracker myTracker) {
+	public OkErrorListener(Tracker model) {
 		super();
-		this.myTracker = myTracker;
+		this.trackerController = new TrackerController(model);
 	}
 	
 	public void onMessage(Message message) {
@@ -34,10 +30,10 @@ public class OkErrorListener implements MessageListener {
 					int arrivedID = Integer.parseInt(messageString.substring(3));
 					String texto = messageString.substring(1,2);
 					if(texto == "OK"){
-						myTracker.setOkList(arrivedID);
+						trackerController.setOkList(arrivedID);
 						
 					}else if (texto == "ER"){
-						myTracker.getOkList().clear();
+						trackerController.getOkList().clear();
 					
 					}
 					
@@ -50,5 +46,4 @@ public class OkErrorListener implements MessageListener {
 }}}
 	
 	
-
 

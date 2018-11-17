@@ -9,17 +9,18 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
 import modelo.Tracker;
 
 public class DieReceiver extends Thread{
 
 	private boolean active;
-	private Tracker myTracker;
+	private TrackerController trackerController;
 	
-	public DieReceiver(boolean active, Tracker myTracker) {
+	public DieReceiver(boolean active, Tracker model) {
 		super();
 		this.active = active;
-		this.myTracker = myTracker;
+		this.trackerController = new TrackerController(model);
 	}
 	
 	@Override 
@@ -46,7 +47,7 @@ public class DieReceiver extends Thread{
 			System.out.println("- Queue Session created!");
 			
 			
-			OkErrorListener listener = new OkErrorListener(myTracker);			
+			OkErrorListener listener = new OkErrorListener(trackerController.getModel());			
 			queueReceiver.setMessageListener(listener);
 			
 			

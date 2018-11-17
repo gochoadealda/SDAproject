@@ -1,26 +1,23 @@
 package mensajes.topic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-import javax.jms.TopicConnection;
 
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.springframework.messaging.simp.broker.SubscriptionRegistry;
 
-import mensajes.fileMessage.DBQueueFileSender;
+import controller.TrackerController;
 import modelo.Tracker;
 
 public class KeepAliveListener implements MessageListener {
 	
-	private Tracker myTracker;
+	private TrackerController trackerController;
 	
-	public KeepAliveListener(Tracker myTracker) {
+	public KeepAliveListener(Tracker model) {
 		super();
-		this.myTracker = myTracker;
+		this.trackerController = new TrackerController(model);
 	}
 
 	@Override
@@ -35,20 +32,21 @@ public class KeepAliveListener implements MessageListener {
 					System.out.println(((TextMessage)message).getText());
 					String idString = ((TextMessage)message).getText();
 					int arrivedID = Integer.parseInt(idString.substring(10));
-					ArrayList<Integer> IDlist = myTracker.getTrackerList();
-					System.out.println(myTracker.isMaster());
-					System.out.println(myTracker.getID());
-					System.out.println(IDlist.size());
-					System.out.println(myTracker.getTimeList().size());
+					ArrayList<Integer> IDlist = trackerController.getTrackerList();
+					System.out.println("Is master "+trackerController.isMaster());
+					System.out.println("Master ID "+trackerController.getMasterID());
+					System.out.println("My ID "+trackerController.getID());
+					System.out.println("Tracker list size "+IDlist.size());
+					System.out.println("Times list size "+trackerController.getTimeList().size());
 					int ID = 0;
 					int i = 0;
 					boolean count=true;
 					long actualtime;
 					if (IDlist.size()==0) {
-						myTracker.setTrackerList(arrivedID);
+						trackerController.setTrackerList(arrivedID);
 						actualtime = System.currentTimeMillis();
-						myTracker.addTimeList(actualtime);
-						System.out.println(myTracker.getTimeList().size());
+						trackerController.addTimeList(actualtime);
+						System.out.println(trackerController.getTimeList().size());
 					} else {
 						boolean save = true;
 						while (i < IDlist.size() && count) {
@@ -60,25 +58,23 @@ public class KeepAliveListener implements MessageListener {
 							i++;
 						}
 						if (save) {
-							myTracker.setTrackerList(arrivedID);
-							if (myTracker.isMaster()) {
-								System.out.println("Mandar db");
-								//myTracker.sendDB();
-							}
+							trackerController.setTrackerList(arrivedID);
 							actualtime = System.currentTimeMillis();
-							myTracker.addTimeList(actualtime);
+							trackerController.addTimeList(actualtime);
+							if (trackerController.isMaster()) {
+								trackerController.sendDB();
+							}
 						} else {
 							actualtime = System.currentTimeMillis();
-							myTracker.setTimeList(i-1, actualtime);
+							trackerController.setTimeList(i-1, actualtime);
 						}
 					}
 					
 					i=0;
 					count = true;
 					boolean delete = false;
-					ArrayList<Long> myTimeList = myTracker.getTimeList();
+					ArrayList<Long> myTimeList = trackerController.getTimeList();
 					while(i < myTimeList.size() && count) {
-						System.out.println(myTimeList.get(i));
 						long timenow = System.currentTimeMillis();
 						System.out.println(timenow - myTimeList.get(i));
 						if(timenow - myTimeList.get(i) > 6000) {
@@ -88,7 +84,7 @@ public class KeepAliveListener implements MessageListener {
 						i++;
 					}
 					if (delete) {
-						myTracker.deleteIDfromList(i-1);
+						trackerController.deleteIDfromList(i-1);
 					}
 					
 				} 
