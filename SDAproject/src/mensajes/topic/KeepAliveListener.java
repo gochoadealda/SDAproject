@@ -32,12 +32,14 @@ public class KeepAliveListener implements MessageListener {
 					System.out.println(((TextMessage)message).getText());
 					String idString = ((TextMessage)message).getText();
 					int arrivedID = Integer.parseInt(idString.substring(10));
+
 					ArrayList<Integer> IDlist = trackerController.getTrackerList();
 					System.out.println("Is master "+trackerController.isMaster());
 					System.out.println("Master ID "+trackerController.getMasterID());
 					System.out.println("My ID "+trackerController.getID());
 					System.out.println("Tracker list size "+IDlist.size());
 					System.out.println("Times list size "+trackerController.getTimeList().size());
+
 					int ID = 0;
 					int i = 0;
 					boolean count=true;

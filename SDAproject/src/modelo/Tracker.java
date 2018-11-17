@@ -70,11 +70,13 @@ public class Tracker {
 			// TODO: handle exception
 		}
 		idSelector();
+
 		if(!master) {
 			recieveDB = new DBQueueFileReceiver(this);
 			recieveDB.start();
 		}
 		kaSend = new KeepAlivePublisher(this);
+
 		kaSend.start();
 	
 	}

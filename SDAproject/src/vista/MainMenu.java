@@ -39,11 +39,10 @@ public class MainMenu extends JFrame implements ActionListener {
 	private JPanel panel2;
 	private String[] columnsTabla1;
 
-
-
-
+	
 	public MainMenu(Tracker model) {
 		super(); // usamos el contructor de la clase padre JFrame
+
 		this.trackerController = new TrackerController(model);
 		configurarVentana(); // configuramos la ventana
 		inicializarComponentes(); // inicializamos los atributos o componentes

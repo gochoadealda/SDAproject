@@ -16,7 +16,9 @@ import modelo.Tracker;
 
 
 public class DBQueueFileSender extends Thread {
+
 	private TrackerController trackerController;
+
 	private String SRC_FILE;
 	
 	public DBQueueFileSender(Tracker model) {

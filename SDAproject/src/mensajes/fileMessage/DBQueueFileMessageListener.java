@@ -42,6 +42,7 @@ public class DBQueueFileMessageListener implements MessageListener  {
 					File file = new File(fileName);					
 					System.out.println("     - Received file:  '" + file.getName() + "' (" + file.length() + " bytes)");
 				}else if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
+
 					trackerController.setMasterID(Integer.parseInt(((TextMessage)message).getText()));
 				}
 				

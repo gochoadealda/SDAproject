@@ -7,6 +7,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import controller.TrackerController;
+
 import vista.MainMenu;
 
 public class ViewThread extends Thread{
@@ -25,6 +26,7 @@ public class ViewThread extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		MainMenu view = new MainMenu(trackerController.getModel());
 		view.setVisible(true);
 		while (true) {
@@ -70,3 +72,4 @@ public class ViewThread extends Thread{
 	}
 
 }
+
