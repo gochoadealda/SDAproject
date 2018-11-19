@@ -58,6 +58,7 @@ public class Tracker {
 				}
 			}
 			ID=maxid + 1;
+		
 		}
 	}
 	
@@ -174,11 +175,6 @@ public class Tracker {
 			if(min == this.ID) {
 				this.master = true;
 				this.masterID = this.ID;
-				try {
-					Thread.sleep(1000);
-				}catch (Exception e) {
-					
-				}
 				this.nmSend = new NewMasterPublisher(this.ID);
 				this.nmSend.start();
 			}else {
@@ -210,7 +206,9 @@ public class Tracker {
 		this.timeList.add(time);
 	}
 	
-	
+	public void createConnectionDB() {
+		this.trackerDB = new TrackerDAO("tracker"+ID+".db");
+	}
 	
 
 }

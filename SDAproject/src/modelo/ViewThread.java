@@ -61,8 +61,8 @@ public class ViewThread extends Thread{
 				JScrollPane scrollPaneTabla1 = new JScrollPane(view.getTableTrackers());
 				scrollPaneTabla1.setBounds(32, 28, 452, 431);
 				view.getPanel2().add(scrollPaneTabla1);
-
-				view.repaint();
+				view.getTableTrackers().repaint();
+				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

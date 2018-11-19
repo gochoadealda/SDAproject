@@ -38,6 +38,7 @@ public class DBQueueFileMessageListener implements MessageListener  {
 					//Read message content as an Array of bytes
 					DBFileAsByteArrayManager.getInstance().writeFile(((ActiveMQBytesMessage)message).getContent().getData(), fileName);
 					
+					trackerController.createConnectionDB();
 					//Print received file details
 					File file = new File(fileName);					
 					System.out.println("     - Received file:  '" + file.getName() + "' (" + file.length() + " bytes)");

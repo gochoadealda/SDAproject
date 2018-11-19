@@ -28,6 +28,7 @@ public class NewMasterListener implements MessageListener{
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
 					System.out.println("     - TopicListener: TextMessage '" + ((TextMessage)message).getText());
 					int arrivedID = Integer.parseInt(((TextMessage)message).getText());
+					System.out.println("ID master recivido"+arrivedID);
 					trackerController.setMasterID(arrivedID);
 				}
 			

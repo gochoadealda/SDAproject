@@ -137,6 +137,8 @@ public class TrackerController {
 	public void addTimeList(long time) {
 		model.addTimeList(time);
 	}
-	
+	public void createConnectionDB() {
+		model.createConnectionDB();
+	}
 	
 }

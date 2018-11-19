@@ -63,10 +63,10 @@ public class NewMasterSubscriber extends Thread{
 			
 			//Set the same message listener for the non-durable subscriber
 			topicNONDurableSubscriber.setMessageListener(listener);
-			Thread.sleep(3000);
+			
 			//Begin message delivery
 			topicConnection.start();
-			
+			Thread.sleep(3000);
 		} catch (Exception e) {
 			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
 		} finally {

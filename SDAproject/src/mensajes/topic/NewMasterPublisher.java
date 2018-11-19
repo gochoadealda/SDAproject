@@ -23,6 +23,7 @@ public class NewMasterPublisher extends Thread{
 
 	@Override
 	public void run() {
+		
 		String connectionFactoryName = "TopicConnectionFactory";
 		//This name is defined in jndi.properties file
 		String topicJNDIName = "jndi.newmaster.topic";		
@@ -32,6 +33,7 @@ public class NewMasterPublisher extends Thread{
 		TopicPublisher topicPublisher = null;			
 		
 		try{
+			Thread.sleep(2000);
 			//JNDI Initial Context
 			Context ctx = new InitialContext();
 		
