@@ -4,5 +4,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/admcs/Documents/Master/Sistemas Distribuidos/SDAproject/SDAproject/lib/activemq-all-5.15.6.jar"/>
 	<classpathentry kind="lib" path="C:/Users/admcs/Documents/Master/Sistemas Distribuidos/SDAproject/SDAproject/lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/activemq-all-5.15.6.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/admcs/Documents/Master/Sistemas Distribuidos/SDAproject/SDAproject/lib/sqlite-jdbc-3.14.2.1.jar"/>
+	<classpathentry kind="lib" path="/SqliteExample/lib/sqlite-jdbc-3.14.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

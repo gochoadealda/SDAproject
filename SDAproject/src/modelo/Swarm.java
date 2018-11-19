@@ -6,15 +6,15 @@ public class Swarm {
 	
 	private int idSwarm;
 	private String nomCont;
-	private int tamaño;
+	private int tamano;
 	private int seeders;
 	private int leechers;
 	private ArrayList<Peer> peerList;
-	public Swarm(int idSwarm, String nomCont, int tamaño, int seeders, int leechers) {
+	public Swarm(int idSwarm, String nomCont, int tamano, int seeders, int leechers) {
 		super();
 		this.idSwarm = idSwarm;
 		this.nomCont = nomCont;
-		this.tamaño = tamaño;
+		this.tamano = tamano;
 		this.seeders = seeders;
 		this.leechers = leechers;
 	}
@@ -30,11 +30,11 @@ public class Swarm {
 	public void setNomCont(String nomCont) {
 		this.nomCont = nomCont;
 	}
-	public int getTamaño() {
-		return tamaño;
+	public int getTamano() {
+		return tamano;
 	}
-	public void setTamaño(int tamaño) {
-		this.tamaño = tamaño;
+	public void setTamano(int tamaño) {
+		this.tamano = tamaño;
 	}
 	public int getSeeders() {
 		return seeders;

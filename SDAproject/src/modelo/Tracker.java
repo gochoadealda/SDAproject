@@ -2,12 +2,12 @@ package modelo;
 
 import java.util.ArrayList;
 
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
-
-import mensajes.KeepAliveListener;
-import mensajes.KeepAliveReciever;
-import mensajes.KeepAliveSender;
-import vista.MainMenu;
+import mensajes.fileMessage.DBQueueFileReceiver;
+import mensajes.fileMessage.DBQueueFileSender;
+import mensajes.topic.KeepAlivePublisher;
+import mensajes.topic.KeepAliveSubscriber;
+import mensajes.topic.NewMasterPublisher;
+import mensajes.topic.NewMasterSubscriber;
 
 public class Tracker {
 	
@@ -18,45 +18,68 @@ public class Tracker {
 	private int masterID;
 	private int keepAliveTimer;
 	private ArrayList<Integer> trackerList;
+	private ArrayList<Integer> okList;
+	private ArrayList<Long> timeList;
 	private TrackerDAO trackerDB;
-	private MainMenu view;
 	private boolean active;
+	public KeepAliveSubscriber kaRecive;
+	public KeepAlivePublisher kaSend; 
+	public NewMasterSubscriber nmRecieve;
+	public NewMasterPublisher nmSend;
+	public DBQueueFileReceiver recieveDB;
+	public DBQueueFileSender sendDB;
+	public ViewThread trackerView;
 	
-	public Tracker(String iP, int puertoCom, TrackerDAO trackerDB) {
+	public Tracker(String iP, int puertoCom) {
 		super();
 		IP = iP;
+		this.ID = -1;
+		this.masterID = -1;
 		this.puertoCom = puertoCom;
 		this.keepAliveTimer = 1;
-		this.trackerDB = trackerDB;
 		this.trackerList = new ArrayList<>();
-		this.view = new MainMenu();
-		ViewThread trackerView = new ViewThread(view);
-		trackerView.start();
-		KeepAliveReciever kaRecive = new KeepAliveReciever(true);
-		kaRecive.start();
-		try {
-			Thread.sleep(2000);
-		}catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		ID = idSelector(this.trackerList);
-		KeepAliveSender kaSend = new KeepAliveSender(true, this.ID);
-		kaSend.start();
-		
+		this.timeList = new ArrayList<>();
+		this.active = true;
 	}
-
-	private int idSelector(ArrayList<Integer> idList) {
-		int maxID=0;
+	
+	public void idSelector() {
+		ArrayList<Integer> idList = this.trackerList;
+		int maxid=0;
 		if (idList.size()==0) {
-			maxID=1;
+			master = true;
+			ID = 0;
+			masterID = ID;
+			this.trackerDB = new TrackerDAO("tracker"+ID+".db");
+			trackerDB.createDatabase();
 		}else {
 			for (int i = 0; i < idList.size(); i++) {
-				if (idList.get(i)>maxID) {
-					maxID=idList.get(i) + 1;
+				if (idList.get(i)>maxid) {
+					maxid=idList.get(i);
 				}
 			}
+			ID=maxid + 1;
+		
 		}
-		return maxID;
+	}
+	
+	public void start() {
+		kaRecive = new KeepAliveSubscriber(this);
+		kaRecive.start();
+		try {
+			Thread.sleep(10000);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		idSelector();
+
+		if(!master) {
+			recieveDB = new DBQueueFileReceiver(this);
+			recieveDB.start();
+		}
+		kaSend = new KeepAlivePublisher(this);
+
+		kaSend.start();
+	
 	}
 	
 	public String getIP() {
@@ -102,9 +125,17 @@ public class Tracker {
 	public ArrayList<Integer> getTrackerList() {
 		return trackerList;
 	}
+	
+	public ArrayList<Integer> getOkList() {
+		return okList;
+	}
 
-	public void setTrackerList(ArrayList<Integer> trackerList) {
-		this.trackerList = trackerList;
+	public void setTrackerList(int id) {
+		this.trackerList.add(id);
+	}
+	
+	public void setOkList(int id) {
+		this.okList.add(id);
 	}
 
 	public TrackerDAO getTrackerDB() {
@@ -123,14 +154,6 @@ public class Tracker {
 		this.masterID = masterID;
 	}
 
-	public MainMenu getView() {
-		return view;
-	}
-
-	public void setView(MainMenu view) {
-		this.view = view;
-	}
-
 	public boolean isActive() {
 		return active;
 	}
@@ -139,9 +162,53 @@ public class Tracker {
 		this.active = active;
 	}
 	
+	public void deleteIDfromList(int pos) {
+		if(this.trackerList.get(pos) == this.masterID) {
+			this.trackerList.remove(pos);
+			this.timeList.remove(pos);
+			int min = this.trackerList.get(0);
+			for (int i = 0; i < this.trackerList.size(); i++) {
+				if(this.trackerList.get(i) < min) {
+					min = this.trackerList.get(i);
+				}
+			}
+			if(min == this.ID) {
+				this.master = true;
+				this.masterID = this.ID;
+				this.nmSend = new NewMasterPublisher(this.ID);
+				this.nmSend.start();
+			}else {
+				this.master = false;
+				this.nmRecieve = new NewMasterSubscriber(this);
+				this.nmRecieve.start();
+			}
+		}else {
+			this.trackerList.remove(pos);
+			this.timeList.remove(pos);
+		}
+		
+	}
 	
+	public void sendDB() {
+		this.sendDB = new DBQueueFileSender(this);
+		this.sendDB.start();
+		
+	}
+	public ArrayList<Long> getTimeList() {
+		return timeList;
+	}
+
+	public void setTimeList(int pos, long time) {
+		this.timeList.set(pos, time);
+	}
 	
+	public void addTimeList(long time) {
+		this.timeList.add(time);
+	}
 	
+	public void createConnectionDB() {
+		this.trackerDB = new TrackerDAO("tracker"+ID+".db");
+	}
 	
 
 }

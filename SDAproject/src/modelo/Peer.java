@@ -1,7 +1,6 @@
 package modelo;
 
 public class Peer {
-	//prueba de si se sube
 	//V2
 	private int idPeer;
 	private String ip;
