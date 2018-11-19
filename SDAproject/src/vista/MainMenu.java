@@ -164,7 +164,7 @@ public class MainMenu extends JFrame implements ActionListener {
 
 		JPanel panel3 = new JPanel();
 		panel3.setForeground(Color.BLACK);
-		tabbedPane.addTab("Gestor de Peers", null, panel3, null);
+		tabbedPane.addTab("Peers gestor", null, panel3, null);
 		panel3.setLayout(null);
 
 		JLabel lblSwarmsActivos = new JLabel("Active Swarms");
