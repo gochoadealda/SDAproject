@@ -46,6 +46,8 @@ public class OkErrorReceiver extends Thread{
 		queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);			
 		System.out.println("- Queue Session created!");
 		
+		queueReceiver = queueSession.createReceiver(myQueue);
+		System.out.println("- QueueReceiver created!");
 		
 		OkErrorListener listener = new OkErrorListener(trackerController.getModel());			
 		queueReceiver.setMessageListener(listener);

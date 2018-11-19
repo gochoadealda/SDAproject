@@ -18,6 +18,7 @@ public class ViewThread extends Thread{
 		this.trackerController = new TrackerController(model);
 	}
 
+	@SuppressWarnings("serial")
 	@Override
 	public void run() {
 		try {

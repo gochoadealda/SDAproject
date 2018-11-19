@@ -24,17 +24,20 @@ import javax.swing.JTable;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
 
+@SuppressWarnings("serial")
 public class MainMenu extends JFrame implements ActionListener {
 	private Dimension dim;
 	private JTextField tfIp;
 	private JTextField tfPuerto;
 	private JTextField tfID;
 	private JTable tableTrackers, tableSwarms;
+	@SuppressWarnings("unused")
 	private DefaultTableModel modelTrackers, modelSwarms;
 	private JTable tablePeers;
 	private TrackerController trackerController;
 	private boolean isTheMaster;
 	private Object[][] dataTabla1;
+	@SuppressWarnings("rawtypes")
 	private Class[] columnClassTabla1;
 	private JPanel panel2;
 	private String[] columnsTabla1;
@@ -58,6 +61,7 @@ public class MainMenu extends JFrame implements ActionListener {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes"})
 	private void inicializarComponentes() {
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -194,6 +198,7 @@ public class MainMenu extends JFrame implements ActionListener {
 				}
 			};
 
+			
 			JList swarmList = new JList();
 			swarmList.setFont(new Font("Tahoma", Font.PLAIN, 20));
 			swarmList.setModel(new AbstractListModel() {
@@ -322,10 +327,12 @@ public class MainMenu extends JFrame implements ActionListener {
 		this.dataTabla1 = dataTabla1;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Class[] getColumnClassTabla1() {
 		return columnClassTabla1;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void setColumnClassTabla1(Class[] columnClassTabla1) {
 		this.columnClassTabla1 = columnClassTabla1;
 	}

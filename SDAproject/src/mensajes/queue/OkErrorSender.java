@@ -14,13 +14,12 @@ import modelo.Tracker;
 
 public class OkErrorSender extends Thread {
 	
-	private boolean active;
+	
 	private TrackerController trackerController;
 	
 	
 	public OkErrorSender(boolean active, Tracker model) {
 		super();
-		this.active = active;
 		this.trackerController = new TrackerController(model);
 	}
 	
