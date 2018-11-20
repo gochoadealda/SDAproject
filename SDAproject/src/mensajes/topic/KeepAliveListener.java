@@ -34,11 +34,11 @@ public class KeepAliveListener implements MessageListener {
 					int arrivedID = Integer.parseInt(idString.substring(10));
 
 					ArrayList<Integer> IDlist = trackerController.getTrackerList();
-					System.out.println("Is master "+trackerController.isMaster());
-					System.out.println("Master ID "+trackerController.getMasterID());
-					System.out.println("My ID "+trackerController.getID());
-					System.out.println("Tracker list size "+IDlist.size());
-					System.out.println("Times list size "+trackerController.getTimeList().size());
+					//System.out.println("Is master "+trackerController.isMaster());
+					//System.out.println("Master ID "+trackerController.getMasterID());
+					//System.out.println("My ID "+trackerController.getID());
+					//System.out.println("Tracker list size "+IDlist.size());
+					//System.out.println("Times list size "+trackerController.getTimeList().size());
 
 					int ID = 0;
 					int i = 0;
@@ -79,7 +79,7 @@ public class KeepAliveListener implements MessageListener {
 					while(i < myTimeList.size() && count) {
 						long timenow = System.currentTimeMillis();
 						System.out.println(timenow - myTimeList.get(i));
-						if(timenow - myTimeList.get(i) > 6000) {
+						if(timenow - myTimeList.get(i) > 1500) {
 							count = false;
 							delete = true;
 						}

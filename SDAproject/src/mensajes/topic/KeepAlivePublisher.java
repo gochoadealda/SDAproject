@@ -68,7 +68,7 @@ public class KeepAlivePublisher extends Thread{
 				textMessage.setText("KeepAlive " + trackerController.getID());
 				topicPublisher.publish(textMessage);
 				System.out.println("- TextMessage sent to the Queue!");
-				Thread.sleep(5000);
+				Thread.sleep(1000);
 			}
 			
 		} catch (Exception e) {

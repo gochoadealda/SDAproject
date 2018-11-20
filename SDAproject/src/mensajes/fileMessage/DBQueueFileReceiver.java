@@ -62,7 +62,7 @@ public class DBQueueFileReceiver extends Thread{
 			//Start receiving messages
 			queueConnection.start();
 			
-			Thread.sleep(10000);
+			Thread.sleep(3000);
 		} catch (Exception e) {
 			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
 		} finally {

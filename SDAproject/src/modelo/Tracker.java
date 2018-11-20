@@ -66,7 +66,7 @@ public class Tracker {
 		kaRecive = new KeepAliveSubscriber(this);
 		kaRecive.start();
 		try {
-			Thread.sleep(10000);
+			Thread.sleep(3000);
 		} catch (Exception e) {
 			
 		}
