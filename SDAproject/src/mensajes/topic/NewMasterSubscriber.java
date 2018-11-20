@@ -66,7 +66,7 @@ public class NewMasterSubscriber extends Thread{
 			
 			//Begin message delivery
 			topicConnection.start();
-			Thread.sleep(3000);
+			Thread.sleep(4000);
 		} catch (Exception e) {
 			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
 		} finally {

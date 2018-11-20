@@ -79,7 +79,7 @@ public class KeepAliveListener implements MessageListener {
 					while(i < myTimeList.size() && count) {
 						long timenow = System.currentTimeMillis();
 						System.out.println(timenow - myTimeList.get(i));
-						if(timenow - myTimeList.get(i) > 1000) {
+						if(timenow - myTimeList.get(i) > 1500) {
 							count = false;
 							delete = true;
 						}
