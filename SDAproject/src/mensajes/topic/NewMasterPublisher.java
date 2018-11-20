@@ -33,7 +33,7 @@ public class NewMasterPublisher extends Thread{
 		TopicPublisher topicPublisher = null;			
 		
 		try{
-			Thread.sleep(2000);
+			
 			//JNDI Initial Context
 			Context ctx = new InitialContext();
 		
