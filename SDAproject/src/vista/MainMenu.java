@@ -141,13 +141,13 @@ public class MainMenu extends JFrame implements ActionListener {
 		panel2.setLayout(null);
 
 		// headers for the table
-		columnsTabla1 = new String[] { "Id" };
+		columnsTabla1 = new String[] { "Id","Time" };
 
 		
 		//		dataTabla1 = new Object[][] { { myTracker.getID(),isMaster , "1s", isActive }, { 2, "Slave", "1s", true },
 		//			{ 3, "Slave", "1s", true }, { 4, "Slave", "4s", false }, };
 		//
-		columnClassTabla1 = new Class[] { Integer.class };
+		columnClassTabla1 = new Class[] { Integer.class , String.class};
 		//			modelTrackers = new DefaultTableModel(dataTabla1, columnsTabla1) {
 		//				@Override
 		//				public boolean isCellEditable(int row, int column) {

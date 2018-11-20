@@ -140,5 +140,12 @@ public class TrackerController {
 	public void createConnectionDB() {
 		model.createConnectionDB();
 	}
+	public long getBdtimestamp() {
+		 return model.getBdtimestamp();
+	}
+
+	public void setBdtimestamp(long bdtimestamp) {
+		model.setBdtimestamp(bdtimestamp);
+	}
 	
 }

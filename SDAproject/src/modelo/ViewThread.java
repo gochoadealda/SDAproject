@@ -1,5 +1,7 @@
 package modelo;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JScrollPane;
@@ -38,14 +40,16 @@ public class ViewThread extends Thread{
 				}else {
 					view.setTitle("Tracker Slave "+trackerController.getID());
 				}
-				Thread.sleep(3000);
+				Thread.sleep(1000);
 
 				ArrayList<Integer> trackerList = trackerController.getTrackerList();
-				Object[][] tableData = new Object[trackerList.size()][1];
+				ArrayList<Long> timeList = trackerController.getTimeList();
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				Object[][] tableData = new Object[trackerList.size()][2];
 				for (int i=0;i<tableData.length;i++){
-					for(int j=0;j<tableData[0].length;j++){
-						tableData[i][j] = trackerList.get(i);
-					}
+						tableData[i][0] = trackerList.get(i);
+						tableData[i][1] = dateFormat.format(timeList.get(i));
+					
 				}
 				//view.setDataTabla1(new Object[][] { { myTracker.getID() }});
 				view.setDataTabla1(tableData);
@@ -54,8 +58,6 @@ public class ViewThread extends Thread{
 					public boolean isCellEditable(int row, int column) {
 						return false;
 					}
-
-					//aqui falta columnclasstabla1
 				});
 
 				view.setTableTrackers(new JTable(view.getModelTrackers())); 

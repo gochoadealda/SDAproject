@@ -15,7 +15,9 @@ import modelo.Tracker;
 public class DBQueueFileReceiver extends Thread{
 	
 	private TrackerController trackerController;
-	
+	public QueueConnection queueConnection;
+	public QueueSession queueSession;
+	public QueueReceiver queueReceiver;
 	
 	public DBQueueFileReceiver(Tracker model) {
 		super();
@@ -29,9 +31,9 @@ public class DBQueueFileReceiver extends Thread{
 		String connectionFactoryName = "QueueConnectionFactory";
 		String queueJNDIName = "jndi.senddb.fileQueue";
 		
-		QueueConnection queueConnection = null;
-		QueueSession queueSession = null;
-		QueueReceiver queueReceiver = null;			
+		queueConnection = null;
+		queueSession = null;
+		queueReceiver = null;			
 		
 		try{
 			//JNDI Initial Context
@@ -55,7 +57,7 @@ public class DBQueueFileReceiver extends Thread{
 			queueReceiver = queueSession.createReceiver(myQueue);
 			System.out.println("- FileQueueReceiver created!");
 						
-			DBQueueFileMessageListener listener = new DBQueueFileMessageListener(trackerController.getModel());
+			DBQueueFileMessageListener listener = new DBQueueFileMessageListener(trackerController.getModel(), this);
 			
 			queueReceiver.setMessageListener(listener);
 			
@@ -67,11 +69,7 @@ public class DBQueueFileReceiver extends Thread{
 			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
 		} finally {
 			try {
-				queueReceiver.close();
-				queueSession.close();
-				queueConnection.close();
-				trackerController.getModel().recieveDB = null;
-				System.out.println("- Queue resources closed!");				
+				trackerController.getModel().recieveDB = null;				
 			} catch (Exception ex) {
 				System.err.println("# QueueReceiverTest Error: " + ex.getMessage());
 			}

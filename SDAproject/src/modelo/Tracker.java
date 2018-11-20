@@ -29,6 +29,7 @@ public class Tracker {
 	public DBQueueFileReceiver recieveDB;
 	public DBQueueFileSender sendDB;
 	public ViewThread trackerView;
+	private long bdtimestamp;
 	
 	public Tracker(String iP, int puertoCom) {
 		super();
@@ -49,7 +50,8 @@ public class Tracker {
 			master = true;
 			ID = 0;
 			masterID = ID;
-			this.trackerDB = new TrackerDAO("tracker"+ID+".db");
+			this.bdtimestamp=System.currentTimeMillis();
+			this.trackerDB = new TrackerDAO("tracker"+bdtimestamp+".db");
 			trackerDB.createDatabase();
 		}else {
 			for (int i = 0; i < idList.size(); i++) {
@@ -61,7 +63,7 @@ public class Tracker {
 		
 		}
 	}
-	
+
 	public void start() {
 		kaRecive = new KeepAliveSubscriber(this);
 		kaRecive.start();
@@ -207,8 +209,15 @@ public class Tracker {
 	}
 	
 	public void createConnectionDB() {
-		this.trackerDB = new TrackerDAO("tracker"+ID+".db");
+		this.trackerDB = new TrackerDAO("tracker"+bdtimestamp+".db");
 	}
 	
+	public long getBdtimestamp() {
+		return bdtimestamp;
+	}
+
+	public void setBdtimestamp(long bdtimestamp) {
+		this.bdtimestamp = bdtimestamp;
+	}
 
 }
