@@ -30,7 +30,11 @@ public class Tracker {
 	public DBQueueFileSender sendDB;
 	public ViewThread trackerView;
 	private long bdtimestamp;
-	
+	private int transactionID;
+	private long connectionID;
+	private long oldConnectionID;
+
+
 	public Tracker(String iP, int puertoCom) {
 		super();
 		IP = iP;
@@ -219,5 +223,28 @@ public class Tracker {
 	public void setBdtimestamp(long bdtimestamp) {
 		this.bdtimestamp = bdtimestamp;
 	}
+	
+	public int getTransactionID() {
+		return transactionID;
+	}
 
+	public void setTransactionID(int transactionID) {
+		this.transactionID = transactionID;
+	}
+
+	public long getConnectionID() {
+		return connectionID;
+	}
+
+	public void setConnectionID(long connectionID) {
+		this.connectionID = connectionID;
+	}
+
+	public long getOldConnectionID() {
+		return oldConnectionID;
+	}
+
+	public void setOldConnectionID(long oldConnectionID) {
+		this.oldConnectionID = oldConnectionID;
+	}
 }

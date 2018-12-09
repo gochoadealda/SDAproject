@@ -148,4 +148,26 @@ public class TrackerController {
 		model.setBdtimestamp(bdtimestamp);
 	}
 	
+	public void setTransactionID(int transactionID) {
+		model.setTransactionID(transactionID);
+	}
+	
+	public int getTransactionID(){
+		return model.getTransactionID();
+	}
+	public void setConnectionID(long connectionID) {
+		model.setConnectionID(connectionID);
+	}
+	
+	public long getConnectionID(){
+		return model.getConnectionID();
+	}
+	
+	public void setOldConnectionID(long oldConnectionID) {
+		model.setOldConnectionID(oldConnectionID);
+	}
+	
+	public long getOldConnectionID(){
+		return model.getOldConnectionID();
+	}
 }
