@@ -1,50 +1,81 @@
 package modelo;
 
 public class Peer {
-	//V2
-	private int idPeer;
-	private String ip;
+
+	private String peerId;
+	private int ip;
 	private int puerto;
-	private double bytesDes;
-	private double bytesPen;
-	public Peer(int idPeer, String ip, int puerto, double bytesDes, double bytesPen) {
+	private int uploaded;  	//The total amount uploaded so far, encoded in base ten ascii.
+	private int downloaded;	//The total amount downloaded so far, encoded in base ten ascii.
+	private int left;			//The number of bytes this peer still has to download, encoded in base ten ascii.
+	private int event;		// 0: none; 1: completed; 2: started; 3: stopped
+	
+	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left) {
 		super();
-		this.idPeer = idPeer;
+		this.peerId = peerId;
 		this.ip = ip;
 		this.puerto = puerto;
-		this.bytesDes = bytesDes;
-		this.bytesPen = bytesPen;
+		this.uploaded = uploaded;
+		this.downloaded = downloaded;
+		this.left = left;
 	}
-	public int getID() {
-		return idPeer;
+	
+	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left, int event) {
+		super();
+		this.peerId = peerId;
+		this.ip = ip;
+		this.puerto = puerto;
+		this.uploaded = uploaded;
+		this.downloaded = downloaded;
+		this.left = left;
+		this.event = event;
 	}
-	public void setID(int iD) {
-		idPeer = iD;
+	public String getPeerId() {
+		return peerId;
 	}
-	public String getIp() {
+	public void setPeerId(String peerId) {
+		this.peerId = peerId;
+	}
+	
+	public int getIp() {
 		return ip;
 	}
-	public void setIp(String ip) {
+	public void setIp(int ip) {
 		this.ip = ip;
 	}
+	
 	public int getPuerto() {
 		return puerto;
 	}
 	public void setPuerto(int puerto) {
 		this.puerto = puerto;
 	}
-	public double getBytesDes() {
-		return bytesDes;
+	
+	public int getUploaded() {
+		return uploaded;
 	}
-	public void setBytesDes(double bytesDes) {
-		this.bytesDes = bytesDes;
-	}
-	public double getBytesPen() {
-		return bytesPen;
-	}
-	public void setBytesPen(double bytesPen) {
-		this.bytesPen = bytesPen;
+	public void setUploaded(int uploaded) {
+		this.uploaded = uploaded;
 	}
 	
-	
+	public int getLeft() {
+		return left;
+	}
+	public void setLeft(int left) {
+		this.left = left;
+	}
+
+	public int getDownloaded() {
+		return downloaded;
+	}
+	public void setDownloaded(int downloaded) {
+		this.downloaded = downloaded;
+	}
+
+	public int getEvent() {
+		return event;
+	}
+	public void setEvent(int event) {
+		this.event = event;
+	}
 }

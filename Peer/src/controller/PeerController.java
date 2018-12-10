@@ -1,6 +1,5 @@
 package controller;
 
-import java.net.InetAddress;
 
 import modelo.Peer;
 
@@ -18,10 +17,10 @@ public class PeerController {
 	public void setPeerId(String peerId) {
 		model.setPeerId(peerId);
 	}
-	public InetAddress getIp() {
+	public int getIp() {
 		return model.getIp();
 	}
-	public void setIp(InetAddress ip) {
+	public void setIp(int ip) {
 		model.setIp(ip);
 	}
 	public int getPuerto() {
@@ -30,28 +29,28 @@ public class PeerController {
 	public void setPuerto(int puerto) {
 		model.setPuerto(puerto);
 	}
-	public float getUploaded() {
+	public int getUploaded() {
 		return model.getUploaded();
 	}
-	public void setUploaded(float uploaded) {
+	public void setUploaded(int uploaded) {
 		model.setUploaded(uploaded);
 	}
-	public float getLeft() {
+	public int getLeft() {
 		return model.getLeft();
 	}
-	public void setLeft(float left) {
+	public void setLeft(int left) {
 		model.setLeft(left);
 	}
 	public float getDownloaded() {
 		return model.getDownloaded();
 	}
-	public void setDownloaded(float downloaded) {
+	public void setDownloaded(int downloaded) {
 		model.setDownloaded(downloaded);
 	}
-	public String getEvent() {
+	public int getEvent() {
 		return model.getEvent();
 	}
-	public void setEvent(String event) {
+	public void setEvent(int event) {
 		model.setEvent(event);
 	}
 }

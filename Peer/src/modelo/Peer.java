@@ -1,18 +1,16 @@
 package modelo;
 
-import java.net.InetAddress;
-
 public class Peer {
 
 	private String peerId;
-	private InetAddress ip;
+	private int ip;
 	private int puerto;
-	private float uploaded;  	//The total amount uploaded so far, encoded in base ten ascii.
-	private float downloaded;	//The total amount downloaded so far, encoded in base ten ascii.
-	private float left;			//The number of bytes this peer still has to download, encoded in base ten ascii.
-	private String event;		//This is an optional key which maps to started, completed, or stopped
+	private int uploaded;  	//The total amount uploaded so far, encoded in base ten ascii.
+	private int downloaded;	//The total amount downloaded so far, encoded in base ten ascii.
+	private int left;			//The number of bytes this peer still has to download, encoded in base ten ascii.
+	private int event;		// 0: none; 1: completed; 2: started; 3: stopped
 	
-	public Peer(String peerId, InetAddress ip, int puerto, float uploaded, float downloaded, float left) {
+	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left) {
 		super();
 		this.peerId = peerId;
 		this.ip = ip;
@@ -22,7 +20,7 @@ public class Peer {
 		this.left = left;
 	}
 	
-	public Peer(String peerId, InetAddress ip, int puerto, float uploaded, float downloaded, float left, String event) {
+	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left, int event) {
 		super();
 		this.peerId = peerId;
 		this.ip = ip;
@@ -39,10 +37,10 @@ public class Peer {
 		this.peerId = peerId;
 	}
 	
-	public InetAddress getIp() {
+	public int getIp() {
 		return ip;
 	}
-	public void setIp(InetAddress ip) {
+	public void setIp(int ip) {
 		this.ip = ip;
 	}
 	
@@ -53,31 +51,31 @@ public class Peer {
 		this.puerto = puerto;
 	}
 	
-	public float getUploaded() {
+	public int getUploaded() {
 		return uploaded;
 	}
-	public void setUploaded(float uploaded) {
+	public void setUploaded(int uploaded) {
 		this.uploaded = uploaded;
 	}
 	
-	public float getLeft() {
+	public int getLeft() {
 		return left;
 	}
-	public void setLeft(float left) {
+	public void setLeft(int left) {
 		this.left = left;
 	}
 
-	public float getDownloaded() {
+	public int getDownloaded() {
 		return downloaded;
 	}
-	public void setDownloaded(float downloaded) {
+	public void setDownloaded(int downloaded) {
 		this.downloaded = downloaded;
 	}
 
-	public String getEvent() {
+	public int getEvent() {
 		return event;
 	}
-	public void setEvent(String event) {
+	public void setEvent(int event) {
 		this.event = event;
 	}
 }
