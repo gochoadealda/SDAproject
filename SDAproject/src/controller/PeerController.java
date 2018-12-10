@@ -1,6 +1,5 @@
 package controller;
 
-
 import modelo.Peer;
 
 public class PeerController {
@@ -11,17 +10,17 @@ public class PeerController {
 		this.model = model;
 	}
 	
-	public String getPeerId() {
-		return model.getPeerId();
+	public int getID() {
+		return model.getID();
 	}
-	public void setPeerId(String peerId) {
-		model.setPeerId(peerId);
+	public void setID(int iD) {
+		model.setID(iD);
 	}
-	public int getIp() {
+	public String getIp() {
 		return model.getIp();
 	}
-	public void setIp(int ip) {
-		model.setIp(ip);
+	public void setIp(String ip) {
+		model.setIp(ip);;
 	}
 	public int getPuerto() {
 		return model.getPuerto();
@@ -29,28 +28,16 @@ public class PeerController {
 	public void setPuerto(int puerto) {
 		model.setPuerto(puerto);
 	}
-	public int getUploaded() {
-		return model.getUploaded();
+	public double getBytesDes() {
+		return model.getBytesDes();
 	}
-	public void setUploaded(int uploaded) {
-		model.setUploaded(uploaded);
+	public void setBytesDes(double bytesDes) {
+		model.setBytesDes(bytesDes);;
 	}
-	public int getLeft() {
-		return model.getLeft();
+	public double getBytesPen() {
+		return model.getBytesPen();
 	}
-	public void setLeft(int left) {
-		model.setLeft(left);
-	}
-	public float getDownloaded() {
-		return model.getDownloaded();
-	}
-	public void setDownloaded(int downloaded) {
-		model.setDownloaded(downloaded);
-	}
-	public int getEvent() {
-		return model.getEvent();
-	}
-	public void setEvent(int event) {
-		model.setEvent(event);
+	public void setBytesPen(double bytesPen) {
+		model.setBytesPen(bytesPen);;
 	}
 }
