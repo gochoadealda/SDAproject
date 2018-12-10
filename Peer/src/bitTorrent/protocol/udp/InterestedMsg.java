@@ -1,4 +1,4 @@
-package bitTorrent.protocol;
+package bitTorrent.protocol.udp;
 
 import bitTorrent.util.ByteUtils;
 

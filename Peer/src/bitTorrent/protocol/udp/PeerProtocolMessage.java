@@ -1,4 +1,4 @@
-package bitTorrent.protocol;
+package bitTorrent.protocol.udp;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;

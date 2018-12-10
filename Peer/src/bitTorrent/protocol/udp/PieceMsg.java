@@ -1,4 +1,4 @@
-package bitTorrent.protocol;
+package bitTorrent.protocol.udp;
 
 /**
  * piece: <len=0009+X><id=7><index><begin><block>

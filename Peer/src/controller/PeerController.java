@@ -1,5 +1,7 @@
 package controller;
 
+import java.net.InetAddress;
+
 import modelo.Peer;
 
 public class PeerController {
@@ -16,10 +18,10 @@ public class PeerController {
 	public void setPeerId(String peerId) {
 		model.setPeerId(peerId);
 	}
-	public String getIp() {
+	public InetAddress getIp() {
 		return model.getIp();
 	}
-	public void setIp(String ip) {
+	public void setIp(InetAddress ip) {
 		model.setIp(ip);
 	}
 	public int getPuerto() {

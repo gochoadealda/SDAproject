@@ -1,28 +1,28 @@
-package bitTorrent.protocol;
+package bitTorrent.protocol.udp;
 
 /**
- * cancel: <len=0013><id=8><index><begin><length>
+ * request: <len=0013><id=6><index><begin><length>
  * 
- * The cancel message is fixed length, and is used to cancel block requests.
- * The payload is identical to that of the "request" message:
- * - index: integer specifying the zero-based piece index.
- * - begin: integer specifying the zero-based byte offset within the piece.
- * - length: integer specifying the requested length.
+ * The request message is fixed length, and is used to request a block.
+ * The payload contains the following information:
+ *  - index: integer specifying the zero-based piece index.
+ *  - begin: integer specifying the zero-based byte offset within the piece.
+ *  - length: integer specifying the requested length.
  */
 
 import java.io.ByteArrayOutputStream;
 
 import bitTorrent.util.ByteUtils;
 
-public class CancelMsg extends PeerProtocolMessage {	
+public class RequestMsg extends PeerProtocolMessage {
 	
 	private int index;
 	private int begin;
 	private int rlength;
 	
-	public CancelMsg(int index, int begin, int rlength) {
-		super(Type.CANCEL);
-		super.setLength(ByteUtils.intToBigEndianBytes(13, new byte[4], 0));		
+	public RequestMsg(int index, int begin, int rlength) {
+		super(Type.REQUEST);
+		super.setLength(ByteUtils.intToBigEndianBytes(13, new byte[4], 0));
 		this.updatePayload(index, begin, rlength);
 		
 		this.index = index;
@@ -53,7 +53,7 @@ public class CancelMsg extends PeerProtocolMessage {
 	public void setRLength(int rlength) {
 		this.rlength = rlength;
 	}
-	
+
 	private void updatePayload(int index, int begin, int rlength) {
 		try {
 			ByteArrayOutputStream payload = new ByteArrayOutputStream();
@@ -64,7 +64,7 @@ public class CancelMsg extends PeerProtocolMessage {
 			
 			super.setPayload(payload.toByteArray());
 		} catch (Exception ex) {
-			System.out.println("# Error updating CancelMsg payload: " + ex.getMessage());
+			System.out.println("# Error updating RequestMsg payload: " + ex.getMessage());
 		}
 	}
 	

@@ -1,16 +1,18 @@
 package modelo;
 
+import java.net.InetAddress;
+
 public class Peer {
 
 	private String peerId;
-	private String ip;
+	private InetAddress ip;
 	private int puerto;
 	private float uploaded;  	//The total amount uploaded so far, encoded in base ten ascii.
 	private float downloaded;	//The total amount downloaded so far, encoded in base ten ascii.
 	private float left;			//The number of bytes this peer still has to download, encoded in base ten ascii.
 	private String event;		//This is an optional key which maps to started, completed, or stopped
 	
-	public Peer(String peerId, String ip, int puerto, float uploaded, float downloaded, float left) {
+	public Peer(String peerId, InetAddress ip, int puerto, float uploaded, float downloaded, float left) {
 		super();
 		this.peerId = peerId;
 		this.ip = ip;
@@ -20,7 +22,7 @@ public class Peer {
 		this.left = left;
 	}
 	
-	public Peer(String peerId, String ip, int puerto, float uploaded, float downloaded, float left, String event) {
+	public Peer(String peerId, InetAddress ip, int puerto, float uploaded, float downloaded, float left, String event) {
 		super();
 		this.peerId = peerId;
 		this.ip = ip;
@@ -37,10 +39,10 @@ public class Peer {
 		this.peerId = peerId;
 	}
 	
-	public String getIp() {
+	public InetAddress getIp() {
 		return ip;
 	}
-	public void setIp(String ip) {
+	public void setIp(InetAddress ip) {
 		this.ip = ip;
 	}
 	

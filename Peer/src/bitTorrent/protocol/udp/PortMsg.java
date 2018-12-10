@@ -1,4 +1,4 @@
-package bitTorrent.protocol;
+package bitTorrent.protocol.udp;
 
 /**
  * port: <len=0003><id=9><listen-port>

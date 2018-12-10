@@ -1,4 +1,4 @@
-package bitTorrent.protocol;
+package bitTorrent.protocol.udp;
 
 /**
  * handshake: <pstrlen><pstr><reserved><info_hash><peer_id>
