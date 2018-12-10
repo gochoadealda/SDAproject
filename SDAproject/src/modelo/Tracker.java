@@ -33,6 +33,8 @@ public class Tracker {
 	private int transactionID;
 	private long connectionID;
 	private long oldConnectionID;
+	private Peer peer;
+	private Swarm swarm;
 
 
 	public Tracker(String iP, int puertoCom) {

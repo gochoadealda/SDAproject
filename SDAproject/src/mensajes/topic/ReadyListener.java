@@ -16,7 +16,7 @@ public class ReadyListener implements MessageListener{
 
 				//Depending on the type of the message the process is different
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
-
+					
 				}
 
 			}catch (Exception ex) {
