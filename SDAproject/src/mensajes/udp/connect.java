@@ -3,6 +3,7 @@ package mensajes.udp;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.util.Random;
 
 import bitTorrent.util.ByteUtils;
@@ -24,8 +25,9 @@ public class connect extends Thread{
 	@Override
 	public void run() {
 		super.run();
-
-		try (DatagramSocket udpSocket = new DatagramSocket()){
+		StringBuffer bufferOut = new StringBuffer();
+		try (MulticastSocket udpSocket = new MulticastSocket(55557)){
+			udpSocket.joinGroup(InetAddress.getByName("230.0.0.1"));
 			udpSocket.setSoTimeout(15000);
 
 			byte[] requestBytes = new byte[16]; //16 bytes is the size of Connect Response Message
@@ -35,7 +37,6 @@ public class connect extends Thread{
 			this.peerPort = packet.getPort();
 			System.out.println(peerIP);
 			System.out.println(peerPort);
-			StringBuffer bufferOut = new StringBuffer();
 			if (packet.getLength() >= 16) {
 				ConnectRequest request = ConnectRequest.parse(packet.getData());
 				bufferOut.append("Connect Request\n - Action: ");
@@ -54,19 +55,24 @@ public class connect extends Thread{
 
 			System.out.println(bufferOut.toString());
 			
-			if(myTracker.isMaster()) {
-				
-				Random random = new Random();
-				long connectionID = random.nextLong();
-				myTracker.setOldConnectionID(myTracker.getConnectionID());
-				myTracker.setConnectionID(connectionID);
+		} catch (Exception ex) {
+			System.err.println("Error: " + ex.getMessage());
+		}
+		
+		if(myTracker.isMaster()) {
+			
+			Random random = new Random();
+			long connectionID = random.nextLong();
+			myTracker.setOldConnectionID(myTracker.getConnectionID());
+			myTracker.setConnectionID(connectionID);
 
-				ConnectResponse response = new ConnectResponse();
-				response.setTransactionId(myTracker.getTransactionID());
-				response.setConnectionId(connectionID);
-				byte[] responseBytes = response.getBytes();			
-				packet = new DatagramPacket(responseBytes, responseBytes.length, peerIP, peerPort);
-				udpSocket.send(packet);
+			ConnectResponse response = new ConnectResponse();
+			response.setTransactionId(myTracker.getTransactionID());
+			response.setConnectionId(connectionID);
+			byte[] responseBytes = response.getBytes();	
+			try (DatagramSocket udpDataSocket = new DatagramSocket()){
+				DatagramPacket packet = new DatagramPacket(responseBytes, responseBytes.length, peerIP, peerPort);
+				udpDataSocket.send(packet);
 
 				bufferOut.append("\n\nConnect Response\n - Action: ");
 				bufferOut.append(response.getAction());
@@ -75,11 +81,11 @@ public class connect extends Thread{
 				bufferOut.append("\n - ConnectionID: ");
 				bufferOut.append(response.getConnectionId());
 				bufferOut.append("\n - Bytes: ");
-				bufferOut.append(ByteUtils.toHexString(requestBytes));
+				bufferOut.append(ByteUtils.toHexString(responseBytes));
 				System.out.println(bufferOut.toString());
+			}catch (Exception e) {
+				System.err.println("Error: " + e.getMessage());
 			}
-		} catch (Exception ex) {
-			System.err.println("Error: " + ex.getMessage());
 		}
 	}
 

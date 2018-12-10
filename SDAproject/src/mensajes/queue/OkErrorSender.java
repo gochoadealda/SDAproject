@@ -6,6 +6,7 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
@@ -16,11 +17,13 @@ public class OkErrorSender extends Thread {
 	
 	
 	private TrackerController trackerController;
+	private boolean ok;
 	
 	
-	public OkErrorSender(boolean active, Tracker model) {
+	public OkErrorSender(boolean active, Tracker model, boolean ok) {
 		super();
 		this.trackerController = new TrackerController(model);
+		this.ok = ok;
 	}
 	
 	@Override
@@ -53,28 +56,24 @@ public class OkErrorSender extends Thread {
 			//Message Producer
 			queueSender = queueSession.createSender(myQueue);			
 			System.out.println("- QueueSender created!");
-			
-			/*
-				//OK
-				if(OK){
-				
-				TextMessage textMessage = queueSession.createTextMessage();
-				textMessage.setText("OK "+ myTracker.getID());
+			TextMessage textMessage = queueSession.createTextMessage();
+			//OK
+			if(ok){
+
+				textMessage.setText("OK "+ trackerController.getID());
 				queueSender.send(textMessage);
 				System.out.println("- TextMessage sent to the Queue!");
-				Thread.sleep(5000);
 				
-				//ERROR
-				}else if(ERROR){
-					TextMessage textMessage = queueSession.createTextMessage();
-					textMessage.setText("ER "+ myTracker.getID());
-					queueSender.send(textMessage);
-					System.out.println("- TextMessage sent to the Queue!");
-					Thread.sleep(5000);	
-				}
-			*/
-			
-			
+
+			//ERROR
+			}else if(!ok){
+
+				textMessage.setText("ER "+ trackerController.getID());
+				queueSender.send(textMessage);
+				System.out.println("- TextMessage sent to the Queue!");
+			}
+			Thread.sleep(5000);
+
 		} catch (Exception e) {
 			System.err.println("# QueueOkErrorSenderTest Error: " + e.getMessage());
 		} finally {
