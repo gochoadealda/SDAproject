@@ -3,6 +3,7 @@ package mensajes.udp;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.util.Random;
 
 import bitTorrent.util.ByteUtils;
@@ -17,8 +18,6 @@ public class Actions extends Thread{
 	private TrackerController myTracker;
 	private InetAddress peerIP;
 	private int peerPort;
-	private InetAddress peerIPErr;
-	private int peerPortErr;
 	public Actions(Tracker myTracker) {
 		super();
 		this.myTracker = new TrackerController(myTracker);
@@ -26,25 +25,21 @@ public class Actions extends Thread{
 	@Override
 	public void run() {
 		super.run();
-		try (DatagramSocket udpSocket = new DatagramSocket()){
+		StringBuffer bufferOut = new StringBuffer();
+		try (MulticastSocket udpSocket = new MulticastSocket(55557)){
+			udpSocket.joinGroup(InetAddress.getByName("230.0.0.1"));
 			udpSocket.setSoTimeout(15000);
 
 			byte[] announceBytes = new byte[98];
-			byte[] errorBytes = new byte[8];
 			DatagramPacket packetAnnounce = new DatagramPacket(announceBytes, announceBytes.length);
-			DatagramPacket packetError = new DatagramPacket(errorBytes, errorBytes.length);
 			udpSocket.receive(packetAnnounce);
-			udpSocket.receive(packetError);
 			this.peerIP = packetAnnounce.getAddress();
 			this.peerPort = packetAnnounce.getPort();
-			this.peerIPErr = packetError.getAddress();
-			this.peerPortErr = packetError.getPort();
-			StringBuffer bufferOut = new StringBuffer();
 			if (packetAnnounce.getLength() >= 98) {
 				AnnounceRequest announceR = AnnounceRequest.parse(packetAnnounce.getData());
 				if(announceR.getAction().toString()=="ANNOUNCE") {
 					if (announceR.getTransactionId()==myTracker.getTransactionID() && (announceR.getConnectionId()==myTracker.getConnectionID()||announceR.getConnectionId()==myTracker.getOldConnectionID()))
-					bufferOut.append("Announce Request\n - Action: ");
+						bufferOut.append("Announce Request\n - Action: ");
 					bufferOut.append(announceR.getAction());
 					bufferOut.append("\n - TransactionID: ");
 					bufferOut.append(announceR.getTransactionId());
@@ -77,29 +72,36 @@ public class Actions extends Thread{
 				bufferOut.append("- ERROR: Response length to small ");
 				bufferOut.append(packetAnnounce.getLength());
 			}
-			
-			if(packetError.getLength() >= 8) {
-				
+
+			if(packetAnnounce.getLength() >= 8) {
+				AnnounceRequest announceR = AnnounceRequest.parse(packetAnnounce.getData());
+				if (announceR.getAction().toString()=="ERROR");{
+					
+				}
 			}else {
 				bufferOut.append("- ERROR: Response length to small ");
-				bufferOut.append(packetError.getLength());
+				bufferOut.append(packetAnnounce.getLength());
 			}
-			
-			if(myTracker.isMaster()) {
-				
-				Random random = new Random();
-				long connectionID = random.nextLong();
+		} catch (Exception ex) {
+			System.err.println("Error: " + ex.getMessage());
+		}
 
-				AnnounceResponse response = new AnnounceResponse();
-				response.setTransactionId(myTracker.getTransactionID());
-				response.setInterval(30);
-				//sacar datos de la bd
-				response.setLeechers();
-				response.getSeeders();
-				
+		if(myTracker.isMaster()) {
+
+			Random random = new Random();
+			long connectionID = random.nextLong();
+
+			AnnounceResponse response = new AnnounceResponse();
+			response.setTransactionId(myTracker.getTransactionID());
+			response.setInterval(30);
+			//sacar datos de la bd
+			response.setLeechers();
+			response.getSeeders();
+
+			try (DatagramSocket udpDataSocket = new DatagramSocket()){
 				byte[] responseBytes = response.getBytes();			
-				packetAnnounce = new DatagramPacket(responseBytes, responseBytes.length, peerIP, peerPort);
-				udpSocket.send(packetAnnounce);
+				DatagramPacket packetResponse = new DatagramPacket(responseBytes, responseBytes.length, peerIP, peerPort);
+				udpDataSocket.send(packetResponse);
 
 				bufferOut.append("\n\nConnect Response\n - Action: ");
 				bufferOut.append(response.getAction());
@@ -114,9 +116,9 @@ public class Actions extends Thread{
 				bufferOut.append("\n - Bytes: ");
 				bufferOut.append(ByteUtils.toHexString(responseBytes));
 				System.out.println(bufferOut.toString());
+			}catch (Exception e) {
+				System.err.println("Error: " + e.getMessage());
 			}
-		} catch (Exception ex) {
-			System.err.println("Error: " + ex.getMessage());
 		}
 	}
 

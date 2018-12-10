@@ -4,10 +4,18 @@ import java.util.ArrayList;
 
 import mensajes.fileMessage.DBQueueFileReceiver;
 import mensajes.fileMessage.DBQueueFileSender;
+import mensajes.queue.DieReceiver;
+import mensajes.queue.DieSender;
+import mensajes.queue.OkErrorReceiver;
+import mensajes.queue.OkErrorSender;
 import mensajes.topic.KeepAlivePublisher;
 import mensajes.topic.KeepAliveSubscriber;
 import mensajes.topic.NewMasterPublisher;
 import mensajes.topic.NewMasterSubscriber;
+import mensajes.topic.ReadyPublisher;
+import mensajes.topic.ReadySubscriber;
+import mensajes.topic.UpdatePublisher;
+import mensajes.topic.UpdateSubscriber;
 
 public class Tracker {
 	
@@ -28,6 +36,14 @@ public class Tracker {
 	public NewMasterPublisher nmSend;
 	public DBQueueFileReceiver recieveDB;
 	public DBQueueFileSender sendDB;
+	public OkErrorReceiver okRecieve;
+	public OkErrorSender okSend;
+	public UpdatePublisher updateSend;
+	public UpdateSubscriber updateRecieve;
+	public ReadyPublisher readySend;
+	public ReadySubscriber readyRecieve;
+	public DieReceiver dieRecieve;
+	public DieSender dieSend;
 	public ViewThread trackerView;
 	private long bdtimestamp;
 	private int transactionID;
