@@ -13,6 +13,13 @@ public class SwarmController {
 		this.model = model;
 	}
 	
+	
+	public Swarm getModel() {
+		return model;
+	}
+	public void setModel(Swarm model) {
+		this.model = model;
+	}
 	public int getID() {
 		return model.getID();
 	}
