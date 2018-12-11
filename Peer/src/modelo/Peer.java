@@ -1,5 +1,8 @@
 package modelo;
 
+import mensajes.udp.Actions;
+import mensajes.udp.Connect;
+
 public class Peer {
 
 	private String peerId;
@@ -9,7 +12,13 @@ public class Peer {
 	private int downloaded;	//The total amount downloaded so far, encoded in base ten ascii.
 	private int left;			//The number of bytes this peer still has to download, encoded in base ten ascii.
 	private int event;		// 0: none; 1: completed; 2: started; 3: stopped
+	public Connect udpConnect;
+	public Actions udpActions;
 	
+	public Peer() {
+		super();
+	}
+
 	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left) {
 		super();
 		this.peerId = peerId;
@@ -29,6 +38,10 @@ public class Peer {
 		this.downloaded = downloaded;
 		this.left = left;
 		this.event = event;
+	}
+	public void start() {
+		udpConnect = new Connect();
+		udpConnect.start();
 	}
 	public String getPeerId() {
 		return peerId;

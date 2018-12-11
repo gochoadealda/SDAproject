@@ -54,23 +54,22 @@ public class connect extends Thread{
 			}
 
 			System.out.println(bufferOut.toString());
-			
+
 		} catch (Exception ex) {
 			System.err.println("Error: " + ex.getMessage());
 		}
-		
-		if(myTracker.isMaster()) {
-			
-			Random random = new Random();
-			long connectionID = random.nextLong();
-			myTracker.setOldConnectionID(myTracker.getConnectionID());
-			myTracker.setConnectionID(connectionID);
 
-			ConnectResponse response = new ConnectResponse();
-			response.setTransactionId(myTracker.getTransactionID());
-			response.setConnectionId(connectionID);
-			byte[] responseBytes = response.getBytes();	
+		if(myTracker.isMaster()) {
 			try (DatagramSocket udpDataSocket = new DatagramSocket()){
+				Random random = new Random();
+				long connectionID = Math.abs(random.nextLong());
+				myTracker.setOldConnectionID(myTracker.getConnectionID());
+				myTracker.setConnectionID(connectionID);
+
+				ConnectResponse response = new ConnectResponse();
+				response.setTransactionId(myTracker.getTransactionID());
+				response.setConnectionId(connectionID);
+				byte[] responseBytes = response.getBytes();	
 				DatagramPacket packet = new DatagramPacket(responseBytes, responseBytes.length, peerIP, peerPort);
 				udpDataSocket.send(packet);
 

@@ -16,6 +16,8 @@ import mensajes.topic.ReadyPublisher;
 import mensajes.topic.ReadySubscriber;
 import mensajes.topic.UpdatePublisher;
 import mensajes.topic.UpdateSubscriber;
+import mensajes.udp.Actions;
+import mensajes.udp.connect;
 
 public class Tracker {
 	
@@ -44,6 +46,8 @@ public class Tracker {
 	public ReadySubscriber readyRecieve;
 	public DieReceiver dieRecieve;
 	public DieSender dieSend;
+	public connect udpConnect;
+	public Actions udpActions;
 	public ViewThread trackerView;
 	private long bdtimestamp;
 	private int transactionID;
@@ -101,6 +105,9 @@ public class Tracker {
 		kaSend = new KeepAlivePublisher(this);
 
 		kaSend.start();
+		udpConnect = new connect(this);
+		udpConnect.start();
+		
 	
 	}
 	

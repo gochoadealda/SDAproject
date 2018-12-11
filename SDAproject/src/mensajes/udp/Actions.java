@@ -46,7 +46,7 @@ public class Actions extends Thread{
 					bufferOut.append("\n - ConnectionID: ");
 					bufferOut.append(announceR.getConnectionId());
 					bufferOut.append("\n - InfoHash: ");
-					bufferOut.append(announceR.getInfoHash());
+					bufferOut.append(announceR.getHexInfoHash());
 					bufferOut.append("\n - PeerID: ");
 					bufferOut.append(announceR.getPeerId());
 					bufferOut.append("\n - Downloaded: ");
@@ -95,8 +95,8 @@ public class Actions extends Thread{
 			response.setTransactionId(myTracker.getTransactionID());
 			response.setInterval(30);
 			//sacar datos de la bd
-			response.setLeechers();
-			response.getSeeders();
+			//response.setLeechers();
+			//response.getSeeders();
 
 			try (DatagramSocket udpDataSocket = new DatagramSocket()){
 				byte[] responseBytes = response.getBytes();			
