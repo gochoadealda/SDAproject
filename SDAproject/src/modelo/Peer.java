@@ -7,13 +7,15 @@ public class Peer {
 	private int puerto;
 	private double bytesDes;
 	private double bytesPen;
-	public Peer(int idPeer, String ip, int puerto, double bytesDes, double bytesPen) {
+	private double bytesUp;
+	public Peer(int idPeer, String ip, int puerto, double bytesDes, double bytesPen, double bytesUp) {
 		super();
 		this.idPeer = idPeer;
 		this.ip = ip;
 		this.puerto = puerto;
 		this.bytesDes = bytesDes;
 		this.bytesPen = bytesPen;
+		this.bytesUp = bytesUp;
 	}
 	public int getID() {
 		return idPeer;
@@ -45,6 +47,10 @@ public class Peer {
 	public void setBytesPen(double bytesPen) {
 		this.bytesPen = bytesPen;
 	}
-	
-	
+	public double getBytesUp() {
+		return bytesUp;
+	}
+	public void setBytesUp(double bytesUp) {
+		this.bytesUp = bytesUp;
+	}
 }

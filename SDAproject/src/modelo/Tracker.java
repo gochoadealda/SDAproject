@@ -53,6 +53,8 @@ public class Tracker {
 	private int transactionID;
 	private long connectionID;
 	private long oldConnectionID;
+	private Peer peer;
+	private Swarm swarm;
 
 
 	public Tracker(String iP, int puertoCom) {
@@ -270,4 +272,21 @@ public class Tracker {
 	public void setOldConnectionID(long oldConnectionID) {
 		this.oldConnectionID = oldConnectionID;
 	}
+
+	public Peer getPeer() {
+		return peer;
+	}
+
+	public void setPeer(Peer peer) {
+		this.peer = peer;
+	}
+
+	public Swarm getSwarm() {
+		return swarm;
+	}
+
+	public void setSwarm(Swarm swarm) {
+		this.swarm = swarm;
+	}
+	
 }

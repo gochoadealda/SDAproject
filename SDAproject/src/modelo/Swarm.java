@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 public class Swarm {
 	
-	private int idSwarm;
-	private String nomCont;
+	private int idSwarm; 
+	private String nomCont;   //Infohash
 	private int tamano;
 	private int seeders;
 	private int leechers;
 	private ArrayList<Peer> peerList;
+
 	public Swarm(int idSwarm, String nomCont, int tamano, int seeders, int leechers) {
 		super();
 		this.idSwarm = idSwarm;
@@ -18,6 +19,11 @@ public class Swarm {
 		this.seeders = seeders;
 		this.leechers = leechers;
 	}
+	public Swarm(String nomCont) {
+		super();
+		this.nomCont = nomCont;
+	}
+	
 	public int getID() {
 		return idSwarm;
 	}

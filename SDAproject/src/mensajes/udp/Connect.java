@@ -12,12 +12,12 @@ import modelo.Tracker;
 import udp.ConnectRequest;
 import udp.ConnectResponse;
 
-public class connect extends Thread{
+public class Connect extends Thread{
 	public static final String INFO_HASH = "1959A52BAD89DE0D6C5FA65B57C99D85AC642EF5";
 	private TrackerController myTracker;
 	private InetAddress peerIP;
 	private int peerPort;
-	public connect(Tracker myTracker) {
+	public Connect(Tracker myTracker) {
 		super();
 		this.myTracker = new TrackerController(myTracker);
 	}

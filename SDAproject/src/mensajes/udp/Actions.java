@@ -7,7 +7,13 @@ import java.net.MulticastSocket;
 import java.util.Random;
 
 import bitTorrent.util.ByteUtils;
+import controller.PeerController;
+import controller.SwarmController;
 import controller.TrackerController;
+import mensajes.topic.ReadyPublisher;
+import mensajes.topic.ReadySubscriber;
+import modelo.Peer;
+import modelo.Swarm;
 import modelo.Tracker;
 import udp.AnnounceRequest;
 import udp.AnnounceResponse;
@@ -22,6 +28,7 @@ public class Actions extends Thread{
 		super();
 		this.myTracker = new TrackerController(myTracker);
 	}
+	
 	@Override
 	public void run() {
 		super.run();
@@ -67,6 +74,29 @@ public class Actions extends Thread{
 					bufferOut.append(announceR.getPeerInfo().getPort());
 					bufferOut.append("\n - Bytes: ");
 					bufferOut.append(ByteUtils.toHexString(announceBytes));
+					
+					Peer peer = new Peer(Integer.parseInt(announceR.getPeerId()), 
+							ByteUtils.intToIpAddress(announceR.getPeerInfo().getIpAddress()), 
+							announceR.getPeerInfo().getPort(), announceR.getDownloaded(), announceR.getLeft(), announceR.getUploaded());
+					PeerController peerController = new PeerController(peer);
+					
+					myTracker.setPeer(peerController.getModel());
+					
+					Swarm swarm = new Swarm(announceR.getInfoHash().toString());
+					SwarmController swarmController = new SwarmController(swarm);
+					
+					myTracker.setSwarm(swarmController.getModel());
+					
+					//TODO Metodo añadir a Peer a BD
+					
+					if(myTracker.isMaster()) {
+						myTracker.getModel().readySend = new ReadyPublisher(myTracker.getModel());
+						myTracker.getModel().readySend.start();
+					}else {
+						myTracker.getModel().readyRecieve = new ReadySubscriber(myTracker.getModel());
+						myTracker.getModel().readyRecieve.start();
+					}
+					
 				}
 			}else {
 				bufferOut.append("- ERROR: Response length to small ");
@@ -95,6 +125,7 @@ public class Actions extends Thread{
 			response.setTransactionId(myTracker.getTransactionID());
 			response.setInterval(30);
 			//sacar datos de la bd
+			//TODO sacar datos de la bd
 			//response.setLeechers();
 			//response.getSeeders();
 

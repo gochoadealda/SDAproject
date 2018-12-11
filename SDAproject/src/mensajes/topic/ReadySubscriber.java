@@ -11,7 +11,18 @@ import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
+import modelo.Tracker;
+
 public class ReadySubscriber extends Thread{
+	private TrackerController trackerController;
+	
+	
+	public ReadySubscriber(Tracker model) {
+		super();
+		this.trackerController = new TrackerController(model);
+	}
+
 
 	@Override
 	public void run() {
@@ -49,13 +60,15 @@ public class ReadySubscriber extends Thread{
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
 			
 			//Topic Listener
-			ReadyListener listener = new ReadyListener();
+			ReadyListener listener = new ReadyListener(trackerController.getModel());
 			
 			//Set the same message listener for the non-durable subscriber
 			topicNONDurableSubscriber.setMessageListener(listener);
 			
 			//Begin message delivery
 			topicConnection.start();
+			
+			Thread.sleep(1000);
 			
 		} catch (Exception e) {
 			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
@@ -64,7 +77,9 @@ public class ReadySubscriber extends Thread{
 				topicNONDurableSubscriber.close();
 				topicSession.close();
 				topicConnection.close();
-				System.out.println("- Topic resources closed!");				
+				System.out.println("- Topic resources closed!");
+				
+				trackerController.getModel().readyRecieve = null;
 			} catch (Exception ex) {
 				System.err.println("# TopicSubscriberTest Error: " + ex.getMessage());
 			}

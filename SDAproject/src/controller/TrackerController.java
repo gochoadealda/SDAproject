@@ -2,6 +2,8 @@ package controller;
 
 import java.util.ArrayList;
 
+import modelo.Peer;
+import modelo.Swarm;
 import modelo.Tracker;
 import modelo.TrackerDAO;
 import modelo.ViewThread;
@@ -169,5 +171,21 @@ public class TrackerController {
 	
 	public long getOldConnectionID(){
 		return model.getOldConnectionID();
+	}
+	
+	public Peer getPeer() {
+		return model.getPeer();
+	}
+
+	public void setPeer(Peer peer) {
+		model.setPeer(peer);
+	}
+
+	public Swarm getSwarm() {
+		return model.getSwarm();
+	}
+
+	public void setSwarm(Swarm swarm) {
+		model.setSwarm(swarm);
 	}
 }

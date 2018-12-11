@@ -5,7 +5,18 @@ import javax.jms.MessageListener;
 
 import org.apache.activemq.command.ActiveMQTextMessage;
 
+import controller.TrackerController;
+import modelo.Tracker;
+
 public class ReadyListener implements MessageListener{
+	private TrackerController trackerController;
+	
+	
+	public ReadyListener(Tracker model) {
+		super();
+		this.trackerController = new TrackerController(model);
+	}
+
 
 	@Override
 	public void onMessage(Message message) {
@@ -16,7 +27,7 @@ public class ReadyListener implements MessageListener{
 
 				//Depending on the type of the message the process is different
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
-
+					
 				}
 
 			}catch (Exception ex) {

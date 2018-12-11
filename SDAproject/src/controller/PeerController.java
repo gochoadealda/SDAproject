@@ -1,12 +1,21 @@
 package controller;
 
 import modelo.Peer;
+import modelo.Tracker;
 
 public class PeerController {
 	private Peer model;
 
 	public PeerController(Peer model) {
 		super();
+		this.model = model;
+	}
+	
+	public Peer getModel() {
+		return model;
+	}
+
+	public void setModel(Peer model) {
 		this.model = model;
 	}
 	
@@ -20,7 +29,7 @@ public class PeerController {
 		return model.getIp();
 	}
 	public void setIp(String ip) {
-		model.setIp(ip);;
+		model.setIp(ip);
 	}
 	public int getPuerto() {
 		return model.getPuerto();
@@ -39,5 +48,11 @@ public class PeerController {
 	}
 	public void setBytesPen(double bytesPen) {
 		model.setBytesPen(bytesPen);;
+	}
+	public double getBytesUp() {
+		return model.getBytesUp();
+	}
+	public void setBytesUp(double bytesUp) {
+		model.getBytesUp();
 	}
 }

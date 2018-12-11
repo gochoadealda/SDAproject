@@ -10,7 +10,16 @@ import javax.jms.TopicSession;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
+import modelo.Tracker;
+
 public class ReadyPublisher extends Thread {
+	private TrackerController trackerController;
+	
+	public ReadyPublisher(Tracker model) {
+		super();
+		this.trackerController = new TrackerController(model);
+	}
 
 	@Override
 	public void run() {
@@ -45,8 +54,10 @@ public class ReadyPublisher extends Thread {
 			System.out.println("- TopicPublisher created!");
 			//Text Message
 			TextMessage textMessage = topicSession.createTextMessage();
+			
+			//TODO Para que solo publique el master??? aqui o en Actions??
 			//Message Body
-			textMessage.setText("ready");
+			textMessage.setText("Ready");
 			topicPublisher.publish(textMessage);
 			System.out.println("- TextMessage sent to the Queue!");
 			
@@ -60,7 +71,9 @@ public class ReadyPublisher extends Thread {
 				topicPublisher.close();
 				topicSession.close();
 				topicConnection.close();
-				System.out.println("- Topic resources closed!");				
+				System.out.println("- Topic resources closed!");
+				
+				trackerController.getModel().readySend = null;
 			} catch (Exception ex) {
 				System.err.println("# TopicPublisherTest Error: " + ex.getMessage());
 			}			
