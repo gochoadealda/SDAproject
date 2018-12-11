@@ -53,7 +53,7 @@ public class Actions extends Thread{
 					bufferOut.append("\n - ConnectionID: ");
 					bufferOut.append(announceR.getConnectionId());
 					bufferOut.append("\n - InfoHash: ");
-					bufferOut.append(announceR.getHexInfoHash());
+					bufferOut.append(ByteUtils.arrayToInt(announceR.getInfoHash()));
 					bufferOut.append("\n - PeerID: ");
 					bufferOut.append(announceR.getPeerId());
 					bufferOut.append("\n - Downloaded: ");
@@ -82,7 +82,7 @@ public class Actions extends Thread{
 					
 					myTracker.setPeer(peerController.getModel());
 					
-					Swarm swarm = new Swarm(announceR.getInfoHash().toString());
+					Swarm swarm = new Swarm(ByteUtils.arrayToInt(announceR.getInfoHash()));
 					SwarmController swarmController = new SwarmController(swarm);
 					
 					myTracker.setSwarm(swarmController.getModel());
