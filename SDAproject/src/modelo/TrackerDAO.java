@@ -103,7 +103,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 	public void insertS(Swarm s) {
 		if (s != null) {
 
-			String sqlString = "INSERT INTO Swarm ('idSwarm', 'nomCont', 'tamano', 'seeders', 'lechers') VALUES (?,?,?,?,?)";
+			String sqlString = "INSERT INTO Swarm ('idSwarm', 'nomCont', 'tamano', 'seeders', 'leechers') VALUES (?,?,?,?,?)";
 
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 				stmt.setString(1, String.valueOf(s.getID()));
@@ -262,6 +262,32 @@ public class TrackerDAO implements TrackerDAOInterface {
 		}
 	}
 
+	@Override
+	public void seedersleechers() {
+		int [] seedersLeechersList= new int[2];
+		int seeders=0;
+		int leechers=0;
+		ArrayList<Swarm> swarmList= selectSwarms();
+		ArrayList<Peer> peerList= selectPeers();
+		for(int i=0;i<swarmList.size();i++) {
+			for(int j=0;j<peerList.size();j++) {
+				if(swarmList.get(i).getID()==peerList.get(j).getID()) {//coger el id del swarm relacionado en el peer
+					if(peerList.get(j).getBytesDes()!=0 && peerList.get(j).getBytesPen()==0) {
+						seeders++;
+					}else if(peerList.get(j).getBytesPen()!=0) {
+						leechers++;
+					}
+				}
+			}
+			swarmList.get(i).setLeechers(leechers);
+			swarmList.get(i).setSeeders(seeders);
+			seeders=0;
+			leechers=0;
+		}
+	}
+
+
+
 	public static void main(String[] args) {
 		//		System.out.println("Prueba");
 		//		TrackerDAO manager = new TrackerDAO("db/tracker.db");
@@ -273,4 +299,6 @@ public class TrackerDAO implements TrackerDAOInterface {
 		//		manager.deleteP(1);
 		//		manager.closeConnection();
 	}
+
+
 }
