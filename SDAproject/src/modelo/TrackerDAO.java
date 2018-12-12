@@ -73,14 +73,15 @@ public class TrackerDAO implements TrackerDAOInterface {
 	public void insertP(Peer p) {
 		if (p != null) {
 
-			String sqlString = "INSERT INTO Peer ('idPeer', 'ip', 'bytesDes', 'bytesPen', 'puerto') VALUES (?,?,?,?,?)";
+			String sqlString = "INSERT INTO Peer ('idPeer', 'ip', 'bytesDes', 'bytesPen', 'bytesUp', 'puerto') VALUES (?,?,?,?,?)";
 
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 				stmt.setString(1, String.valueOf(p.getID()));
 				stmt.setString(2, p.getIp());
 				stmt.setString(3, String.valueOf(p.getBytesDes()));
 				stmt.setString(4, String.valueOf(p.getBytesPen()));
-				stmt.setString(5, String.valueOf(p.getPuerto()));
+				stmt.setString(5, String.valueOf(p.getBytesUp()));
+				stmt.setString(6, String.valueOf(p.getPuerto()));
 
 				if (stmt.executeUpdate() == 1) {
 					System.out.println("\n - A new peer was inserted. :)");
@@ -136,7 +137,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				peer = new Peer(rs.getInt("idPeer"), rs.getString("ip"), rs.getInt("puerto"), rs.getInt("bytesDes"),
-						rs.getInt("bytesPen"));
+						rs.getInt("bytesPen"), rs.getInt("bytesUp"));
 				System.out.println("Peer ID:" + peer.getID() + " IP:" + peer.getIp() + " Port:" + peer.getPuerto());
 				peerList.add(peer);
 			}
@@ -173,11 +174,14 @@ public class TrackerDAO implements TrackerDAOInterface {
 	public void updateP(Peer p) {
 		if (p != null) {
 
-			String sqlString = "UPDATE Peer SET bytesDes = ?,bytesPen=? WHERE idPeer =?";
+			String sqlString = "UPDATE Peer SET ip=?, puerto=?, bytesDes = ?,bytesPen=?, bytesUp=? WHERE idPeer =?";
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
-				stmt.setString(1, String.valueOf(p.getBytesDes()));
-				stmt.setString(2, String.valueOf(p.getBytesPen()));
-				stmt.setString(3, String.valueOf(p.getID()));
+				stmt.setString(1, p.getIp());
+				stmt.setString(2, String.valueOf(p.getPuerto()));
+				stmt.setString(3, String.valueOf(p.getBytesDes()));
+				stmt.setString(4, String.valueOf(p.getBytesPen()));
+				stmt.setString(5, String.valueOf(p.getBytesUp()));
+				stmt.setString(6, String.valueOf(p.getID()));
 
 				if (stmt.executeUpdate() != 0) {
 					System.out.println("- Peer's data was updated. :)");
