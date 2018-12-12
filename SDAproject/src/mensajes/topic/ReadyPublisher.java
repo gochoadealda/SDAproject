@@ -55,7 +55,6 @@ public class ReadyPublisher extends Thread {
 			//Text Message
 			TextMessage textMessage = topicSession.createTextMessage();
 			
-			//TODO Para que solo publique el master??? aqui o en Actions??
 			//Message Body
 			textMessage.setText("Ready");
 			topicPublisher.publish(textMessage);
