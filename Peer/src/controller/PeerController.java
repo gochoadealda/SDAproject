@@ -11,6 +11,14 @@ public class PeerController {
 		this.model = model;
 	}
 	
+	public Peer getModel() {
+		return model;
+	}
+	
+	public void setModel(Peer model) {
+		this.model = model;
+	}
+	
 	public String getPeerId() {
 		return model.getPeerId();
 	}

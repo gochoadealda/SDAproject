@@ -1,52 +1,58 @@
 package vista;
 
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
-import controller.TrackerController;
-import modelo.Tracker;
+import controller.PeerController;
+import modelo.Peer;
+
 
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
+
 import javax.swing.JTable;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
 
 @SuppressWarnings("serial")
-public class MainMenu extends JFrame implements ActionListener {
+public class PeerGestor extends JFrame implements ActionListener {
 	private Dimension dim;
-	private JTextField tfIp;
-	private JTextField tfPuerto;
-	private JTextField tfID;
-	private JTable tableTrackers, tableSwarms;
+	private JTable tableSwarms;
 	@SuppressWarnings("unused")
-	private DefaultTableModel modelTrackers, modelSwarms;
+	private DefaultTableModel modelSwarms;
 	private JTable tablePeers;
-	private TrackerController trackerController;
+	private PeerController peerController;
 	private boolean isTheMaster;
 	private Object[][] dataTabla1;
 	@SuppressWarnings("rawtypes")
 	private Class[] columnClassTabla1;
-	private JPanel panel2;
 	private String[] columnsTabla1;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
 
 	
-	public MainMenu(Tracker model) {
+	public PeerGestor(Peer peer) {
 		super(); // usamos el contructor de la clase padre JFrame
 
-		this.trackerController = new TrackerController(model);
+		this.peerController = new PeerController(peer);
 		configurarVentana(); // configuramos la ventana
 		inicializarComponentes(); // inicializamos los atributos o componentes
 
@@ -67,78 +73,6 @@ public class MainMenu extends JFrame implements ActionListener {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 0, 1917, 1002);
 		getContentPane().add(tabbedPane);
-
-		// MENU DE CONFIGURACION (TAB1)
-		JPanel panel1 = new JPanel();
-		tabbedPane.addTab("Configuration menu", null, panel1, null);
-		panel1.setLayout(null);
-
-		JLabel label = new JLabel("IP");
-		label.setBounds(12, 39, 86, 37);
-		label.setFont(new Font("Consolas", Font.PLAIN, 33));
-		panel1.add(label);
-
-		tfIp = new JTextField();
-		tfIp.setBounds(142, 42, 177, 37);
-		tfIp.setColumns(10);
-		tfIp.setText(trackerController.getIP());
-		panel1.add(tfIp);
-
-		JLabel lblPuerto = new JLabel("Port");
-		lblPuerto.setFont(new Font("Consolas", Font.PLAIN, 33));
-		lblPuerto.setBounds(12, 94, 118, 37);
-		panel1.add(lblPuerto);
-
-		JLabel lblId = new JLabel("ID");
-		lblId.setFont(new Font("Consolas", Font.PLAIN, 33));
-		lblId.setBounds(12, 144, 86, 37);
-		panel1.add(lblId);
-
-		tfPuerto = new JTextField();
-		tfPuerto.setColumns(10);
-		tfPuerto.setBounds(142, 97, 177, 37);
-		tfPuerto.setText(String.valueOf(trackerController.getPuertoCom()));
-		panel1.add(tfPuerto);
-
-		tfID = new JTextField();
-		tfID.setColumns(10);
-		tfID.setBounds(143, 147, 177, 37);
-		tfID.setText(String.valueOf(trackerController.getID()));
-		panel1.add(tfID);
-
-		JButton btnIniciar = new JButton("Stop");
-		btnIniciar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				System.out.println("Comprobaci�n de si la IP introducida es v�lida mediante una expresi�n regular");
-				if (!validateIP(tfIp.getText())) {
-					JOptionPane.showMessageDialog(panel1, "Invalid IP", "Error", JOptionPane.ERROR_MESSAGE);
-					tfIp.setText("");
-				}else if(!validatePort(tfPuerto.getText())) {
-					JOptionPane.showMessageDialog(panel1, "Invalid Port", "Error", JOptionPane.ERROR_MESSAGE);
-					tfPuerto.setText("");
-				}else if(!validateID(tfID.getText())) {
-					JOptionPane.showMessageDialog(panel1, "Invalid ID", "Error", JOptionPane.ERROR_MESSAGE);
-					tfID.setText("");
-				}else {
-					System.out.println("El tracker esta a " + trackerController.isActive());
-					if(trackerController.isActive()) {
-						trackerController.setActive(false);
-					}else {
-						trackerController.setActive(true);
-					}
-					System.out.println("El tracker esta a "+trackerController.isActive());
-				}
-			}
-		});
-		btnIniciar.setFont(new Font("Consolas", Font.PLAIN, 33));
-		btnIniciar.setBounds(33, 238, 286, 54);
-		panel1.add(btnIniciar);
-
-		// GESTOR DE TRACKERS (TAB2)
-		panel2 = new JPanel();
-		tabbedPane.addTab("Tracker gestor", null, panel2, null);
-		panel2.setLayout(null);
 
 		// headers for the table
 		columnsTabla1 = new String[] { "Id","Time" };
@@ -165,15 +99,49 @@ public class MainMenu extends JFrame implements ActionListener {
 		//			scrollPaneTabla1.setBounds(32, 28, 452, 431);
 		//			panel2.add(scrollPaneTabla1);
 		// panel2.add(table);
+		
+		
 
 		JPanel panel3 = new JPanel();
 		panel3.setForeground(Color.BLACK);
 		tabbedPane.addTab("Peers gestor", null, panel3, null);
 		panel3.setLayout(null);
+		
+		
+		
+	      
+
+		
+		
+		FileDialog dialog = new FileDialog((Frame) getContentPane(), "Select File to Open");
+		Button showFileDialogButton = new Button("Open File");
+	      showFileDialogButton.addActionListener(new ActionListener() {
+	         @Override
+	         public void actionPerformed(ActionEvent e) {
+	        	 dialog.setVisible(true);
+	         }
+	      });
+	    dialog.setMode(FileDialog.LOAD);
+	    dialog.setVisible(true);
+	    String file = dialog.getFile();
+	    showFileDialogButton.setBounds(51, 201, 307, 48);
+	    panel3.add(showFileDialogButton);
+	    
+		 JFileChooser chooser = new JFileChooser();
+	        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+	                "JPG & GIF Images", "jpg", "gif");
+	        chooser.setFileFilter(filter);
+	        int returnVal = chooser.showOpenDialog(null);
+	        if(returnVal == JFileChooser.APPROVE_OPTION) {
+	            System.out.println("You chose to open this file: " +
+	                    chooser.getSelectedFile().getName());
+	        }
+	    //chooser.setBounds(70, 390, 266, 37);
+	    panel3.add(chooser);
 
 		JLabel lblSwarmsActivos = new JLabel("Active Swarms");
 		lblSwarmsActivos.setFont(new Font("Consolas", Font.PLAIN, 33));
-		lblSwarmsActivos.setBounds(62, 50, 266, 37);
+		lblSwarmsActivos.setBounds(62, 345, 266, 37);
 		panel3.add(lblSwarmsActivos);
 
 		// headers for the table
@@ -210,7 +178,7 @@ public class MainMenu extends JFrame implements ActionListener {
 					return values[index];
 				}
 			});
-			swarmList.setBounds(62, 116, 254, 387);
+			swarmList.setBounds(62, 414, 296, 487);
 			panel3.add(swarmList);
 
 			tableSwarms = new JTable(new DefaultTableModel(
@@ -222,11 +190,11 @@ public class MainMenu extends JFrame implements ActionListener {
 					}
 					));
 			JScrollPane scrollPaneTabla2 = new JScrollPane(tableSwarms);
-			scrollPaneTabla2.setBounds(595, 148, 726, 43);
+			scrollPaneTabla2.setBounds(595, 97, 1249, 197);
 			panel3.add(scrollPaneTabla2);
 
 			JScrollPane scrollPaneTabla3 = new JScrollPane();
-			scrollPaneTabla3.setBounds(595, 309, 726, 347);
+			scrollPaneTabla3.setBounds(595, 414, 1249, 421);
 			panel3.add(scrollPaneTabla3);
 
 			tablePeers = new JTable();
@@ -253,9 +221,14 @@ public class MainMenu extends JFrame implements ActionListener {
 						{null, null, null, null, null},
 						{null, null, null, null, null},
 						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
+						{null, null, null, null, null},
 					},
 					new String[] {
-							"ID", "ip", "Port", "Bytes pending", "Downloaded Bytes"
+							"ID", "ip", "Port", "Bytes pending", "Downloaded Bytes", "Uploaded Bytes"
 					}
 					) {
 				Class[] columnTypes = new Class[] {
@@ -268,13 +241,51 @@ public class MainMenu extends JFrame implements ActionListener {
 
 			JLabel lblPeersInfo = new JLabel("Peers Info");
 			lblPeersInfo.setFont(new Font("Tahoma", Font.PLAIN, 25));
-			lblPeersInfo.setBounds(595, 250, 121, 48);
+			lblPeersInfo.setBounds(595, 337, 121, 48);
 			panel3.add(lblPeersInfo);
 
 			JLabel lblSwarmInfo = new JLabel("Swarm Info");
 			lblSwarmInfo.setFont(new Font("Tahoma", Font.PLAIN, 25));
-			lblSwarmInfo.setBounds(595, 100, 135, 37);
+			lblSwarmInfo.setBounds(595, 35, 135, 37);
 			panel3.add(lblSwarmInfo);
+			
+			JLabel label = new JLabel("IP");
+			label.setFont(new Font("Consolas", Font.PLAIN, 33));
+			label.setBounds(51, 37, 86, 37);
+			panel3.add(label);
+			
+			textField = new JTextField();
+			textField.setText((String) null);
+			textField.setColumns(10);
+			textField.setBounds(181, 40, 177, 37);
+			panel3.add(textField);
+			
+			JLabel label_1 = new JLabel("Port");
+			label_1.setFont(new Font("Consolas", Font.PLAIN, 33));
+			label_1.setBounds(51, 92, 118, 37);
+			panel3.add(label_1);
+			
+			textField_1 = new JTextField();
+			textField_1.setText((String) null);
+			textField_1.setColumns(10);
+			textField_1.setBounds(181, 95, 177, 37);
+			panel3.add(textField_1);
+			
+			JLabel label_2 = new JLabel("ID");
+			label_2.setFont(new Font("Consolas", Font.PLAIN, 33));
+			label_2.setBounds(51, 142, 86, 37);
+			panel3.add(label_2);
+			
+			textField_2 = new JTextField();
+			textField_2.setText((String) null);
+			textField_2.setColumns(10);
+			textField_2.setBounds(182, 145, 177, 37);
+			panel3.add(textField_2);
+			
+			JButton button = new JButton("Stop");
+			button.setFont(new Font("Consolas", Font.PLAIN, 33));
+			button.setBounds(51, 262, 307, 54);
+			panel3.add(button);
 			tablePeers.getColumnModel().getColumn(3).setPreferredWidth(97);
 			tablePeers.getColumnModel().getColumn(4).setPreferredWidth(105);
 
@@ -307,16 +318,12 @@ public class MainMenu extends JFrame implements ActionListener {
 		return validation;
 	}
 
-	public Tracker getMyTracker() {
-		return trackerController.getModel();
+	public Peer getMyPeer() {
+		return peerController.getModel();
 	}
 
 	public boolean isTheMaster() {
 		return isTheMaster;
-	}
-
-	public void setTheMaster(boolean isTheMaster) {
-		this.isTheMaster = isTheMaster;
 	}
 
 	public Object[][] getDataTabla1() {
@@ -337,29 +344,6 @@ public class MainMenu extends JFrame implements ActionListener {
 		this.columnClassTabla1 = columnClassTabla1;
 	}
 
-	public DefaultTableModel getModelTrackers() {
-		return modelTrackers;
-	}
-
-	public void setModelTrackers(DefaultTableModel modelTrackers) {
-		this.modelTrackers = modelTrackers;
-	}
-
-	public JTable getTableTrackers() {
-		return tableTrackers;
-	}
-
-	public void setTableTrackers(JTable tableTrackers) {
-		this.tableTrackers = tableTrackers;
-	}
-
-	public JPanel getPanel2() {
-		return panel2;
-	}
-
-	public void setPanel2(JPanel panel2) {
-		this.panel2 = panel2;
-	}
 	
 	public String[] getColumnsTabla1() {
 		return columnsTabla1;
@@ -372,7 +356,6 @@ public class MainMenu extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		// JOptionPane.showMessageDialog(this, "Hola " + nombre + "."); // mostramos un
-		// mensaje (frame, mensaje)
 	}
+	
 }
