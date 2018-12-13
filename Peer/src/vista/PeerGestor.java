@@ -201,38 +201,16 @@ public class PeerGestor extends JFrame implements ActionListener {
 			scrollPaneTabla3.setViewportView(tablePeers);
 			tablePeers.setModel(new DefaultTableModel(
 					new Object[][] {
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
+						{null, null, null, null, null, null},
+						{null, null, null, null, null, null},
+						{null, null, null, null, null, null},
 					},
 					new String[] {
 							"ID", "ip", "Port", "Bytes pending", "Downloaded Bytes", "Uploaded Bytes"
 					}
 					) {
 				Class[] columnTypes = new Class[] {
-						Integer.class, String.class, Integer.class, Double.class, Double.class
+						Integer.class, String.class, Integer.class, Double.class, Double.class, Double.class
 				};
 				public Class getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
