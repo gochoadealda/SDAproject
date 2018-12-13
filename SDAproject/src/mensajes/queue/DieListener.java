@@ -24,7 +24,7 @@ public class DieListener implements MessageListener {
 			
 			try {
 				System.out.println("   - DieQueueListener: " + message.getClass().getSimpleName() + " received!");
-				
+				//TODO cambiar 
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
 					System.out.println(((TextMessage)message).getText());
 					String messageString = ((TextMessage)message).getText();

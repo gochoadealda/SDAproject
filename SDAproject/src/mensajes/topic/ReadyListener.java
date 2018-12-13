@@ -27,7 +27,12 @@ public class ReadyListener implements MessageListener{
 
 				//Depending on the type of the message the process is different
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
-					
+					if(trackerController.isMaster()) {
+						trackerController.getModel().okRecieve.start();
+					}else {
+						trackerController.getModel().okSend.start();
+					}
+					trackerController.setReady(true);
 				}
 
 			}catch (Exception ex) {

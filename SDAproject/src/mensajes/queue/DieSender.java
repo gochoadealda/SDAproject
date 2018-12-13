@@ -76,7 +76,7 @@ public class DieSender extends Thread{
 				queueSession.close();
 				queueConnection.close();
 				System.out.println("- Queue resources closed!");	
-				trackerController.getModel().kaSend = null;
+				trackerController.getModel().dieSend = null;
 			} catch (Exception ex) {
 				System.err.println("# QueueOkErrorSenderTest Error: " + ex.getMessage());
 			}			

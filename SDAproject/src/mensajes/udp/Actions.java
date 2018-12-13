@@ -96,7 +96,7 @@ public class Actions extends Thread{
 						myTracker.getModel().readyRecieve = new ReadySubscriber(myTracker.getModel());
 						myTracker.getModel().readyRecieve.start();
 					}
-					
+					myTracker.setMulticast(true);
 				}
 			}else {
 				bufferOut.append("- ERROR: Response length to small ");

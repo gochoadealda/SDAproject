@@ -17,13 +17,10 @@ public class OkErrorSender extends Thread {
 	
 	
 	private TrackerController trackerController;
-	private boolean ok;
 	
-	
-	public OkErrorSender(boolean active, Tracker model, boolean ok) {
+	public OkErrorSender( Tracker model) {
 		super();
 		this.trackerController = new TrackerController(model);
-		this.ok = ok;
 	}
 	
 	@Override
@@ -58,21 +55,19 @@ public class OkErrorSender extends Thread {
 			System.out.println("- QueueSender created!");
 			TextMessage textMessage = queueSession.createTextMessage();
 			//OK
-			if(ok){
-
+			if(trackerController.isActive() && trackerController.isMulticast() && trackerController.isReady()){
 				textMessage.setText("OK "+ trackerController.getID());
 				queueSender.send(textMessage);
 				System.out.println("- TextMessage sent to the Queue!");
 				
-
 			//ERROR
-			}else if(!ok){
-
+//TODO si mandas keepalives y has recibido el mensaje de multicast del peer PERO no ha recibido el Ready del master
+			}else if(trackerController.isActive() && trackerController.isMulticast() && !trackerController.isReady()){ 
 				textMessage.setText("ER "+ trackerController.getID());
 				queueSender.send(textMessage);
 				System.out.println("- TextMessage sent to the Queue!");
 			}
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 
 		} catch (Exception e) {
 			System.err.println("# QueueOkErrorSenderTest Error: " + e.getMessage());
@@ -83,7 +78,7 @@ public class OkErrorSender extends Thread {
 				queueSession.close();
 				queueConnection.close();
 				System.out.println("- Queue resources closed!");	
-				trackerController.getModel().kaSend = null;
+				trackerController.getModel().okSend = null;
 			} catch (Exception ex) {
 				System.err.println("# QueueOkErrorSenderTest Error: " + ex.getMessage());
 			}			

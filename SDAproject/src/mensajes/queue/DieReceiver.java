@@ -17,9 +17,8 @@ public class DieReceiver extends Thread{
 	private boolean active;
 	private TrackerController trackerController;
 	
-	public DieReceiver(boolean active, Tracker model) {
+	public DieReceiver(Tracker model) {
 		super();
-		this.active = active;
 		this.trackerController = new TrackerController(model);
 	}
 	
@@ -55,9 +54,9 @@ public class DieReceiver extends Thread{
 			
 			queueConnection.start();
 			
-			while(active) {
+			//while(active) {
 				
-			}
+			//}
 		} catch (Exception e) {
 			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
 		} finally {

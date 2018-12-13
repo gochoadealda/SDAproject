@@ -13,13 +13,13 @@ import controller.TrackerController;
 import modelo.Tracker;
 
 public class OkErrorReceiver extends Thread{
-	
-	private boolean active;
+	//TODO borrar parametro active (es copia de KeepAlive)
+	//private boolean active;
 	private TrackerController trackerController;
 	
-	public OkErrorReceiver(boolean active, Tracker model) {
+	public OkErrorReceiver(Tracker model) {
 		super();
-		this.active = active;
+		//this.active = active;
 		this.trackerController = new TrackerController(model);
 	}
 	
@@ -55,9 +55,9 @@ public class OkErrorReceiver extends Thread{
 		
 		queueConnection.start();
 		
-		while(active) {
+		//while(active) {
 			
-		}
+		//}
 		} catch (Exception e) {
 		System.err.println("# QueueReceiverTest Error: " + e.getMessage());
 		} finally {

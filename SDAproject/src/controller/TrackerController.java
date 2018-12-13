@@ -84,12 +84,12 @@ public class TrackerController {
 		return model.getTrackerList();
 	}
 	
-	public ArrayList<Integer> getOkList() {
-		return model.getOkList();
-	}
-
 	public void setTrackerList(int id) {
 		model.setTrackerList(id);
+	}
+	
+	public ArrayList<Integer> getOkList() {
+		return model.getOkList();
 	}
 	
 	public void setOkList(int id) {
@@ -171,6 +171,22 @@ public class TrackerController {
 	
 	public long getOldConnectionID(){
 		return model.getOldConnectionID();
+	}
+	
+	public boolean isMulticast() {
+		return model.isMulticast();
+	}
+
+	public void setMulticast(boolean multicast) {
+		model.setMulticast(multicast);;
+	}
+
+	public boolean isReady() {
+		return model.isReady();
+	}
+
+	public void setReady(boolean ready) {
+		model.setReady(ready);
 	}
 	
 	public Peer getPeer() {

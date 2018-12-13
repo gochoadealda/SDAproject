@@ -28,7 +28,7 @@ public class Tracker {
 	private int masterID;
 	private int keepAliveTimer;
 	private ArrayList<Integer> trackerList;
-	private ArrayList<Integer> okList;
+	private ArrayList<Integer> okList;         //SOBRA???
 	private ArrayList<Long> timeList;
 	private TrackerDAO trackerDB;
 	private boolean active;
@@ -55,6 +55,7 @@ public class Tracker {
 	private long oldConnectionID;
 	private Peer peer;
 	private Swarm swarm;
+	private boolean multicast, ready;
 
 
 	public Tracker(String iP, int puertoCom) {
@@ -157,12 +158,12 @@ public class Tracker {
 		return trackerList;
 	}
 	
-	public ArrayList<Integer> getOkList() {
-		return okList;
-	}
-
 	public void setTrackerList(int id) {
 		this.trackerList.add(id);
+	}
+	
+	public ArrayList<Integer> getOkList() {
+		return okList;
 	}
 	
 	public void setOkList(int id) {
@@ -271,6 +272,22 @@ public class Tracker {
 
 	public void setOldConnectionID(long oldConnectionID) {
 		this.oldConnectionID = oldConnectionID;
+	}
+
+	public boolean isMulticast() {
+		return multicast;
+	}
+
+	public void setMulticast(boolean multicast) {
+		this.multicast = multicast;
+	}
+
+	public boolean isReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
 	}
 
 	public Peer getPeer() {
