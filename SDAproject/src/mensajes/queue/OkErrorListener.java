@@ -15,23 +15,23 @@ import controller.TrackerController;
 import modelo.Tracker;
 
 public class OkErrorListener implements MessageListener {
-	
+
 	private TrackerController trackerController;
 	private int ok,error;
-	
+
 	public OkErrorListener(Tracker model) {
 		super();
 		this.trackerController = new TrackerController(model);
 		this.ok = 0;
 		this.error = 0;
 	}
-	
+
 	public void onMessage(Message message) {
 		if (message != null) {
-			
+
 			try {
 				System.out.println("   - OkErrorQueueListener: " + message.getClass().getSimpleName() + " received!");
-				
+
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
 					System.out.println(((TextMessage)message).getText());
 					String messageString = ((TextMessage)message).getText();
@@ -39,7 +39,7 @@ public class OkErrorListener implements MessageListener {
 					String texto = messageString.substring(0,1);
 					//TODO no se pondra a 0???
 					ArrayList<Integer> IDlist = trackerController.getTrackerList();
-					
+
 					HashMap<Integer, String> votos = new HashMap<Integer, String>();
 					votos.put(arrivedID, texto);
 					Iterator<?> it = votos.entrySet().iterator();
@@ -67,16 +67,18 @@ public class OkErrorListener implements MessageListener {
 							}
 						}
 						//TODO Aqui va el Receiver???
+					}else {//sería que han votado todos
+						//dieReceiver.start() donde????
+						//TODO Update o No update???
 					}
-					//dieReceiver.start() donde????
-					//TODO Update o No update???
-					
-					
+
 				}
-	}catch (Exception ex) {
-		System.err.println("# TopicListener error: " + ex.getMessage());
+			}catch (Exception ex) {
+				System.err.println("# TopicListener error: " + ex.getMessage());
+			}
+		}
 	}
-}}}
-	
-	
+}
+
+
 

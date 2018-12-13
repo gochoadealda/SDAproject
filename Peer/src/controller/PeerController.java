@@ -61,4 +61,12 @@ public class PeerController {
 	public void setEvent(int event) {
 		model.setEvent(event);
 	}
+	
+	public void setActive(boolean active) {
+		model.setActive(active);
+	}
+	
+	public boolean isActive() {
+		return model.isActive();
+	}
 }

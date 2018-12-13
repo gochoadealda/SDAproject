@@ -16,50 +16,50 @@ public class OkErrorReceiver extends Thread{
 	//TODO borrar parametro active (es copia de KeepAlive)
 	//private boolean active;
 	private TrackerController trackerController;
-	
+
 	public OkErrorReceiver(Tracker model) {
 		super();
 		//this.active = active;
 		this.trackerController = new TrackerController(model);
 	}
-	
+
 	@Override
 	public void run(){
-	String connectionFactoryName = "QueueConnectionFactory";
-	String queueJNDIName = "jndi.okerror.queue";
-	
-	QueueConnection queueConnection = null;
-	QueueSession queueSession = null;
-	QueueReceiver queueReceiver = null;	
-	
-	try{
-		
-		Context ctx = new InitialContext();
-	
-		QueueConnectionFactory queueConnectionFactory = (QueueConnectionFactory) ctx.lookup(connectionFactoryName);			
-		
-		Queue myQueue = (Queue) ctx.lookup(queueJNDIName);			
+		String connectionFactoryName = "QueueConnectionFactory";
+		String queueJNDIName = "jndi.okerror.queue";
 
-		queueConnection = queueConnectionFactory.createQueueConnection();
-		System.out.println("- Queue Connection created!");
-		
-		queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);			
-		System.out.println("- Queue Session created!");
-		
-		queueReceiver = queueSession.createReceiver(myQueue);
-		System.out.println("- QueueReceiver created!");
-		
-		OkErrorListener listener = new OkErrorListener(trackerController.getModel());			
-		queueReceiver.setMessageListener(listener);
-		
-		
-		queueConnection.start();
-		
-		//while(active) {
-			
-		//}
+		QueueConnection queueConnection = null;
+		QueueSession queueSession = null;
+		QueueReceiver queueReceiver = null;	
+
+		try{
+
+			Context ctx = new InitialContext();
+
+			QueueConnectionFactory queueConnectionFactory = (QueueConnectionFactory) ctx.lookup(connectionFactoryName);			
+
+			Queue myQueue = (Queue) ctx.lookup(queueJNDIName);			
+
+			queueConnection = queueConnectionFactory.createQueueConnection();
+			System.out.println("- Queue Connection created!");
+
+			queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);			
+			System.out.println("- Queue Session created!");
+
+			queueReceiver = queueSession.createReceiver(myQueue);
+			System.out.println("- QueueReceiver created!");
+
+			OkErrorListener listener = new OkErrorListener(trackerController.getModel());			
+			queueReceiver.setMessageListener(listener);
+
+
+			queueConnection.start();
+
+			//while(active) {
+
+			//}
 		} catch (Exception e) {
-		System.err.println("# QueueReceiverTest Error: " + e.getMessage());
+			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
 		} finally {
 			try {
 				//Close resources
