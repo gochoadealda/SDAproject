@@ -1,7 +1,11 @@
 package modelo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mensajes.udp.Actions;
 import mensajes.udp.Connect;
+import udp.PeerInfo;
 
 public class Peer {
 
@@ -17,10 +21,17 @@ public class Peer {
 	public Connect udpConnect;
 	public Actions udpActions;
 	private long lastconnection;
+	private long lastannounce;
 	private boolean active;
+	private byte[] infoHash;
+	private int seeders;
+	private int leechers;
+	private int interval;
+	private List<PeerInfo> swarmPeers;
 
 	public Peer() {
 		super();
+		swarmPeers = new ArrayList<>();
 	}
 
 	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left) {
@@ -44,12 +55,24 @@ public class Peer {
 		this.event = event;
 	}
 	public void start() {
+		this.active = true;
 		udpConnect = new Connect(this);
 		udpConnect.start();
-		while(true) {
-			if(System.currentTimeMillis()-lastconnection >= 60000) {
+		try {
+			Thread.sleep(500);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		while(active) {
+			//System.out.println(System.currentTimeMillis()-lastconnection);
+			if(System.currentTimeMillis()-lastconnection >= 60000 ) {
 				udpConnect = new Connect(this);
 				udpConnect.start();
+				try {
+					Thread.sleep(500);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
 			}
 		}
 	}
@@ -132,6 +155,54 @@ public class Peer {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public long getLastannounce() {
+		return lastannounce;
+	}
+
+	public void setLastannounce(long lastannounce) {
+		this.lastannounce = lastannounce;
+	}
+
+	public byte[] getInfoHash() {
+		return infoHash;
+	}
+
+	public void setInfoHash(byte[] infoHash) {
+		this.infoHash = infoHash;
+	}
+
+	public int getSeeders() {
+		return seeders;
+	}
+
+	public void setSeeders(int seeders) {
+		this.seeders = seeders;
+	}
+
+	public int getLeechers() {
+		return leechers;
+	}
+
+	public void setLeechers(int leechers) {
+		this.leechers = leechers;
+	}
+
+	public int getInterval() {
+		return interval;
+	}
+
+	public void setInterval(int interval) {
+		this.interval = interval;
+	}
+
+	public List<PeerInfo> getSwarmPeers() {
+		return swarmPeers;
+	}
+
+	public void setSwarmPeers(List<PeerInfo> swarmPeers) {
+		this.swarmPeers = swarmPeers;
 	}
 	
 

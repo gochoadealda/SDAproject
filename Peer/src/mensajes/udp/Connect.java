@@ -75,7 +75,9 @@ public class Connect extends Thread{
 			System.out.println(bufferOut.toString());
 		}catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
+			myPeer.udpConnect = null;
 		}
+		
 		myPeer.udpConnect = null;
 	}
 
