@@ -9,12 +9,11 @@ import controller.TrackerController;
 import modelo.Tracker;
 
 public class ReadyListener implements MessageListener{
-	private TrackerController trackerController;
+	private TrackerController trackercontroller;
 	
 	
 	public ReadyListener(Tracker model) {
-		super();
-		this.trackerController = new TrackerController(model);
+		this.trackercontroller = new TrackerController(model);
 	}
 
 

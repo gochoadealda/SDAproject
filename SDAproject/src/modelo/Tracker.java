@@ -1,6 +1,9 @@
 package modelo;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import mensajes.fileMessage.DBQueueFileReceiver;
 import mensajes.fileMessage.DBQueueFileSender;
@@ -51,8 +54,11 @@ public class Tracker {
 	public ViewThread trackerView;
 	private long bdtimestamp;
 	private int transactionID;
+	private HashMap<String, Integer> transactionIDs;
 	private long connectionID;
+	private HashMap<String, Long> connectionIDs;
 	private long oldConnectionID;
+	private HashMap<String, Long> oldConnectionIDs;
 	private Peer peer;
 	private Swarm swarm;
 	private boolean multicast, ready;
@@ -94,6 +100,9 @@ public class Tracker {
 	public void start() {
 		kaRecive = new KeepAliveSubscriber(this);
 		kaRecive.start();
+		transactionIDs = new HashMap<>();
+		connectionIDs = new HashMap<>();
+		oldConnectionIDs = new HashMap<>();
 		try {
 			Thread.sleep(3000);
 		} catch (Exception e) {
@@ -305,5 +314,30 @@ public class Tracker {
 	public void setSwarm(Swarm swarm) {
 		this.swarm = swarm;
 	}
+
+	public HashMap<String, Integer> getTransactionIDs() {
+		return transactionIDs;
+	}
+
+	public void setTransactionIDs(HashMap<String, Integer> transactionIDs) {
+		this.transactionIDs = transactionIDs;
+	}
+
+	public HashMap<String, Long> getConnectionIDs() {
+		return connectionIDs;
+	}
+
+	public void setConnectionIDs(HashMap<String, Long> connectionIDs) {
+		this.connectionIDs = connectionIDs;
+	}
+
+	public HashMap<String, Long> getOldConnectionIDs() {
+		return oldConnectionIDs;
+	}
+
+	public void setOldConnectionIDs(HashMap<String, Long> oldConnectionIDs) {
+		this.oldConnectionIDs = oldConnectionIDs;
+	}
+	
 	
 }

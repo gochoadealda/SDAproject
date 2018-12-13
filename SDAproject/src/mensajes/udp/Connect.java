@@ -4,6 +4,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import bitTorrent.util.ByteUtils;
@@ -25,65 +27,77 @@ public class Connect extends Thread{
 	@Override
 	public void run() {
 		super.run();
-		StringBuffer bufferOut = new StringBuffer();
-		try (MulticastSocket udpSocket = new MulticastSocket(55557)){
-			udpSocket.joinGroup(InetAddress.getByName("230.0.0.1"));
-			udpSocket.setSoTimeout(15000);
+		while(myTracker.isActive()) {
+			StringBuffer bufferOut = new StringBuffer();
+			try {
+				MulticastSocket udpSocket = new MulticastSocket(55557);
+				udpSocket.joinGroup(InetAddress.getByName("230.0.0.1"));
+				//udpSocket.setSoTimeout(15000);
 
-			byte[] requestBytes = new byte[16]; //16 bytes is the size of Connect Response Message
-			DatagramPacket packet = new DatagramPacket(requestBytes, requestBytes.length);
-			udpSocket.receive(packet);
-			this.peerIP = packet.getAddress();
-			this.peerPort = packet.getPort();
-			System.out.println(peerIP);
-			System.out.println(peerPort);
-			if (packet.getLength() >= 16) {
-				ConnectRequest request = ConnectRequest.parse(packet.getData());
-				bufferOut.append("Connect Request\n - Action: ");
-				bufferOut.append(request.getAction());
-				bufferOut.append("\n - TransactionID: ");
-				bufferOut.append(request.getTransactionId());
-				bufferOut.append("\n - ConnectionID: ");
-				bufferOut.append(request.getConnectionId());
-				bufferOut.append("\n - Bytes: ");
-				bufferOut.append(ByteUtils.toHexString(requestBytes));
-				myTracker.setTransactionID(request.getTransactionId());
-			} else {
-				bufferOut.append("- ERROR: Response length to small ");
-				bufferOut.append(packet.getLength());
+				byte[] requestBytes = new byte[16]; //16 bytes is the size of Connect Response Message
+				DatagramPacket packet = new DatagramPacket(requestBytes, requestBytes.length);
+				udpSocket.receive(packet);
+				this.peerIP = packet.getAddress();
+				this.peerPort = packet.getPort();
+				if (packet.getLength() >= 16) {
+					ConnectRequest request = ConnectRequest.parse(packet.getData());
+					bufferOut.append("Connect Request\n - Action: ");
+					bufferOut.append(request.getAction());
+					bufferOut.append("\n - TransactionID: ");
+					bufferOut.append(request.getTransactionId());
+					bufferOut.append("\n - ConnectionID: ");
+					bufferOut.append(request.getConnectionId());
+					bufferOut.append("\n - Bytes: ");
+					bufferOut.append(ByteUtils.toHexString(requestBytes));
+					myTracker.setTransactionID(request.getTransactionId());
+					HashMap<String, Integer> transactionIDs = myTracker.getTransactionIDs();
+					transactionIDs.put(peerIP.getHostAddress(), request.getTransactionId());
+					myTracker.setTransactionIDs(transactionIDs);
+				} else {
+					bufferOut.append("- ERROR: Response length to small ");
+					bufferOut.append(packet.getLength());
+				}
+
+				System.out.println(bufferOut.toString());
+				Thread.sleep(500);
+			} catch (Exception ex) {
+				System.err.println("Error: " + ex.getMessage());
 			}
 
-			System.out.println(bufferOut.toString());
+			if(myTracker.isMaster()) {
+				try (DatagramSocket udpDataSocket = new DatagramSocket()){
+					Random random = new Random();
+					long connectionID = Math.abs(random.nextLong());
 
-		} catch (Exception ex) {
-			System.err.println("Error: " + ex.getMessage());
-		}
+					HashMap<String, Long> oldConnectionIDs = myTracker.getOldConnectionIDs();
+					HashMap<String, Long> connectionIDs = myTracker.getConnectionIDs();
+					oldConnectionIDs.put(peerIP.getHostAddress(), connectionIDs.get(peerIP.getHostAddress()));
+					connectionIDs.put(peerIP.getHostAddress(), connectionID);
+					myTracker.setOldConnectionIDs(oldConnectionIDs);
+					myTracker.setConnectionIDs(connectionIDs);
+					
+					myTracker.setOldConnectionID(myTracker.getConnectionID());
+					myTracker.setConnectionID(connectionID);
 
-		if(myTracker.isMaster()) {
-			try (DatagramSocket udpDataSocket = new DatagramSocket()){
-				Random random = new Random();
-				long connectionID = Math.abs(random.nextLong());
-				myTracker.setOldConnectionID(myTracker.getConnectionID());
-				myTracker.setConnectionID(connectionID);
+					ConnectResponse response = new ConnectResponse();
+					response.setTransactionId(myTracker.getTransactionID());
+					response.setConnectionId(connectionID);
+					byte[] responseBytes = response.getBytes();	
+					DatagramPacket datapacket = new DatagramPacket(responseBytes, responseBytes.length, peerIP, peerPort);
+					udpDataSocket.send(datapacket);
 
-				ConnectResponse response = new ConnectResponse();
-				response.setTransactionId(myTracker.getTransactionID());
-				response.setConnectionId(connectionID);
-				byte[] responseBytes = response.getBytes();	
-				DatagramPacket packet = new DatagramPacket(responseBytes, responseBytes.length, peerIP, peerPort);
-				udpDataSocket.send(packet);
-
-				bufferOut.append("\n\nConnect Response\n - Action: ");
-				bufferOut.append(response.getAction());
-				bufferOut.append("\n - TransactionID: ");
-				bufferOut.append(response.getTransactionId());
-				bufferOut.append("\n - ConnectionID: ");
-				bufferOut.append(response.getConnectionId());
-				bufferOut.append("\n - Bytes: ");
-				bufferOut.append(ByteUtils.toHexString(responseBytes));
-				System.out.println(bufferOut.toString());
-			}catch (Exception e) {
-				System.err.println("Error: " + e.getMessage());
+					bufferOut.append("\n\nConnect Response\n - Action: ");
+					bufferOut.append(response.getAction());
+					bufferOut.append("\n - TransactionID: ");
+					bufferOut.append(response.getTransactionId());
+					bufferOut.append("\n - ConnectionID: ");
+					bufferOut.append(response.getConnectionId());
+					bufferOut.append("\n - Bytes: ");
+					bufferOut.append(ByteUtils.toHexString(responseBytes));
+					System.out.println(bufferOut.toString());
+				}catch (Exception e) {
+					System.err.println("Error: " + e.getMessage());
+				}
 			}
 		}
 	}
