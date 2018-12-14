@@ -30,6 +30,7 @@ public class DieListener implements MessageListener {
 					String messageString = ((TextMessage)message).getText();
 					int arrivedID = Integer.parseInt(messageString.substring(3));
 					String texto = messageString.substring(1,2);
+					//TODO No analiza si es ok/error --> Se encarga de eliminarlo como hace el keepalive (fijarse en keepAlive)
 					if(texto == "OK"){
 						trackerController.setOkList(arrivedID);
 						

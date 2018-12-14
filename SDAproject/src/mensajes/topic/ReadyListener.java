@@ -6,6 +6,8 @@ import javax.jms.MessageListener;
 import org.apache.activemq.command.ActiveMQTextMessage;
 
 import controller.TrackerController;
+import mensajes.queue.OkErrorReceiver;
+import mensajes.queue.OkErrorSender;
 import modelo.Tracker;
 
 public class ReadyListener implements MessageListener{
@@ -28,8 +30,10 @@ public class ReadyListener implements MessageListener{
 				//Depending on the type of the message the process is different
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
 					if(trackerController.isMaster()) {
+						trackerController.getModel().okRecieve = new OkErrorReceiver(trackerController.getModel());
 						trackerController.getModel().okRecieve.start();
 					}else {
+						trackerController.getModel().okSend = new OkErrorSender(trackerController.getModel());
 						trackerController.getModel().okSend.start();
 					}
 					trackerController.setReady(true);

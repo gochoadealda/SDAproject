@@ -14,7 +14,6 @@ import modelo.Tracker;
 
 public class DieReceiver extends Thread{
 
-	private boolean active;
 	private TrackerController trackerController;
 	
 	public DieReceiver(Tracker model) {
@@ -54,9 +53,9 @@ public class DieReceiver extends Thread{
 			
 			queueConnection.start();
 			
-			//while(active) {
+			while(trackerController.isActive()) {
 				
-			//}
+			}
 		} catch (Exception e) {
 			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
 		} finally {

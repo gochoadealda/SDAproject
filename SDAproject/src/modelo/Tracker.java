@@ -90,10 +90,11 @@ public class Tracker {
 		
 		}
 	}
-
 	public void start() {
 		kaRecive = new KeepAliveSubscriber(this);
 		kaRecive.start();
+		dieRecieve = new DieReceiver(this);
+		dieRecieve.start();
 		try {
 			Thread.sleep(3000);
 		} catch (Exception e) {

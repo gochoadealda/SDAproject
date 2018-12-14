@@ -14,13 +14,11 @@ import modelo.Tracker;
 
 public class DieSender extends Thread{
 
-	private boolean active;
 	private TrackerController trackerController;
 	
 	
-	public DieSender(boolean active, Tracker model) {
+	public DieSender(Tracker model) {
 		super();
-		this.active = active;
 		this.trackerController = new TrackerController(model);
 	}
 	

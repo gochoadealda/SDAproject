@@ -11,6 +11,12 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 public class UpdatePublisher extends Thread{
+	private String update;
+
+	public UpdatePublisher(String update) {
+		super();
+		this.update = update;
+	}
 
 	@Override
 	public void run() {
@@ -46,9 +52,7 @@ public class UpdatePublisher extends Thread{
 			//Text Message
 			TextMessage textMessage = topicSession.createTextMessage();
 			//Message Body
-			textMessage.setText("update");
-			topicPublisher.publish(textMessage);
-			textMessage.setText("noupdate");
+			textMessage.setText(update);
 			topicPublisher.publish(textMessage);
 			System.out.println("- TextMessage sent to the Queue!");
 

@@ -67,7 +67,7 @@ public class OkErrorSender extends Thread {
 				queueSender.send(textMessage);
 				System.out.println("- TextMessage sent to the Queue!");
 			}
-			Thread.sleep(1000);
+			
 
 		} catch (Exception e) {
 			System.err.println("# QueueOkErrorSenderTest Error: " + e.getMessage());
