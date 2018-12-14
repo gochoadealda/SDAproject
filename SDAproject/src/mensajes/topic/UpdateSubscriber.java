@@ -49,10 +49,10 @@ public class UpdateSubscriber extends Thread{
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
 
 			//Topic Listener
-			ReadyListener listener = new ReadyListener();
+			
 
 			//Set the same message listener for the non-durable subscriber
-			topicNONDurableSubscriber.setMessageListener(listener);
+			//topicNONDurableSubscriber.setMessageListener(listener);
 
 			//Begin message delivery
 			topicConnection.start();

@@ -1,7 +1,11 @@
 package modelo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mensajes.udp.Actions;
 import mensajes.udp.Connect;
+import udp.PeerInfo;
 
 public class Peer {
 
@@ -12,11 +16,22 @@ public class Peer {
 	private int downloaded;	//The total amount downloaded so far, encoded in base ten ascii.
 	private int left;			//The number of bytes this peer still has to download, encoded in base ten ascii.
 	private int event;		// 0: none; 1: completed; 2: started; 3: stopped
+	private int transactionID;
+	private long connectionID;
 	public Connect udpConnect;
 	public Actions udpActions;
-	
+	private long lastconnection;
+	private long lastannounce;
+	private boolean active;
+	private byte[] infoHash;
+	private int seeders;
+	private int leechers;
+	private int interval;
+	private List<PeerInfo> swarmPeers;
+
 	public Peer() {
 		super();
+		swarmPeers = new ArrayList<>();
 	}
 
 	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left) {
@@ -28,7 +43,7 @@ public class Peer {
 		this.downloaded = downloaded;
 		this.left = left;
 	}
-	
+
 	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left, int event) {
 		super();
 		this.peerId = peerId;
@@ -40,8 +55,26 @@ public class Peer {
 		this.event = event;
 	}
 	public void start() {
-		udpConnect = new Connect();
+		this.active = true;
+		udpConnect = new Connect(this);
 		udpConnect.start();
+		try {
+			Thread.sleep(500);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		while(active) {
+			//System.out.println(System.currentTimeMillis()-lastconnection);
+			if(System.currentTimeMillis()-lastconnection >= 60000 ) {
+				udpConnect = new Connect(this);
+				udpConnect.start();
+				try {
+					Thread.sleep(500);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+		}
 	}
 	public String getPeerId() {
 		return peerId;
@@ -49,28 +82,28 @@ public class Peer {
 	public void setPeerId(String peerId) {
 		this.peerId = peerId;
 	}
-	
+
 	public int getIp() {
 		return ip;
 	}
 	public void setIp(int ip) {
 		this.ip = ip;
 	}
-	
+
 	public int getPuerto() {
 		return puerto;
 	}
 	public void setPuerto(int puerto) {
 		this.puerto = puerto;
 	}
-	
+
 	public int getUploaded() {
 		return uploaded;
 	}
 	public void setUploaded(int uploaded) {
 		this.uploaded = uploaded;
 	}
-	
+
 	public int getLeft() {
 		return left;
 	}
@@ -91,4 +124,87 @@ public class Peer {
 	public void setEvent(int event) {
 		this.event = event;
 	}
+
+	public int getTransactionID() {
+		return transactionID;
+	}
+
+	public void setTransactionID(int transactionID) {
+		this.transactionID = transactionID;
+	}
+
+	public long getConnectionID() {
+		return connectionID;
+	}
+
+	public void setConnectionID(long connectionID) {
+		this.connectionID = connectionID;
+	}
+
+	public long getLastconnection() {
+		return lastconnection;
+	}
+
+	public void setLastconnection(long lastconnection) {
+		this.lastconnection = lastconnection;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public long getLastannounce() {
+		return lastannounce;
+	}
+
+	public void setLastannounce(long lastannounce) {
+		this.lastannounce = lastannounce;
+	}
+
+	public byte[] getInfoHash() {
+		return infoHash;
+	}
+
+	public void setInfoHash(byte[] infoHash) {
+		this.infoHash = infoHash;
+	}
+
+	public int getSeeders() {
+		return seeders;
+	}
+
+	public void setSeeders(int seeders) {
+		this.seeders = seeders;
+	}
+
+	public int getLeechers() {
+		return leechers;
+	}
+
+	public void setLeechers(int leechers) {
+		this.leechers = leechers;
+	}
+
+	public int getInterval() {
+		return interval;
+	}
+
+	public void setInterval(int interval) {
+		this.interval = interval;
+	}
+
+	public List<PeerInfo> getSwarmPeers() {
+		return swarmPeers;
+	}
+
+	public void setSwarmPeers(List<PeerInfo> swarmPeers) {
+		this.swarmPeers = swarmPeers;
+	}
+	
+
+
 }

@@ -1,6 +1,8 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import modelo.Peer;
 import modelo.Swarm;
@@ -203,5 +205,28 @@ public class TrackerController {
 
 	public void setSwarm(Swarm swarm) {
 		model.setSwarm(swarm);
+	}
+	public HashMap<String, Integer> getTransactionIDs() {
+		return model.getTransactionIDs();
+	}
+
+	public void setTransactionIDs(HashMap<String, Integer> transactionIDs) {
+		model.setTransactionIDs(transactionIDs);
+	}
+
+	public HashMap<String, Long> getConnectionIDs() {
+		return model.getConnectionIDs();
+	}
+
+	public void setConnectionIDs(HashMap<String, Long> connectionIDs) {
+		model.setConnectionIDs(connectionIDs);
+	}
+
+	public HashMap<String, Long> getOldConnectionIDs() {
+		return model.getOldConnectionIDs();
+	}
+
+	public void setOldConnectionIDs(HashMap<String, Long> oldConnectionIDs) {
+		model.setOldConnectionIDs(oldConnectionIDs);
 	}
 }
