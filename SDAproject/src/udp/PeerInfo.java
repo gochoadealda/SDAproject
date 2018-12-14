@@ -14,6 +14,12 @@ public class PeerInfo {
 	private int ipAddress;
 	private int port;
 	
+	public PeerInfo(int ipAddress, int port) {
+		super();
+		this.ipAddress = ipAddress;
+		this.port = port;
+	}
+
 	public int getIpAddress() {
 		return ipAddress;
 	}

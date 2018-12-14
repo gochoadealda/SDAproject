@@ -77,7 +77,7 @@ public class Actions extends Thread{
 					
 					Peer peer = new Peer(Integer.parseInt(announceR.getPeerId()), 
 							ByteUtils.intToIpAddress(announceR.getPeerInfo().getIpAddress()), 
-							announceR.getPeerInfo().getPort(), announceR.getDownloaded(), announceR.getLeft(), announceR.getUploaded());
+							announceR.getPeerInfo().getPort(), announceR.getDownloaded(), announceR.getLeft(), announceR.getUploaded(), announceR.getSwarmId());
 					PeerController peerController = new PeerController(peer);
 					
 					myTracker.setPeer(peerController.getModel());

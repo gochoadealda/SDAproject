@@ -1,6 +1,9 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import udp.PeerInfo;
 
 public interface TrackerDAOInterface {
 	public void createDatabase();
@@ -15,4 +18,5 @@ public interface TrackerDAOInterface {
 	public ArrayList<Peer> selectPeers();
 	public ArrayList<Swarm> selectSwarms();
 	public void seedersleechers();
+	public List<PeerInfo> selectPeersFromSwarm(int idSwarm);
 }

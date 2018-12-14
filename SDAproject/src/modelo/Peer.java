@@ -8,7 +8,9 @@ public class Peer {
 	private double bytesDes;
 	private double bytesPen;
 	private double bytesUp;
-	public Peer(int idPeer, String ip, int puerto, double bytesDes, double bytesPen, double bytesUp) {
+	private int idSwarm;
+	
+	public Peer(int idPeer, String ip, int puerto, double bytesDes, double bytesPen, double bytesUp, int idSwarm) {
 		super();
 		this.idPeer = idPeer;
 		this.ip = ip;
@@ -16,6 +18,7 @@ public class Peer {
 		this.bytesDes = bytesDes;
 		this.bytesPen = bytesPen;
 		this.bytesUp = bytesUp;
+		this.idSwarm = idSwarm;
 	}
 	public int getID() {
 		return idPeer;
@@ -52,5 +55,17 @@ public class Peer {
 	}
 	public void setBytesUp(double bytesUp) {
 		this.bytesUp = bytesUp;
+	}
+	public int getIdPeer() {
+		return idPeer;
+	}
+	public void setIdPeer(int idPeer) {
+		this.idPeer = idPeer;
+	}
+	public int getIdSwarm() {
+		return idSwarm;
+	}
+	public void setIdSwarm(int idSwarm) {
+		this.idSwarm = idSwarm;
 	}
 }

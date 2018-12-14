@@ -10,6 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+
+import udp.PeerInfo;
 
 public class TrackerDAO implements TrackerDAOInterface {
 
@@ -73,7 +76,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 	public void insertP(Peer p) {
 		if (p != null) {
 
-			String sqlString = "INSERT INTO Peer ('idPeer', 'ip', 'bytesDes', 'bytesPen', 'bytesUp', 'puerto') VALUES (?,?,?,?,?)";
+			String sqlString = "INSERT INTO Peer ('idPeer', 'ip', 'bytesDes', 'bytesPen', 'bytesUp', 'puerto', 'idSwarm') VALUES (?,?,?,?,?,?,?)";
 
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 				stmt.setString(1, String.valueOf(p.getID()));
@@ -82,6 +85,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 				stmt.setString(4, String.valueOf(p.getBytesPen()));
 				stmt.setString(5, String.valueOf(p.getBytesUp()));
 				stmt.setString(6, String.valueOf(p.getPuerto()));
+				stmt.setString(7, String.valueOf(p.getIdSwarm()));
 
 				if (stmt.executeUpdate() == 1) {
 					System.out.println("\n - A new peer was inserted. :)");
@@ -137,7 +141,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				peer = new Peer(rs.getInt("idPeer"), rs.getString("ip"), rs.getInt("puerto"), rs.getInt("bytesDes"),
-						rs.getInt("bytesPen"), rs.getInt("bytesUp"));
+						rs.getInt("bytesPen"), rs.getInt("bytesUp"), rs.getInt("idSwarm"));
 				System.out.println("Peer ID:" + peer.getID() + " IP:" + peer.getIp() + " Port:" + peer.getPuerto());
 				peerList.add(peer);
 			}
@@ -174,14 +178,15 @@ public class TrackerDAO implements TrackerDAOInterface {
 	public void updateP(Peer p) {
 		if (p != null) {
 
-			String sqlString = "UPDATE Peer SET ip=?, puerto=?, bytesDes = ?,bytesPen=?, bytesUp=? WHERE idPeer =?";
+			String sqlString = "UPDATE Peer SET ip=?, puerto=?, bytesDes = ?,bytesPen=?, bytesUp=?, idSwarm=? WHERE idPeer =?";
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 				stmt.setString(1, p.getIp());
 				stmt.setString(2, String.valueOf(p.getPuerto()));
 				stmt.setString(3, String.valueOf(p.getBytesDes()));
 				stmt.setString(4, String.valueOf(p.getBytesPen()));
 				stmt.setString(5, String.valueOf(p.getBytesUp()));
-				stmt.setString(6, String.valueOf(p.getID()));
+				stmt.setString(6, String.valueOf(p.getIdSwarm()));
+				stmt.setString(7, String.valueOf(p.getID()));
 
 				if (stmt.executeUpdate() != 0) {
 					System.out.println("- Peer's data was updated. :)");
@@ -271,7 +276,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 		ArrayList<Peer> peerList= selectPeers();
 		for(int i=0;i<swarmList.size();i++) {
 			for(int j=0;j<peerList.size();j++) {
-				if(swarmList.get(i).getID()==peerList.get(j).getID()) {//coger el id del swarm relacionado en el peer
+				if(swarmList.get(i).getID()==peerList.get(j).getIdSwarm()) {//coger el id del swarm relacionado en el peer
 					if(peerList.get(j).getBytesDes()!=0 && peerList.get(j).getBytesPen()==0) {
 						seeders++;
 					}else if(peerList.get(j).getBytesPen()!=0) {
@@ -287,6 +292,18 @@ public class TrackerDAO implements TrackerDAOInterface {
 	}
 
 
+	@Override
+	public List<PeerInfo> selectPeersFromSwarm(int idSwarm) {
+		List<PeerInfo> peersFromSwarm = new ArrayList();
+		ArrayList<Peer> peerList= selectPeers();
+		for(int j=0;j<peerList.size();j++) {
+			if(peerList.get(j).getIdSwarm()==idSwarm) {
+				PeerInfo peerinfo= new PeerInfo(Integer.parseInt(peerList.get(j).getIp()), peerList.get(j).getPuerto());
+				peersFromSwarm.add(peerinfo);
+			}
+		}
+		return peersFromSwarm;
+	}
 
 	public static void main(String[] args) {
 		//		System.out.println("Prueba");
@@ -299,6 +316,5 @@ public class TrackerDAO implements TrackerDAOInterface {
 		//		manager.deleteP(1);
 		//		manager.closeConnection();
 	}
-
 
 }

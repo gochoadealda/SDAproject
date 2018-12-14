@@ -63,6 +63,9 @@ public class AnnounceRequest extends BitTorrentUDPRequestMessage {
 	private long uploaded;
 	private Event event;
 	private int key;
+	private int swarmId;
+	
+
 	private int numWant = -1;
 	
 	private PeerInfo peerInfo;
@@ -198,6 +201,14 @@ public class AnnounceRequest extends BitTorrentUDPRequestMessage {
 
 	public void setPeerInfo(PeerInfo peerInfo) {
 		this.peerInfo = peerInfo;
+	}
+	
+	public int getSwarmId() {
+		return swarmId;
+	}
+
+	public void setSwarmId(int swarmId) {
+		this.swarmId = swarmId;
 	}
 	
 	public static void main(String args[]) {
