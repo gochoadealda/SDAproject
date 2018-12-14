@@ -99,14 +99,13 @@ public class Tracker {
 	public void start() {
 		kaRecive = new KeepAliveSubscriber(this);
 		kaRecive.start();
-<<<<<<< HEAD
+
 		dieRecieve = new DieReceiver(this);
 		dieRecieve.start();
-=======
+
 		transactionIDs = new HashMap<>();
 		connectionIDs = new HashMap<>();
 		oldConnectionIDs = new HashMap<>();
->>>>>>> 91242d79ffda633c4da6a2ede577e9f15b8baa19
 		try {
 			Thread.sleep(3000);
 		} catch (Exception e) {

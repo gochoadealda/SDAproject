@@ -22,7 +22,6 @@ public class OkErrorReceiver extends Thread{
 
 	@Override
 	public void run(){
-<<<<<<< HEAD
 	String connectionFactoryName = "QueueConnectionFactory";
 	String queueJNDIName = "jndi.okerror.queue";
 	
@@ -57,41 +56,7 @@ public class OkErrorReceiver extends Thread{
 		while(trackerController.isActive()) {
 			
 		}
-=======
-		String connectionFactoryName = "QueueConnectionFactory";
-		String queueJNDIName = "jndi.okerror.queue";
 
-		QueueConnection queueConnection = null;
-		QueueSession queueSession = null;
-		QueueReceiver queueReceiver = null;	
-
-		try{
-
-			Context ctx = new InitialContext();
-
-			QueueConnectionFactory queueConnectionFactory = (QueueConnectionFactory) ctx.lookup(connectionFactoryName);			
-
-			Queue myQueue = (Queue) ctx.lookup(queueJNDIName);			
-
-			queueConnection = queueConnectionFactory.createQueueConnection();
-			System.out.println("- Queue Connection created!");
-
-			queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);			
-			System.out.println("- Queue Session created!");
-
-			queueReceiver = queueSession.createReceiver(myQueue);
-			System.out.println("- QueueReceiver created!");
-
-			OkErrorListener listener = new OkErrorListener(trackerController.getModel());			
-			queueReceiver.setMessageListener(listener);
-
-
-			queueConnection.start();
-
-			//while(active) {
-
-			//}
->>>>>>> 91242d79ffda633c4da6a2ede577e9f15b8baa19
 		} catch (Exception e) {
 			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
 		} finally {

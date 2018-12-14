@@ -28,19 +28,12 @@ public class ReadyListener implements MessageListener{
 
 				//Depending on the type of the message the process is different
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
-<<<<<<< HEAD
-					if(trackerController.isMaster()) {
-						trackerController.getModel().okRecieve = new OkErrorReceiver(trackerController.getModel());
-						trackerController.getModel().okRecieve.start();
-					}else {
-						trackerController.getModel().okSend = new OkErrorSender(trackerController.getModel());
-						trackerController.getModel().okSend.start();
-=======
 					if(trackercontroller.isMaster()) {
+						trackercontroller.getModel().okRecieve = new OkErrorReceiver(trackercontroller.getModel());
 						trackercontroller.getModel().okRecieve.start();
 					}else {
+						trackercontroller.getModel().okSend = new OkErrorSender(trackercontroller.getModel());
 						trackercontroller.getModel().okSend.start();
->>>>>>> 91242d79ffda633c4da6a2ede577e9f15b8baa19
 					}
 					trackercontroller.setReady(true);
 				}
