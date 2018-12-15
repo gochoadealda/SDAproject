@@ -294,7 +294,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 
 	@Override
 	public List<PeerInfo> selectPeersFromSwarm(int idSwarm) {
-		List<PeerInfo> peersFromSwarm = new ArrayList();
+		List<PeerInfo> peersFromSwarm = new ArrayList<PeerInfo>();
 		ArrayList<Peer> peerList= selectPeers();
 		for(int j=0;j<peerList.size();j++) {
 			if(peerList.get(j).getIdSwarm()==idSwarm) {
