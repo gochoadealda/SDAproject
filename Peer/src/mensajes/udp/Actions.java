@@ -3,14 +3,11 @@ package mensajes.udp;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.Random;
 
 import bitTorrent.util.ByteUtils;
 import modelo.Peer;
 import udp.AnnounceRequest;
 import udp.AnnounceResponse;
-import udp.ConnectRequest;
-import udp.ConnectResponse;
 import udp.Error;
 
 public class Actions extends Thread{
@@ -77,11 +74,11 @@ public class Actions extends Thread{
 			bufferOut.append("\n - Bytes: ");
 			bufferOut.append(ByteUtils.toHexString(requestBytes));
 		
-			byte[] responseBytes = new byte[20+6]; //16 bytes is the size of Connect Response Message
+			byte[] responseBytes = new byte[512]; //16 bytes is the size of Connect Response Message
 			packet = new DatagramPacket(responseBytes, responseBytes.length);
 			udpSocket.receive(packet);
 			
-			if (packet.getLength() >= 20+6) {
+			if (packet.getLength() >= 512) {
 				AnnounceResponse response = AnnounceResponse.parse(packet.getData());
 				bufferOut.append("\n\nAnnounce Response\n - Action: ");
 				bufferOut.append(response.getAction());
