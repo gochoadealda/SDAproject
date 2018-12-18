@@ -128,6 +128,7 @@ public class Actions extends Thread{
 			//TODO sacar datos de la bd
 			//response.setLeechers();
 			//response.getSeeders();
+			//response.setPeers(peers);
 
 			try (DatagramSocket udpDataSocket = new DatagramSocket()){
 				byte[] responseBytes = response.getBytes();			
