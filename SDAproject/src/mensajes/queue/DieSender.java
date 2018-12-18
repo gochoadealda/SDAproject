@@ -6,6 +6,7 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
@@ -52,19 +53,19 @@ public class DieSender extends Thread{
 			//Message Producer
 			queueSender = queueSession.createSender(myQueue);			
 			System.out.println("- QueueSender created!");
+			TextMessage textMessage = queueSession.createTextMessage();
 			
-			/*
-				//Preguntar si esta alive
-				if(tiene el keepalive){
-				no mandar die				
-				
+				//alive
+				if(this.isAlive()){		
+					textMessage.setText("ALIVE");
+					queueSender.send(textMessage);
+					System.out.println("- TextMessage sent to the Queue!");
 				//No esta alive
-				}else if(no devuelve keepalive){
-					mandar die	
-				}
-			*/
-			
-			
+				}else if(!this.isAlive()){
+					textMessage.setText("DIE");
+					queueSender.send(textMessage);
+					System.out.println("- TextMessage sent to the Queue!");	
+				}		
 		} catch (Exception e) {
 			System.err.println("# QueueOkErrorSenderTest Error: " + e.getMessage());
 		} finally {
@@ -81,4 +82,3 @@ public class DieSender extends Thread{
 		}
 	}
 }
-

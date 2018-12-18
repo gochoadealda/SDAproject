@@ -1,5 +1,7 @@
 package mensajes.queue;
 
+import java.util.ArrayList;
+
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
@@ -12,7 +14,6 @@ import modelo.Tracker;
 public class DieListener implements MessageListener {
 	
 	private TrackerController trackerController;
-
 	
 	public DieListener(Tracker model) {
 		super();
@@ -24,23 +25,18 @@ public class DieListener implements MessageListener {
 			
 			try {
 				System.out.println("   - DieQueueListener: " + message.getClass().getSimpleName() + " received!");
-				//TODO cambiar 
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
 					System.out.println(((TextMessage)message).getText());
 					String messageString = ((TextMessage)message).getText();
+
+					//int arrivedID = Integer.parseInt(messageString.substring(3));
+					String texto = messageString.substring(0,2);
+					if(texto == "DIE"){
+						this.trackerController.setActive(false);				
 					int arrivedID = Integer.parseInt(messageString.substring(3));
-					String texto = messageString.substring(1,2);
-					//TODO No analiza si es ok/error --> Se encarga de eliminarlo como hace el keepalive (fijarse en keepAlive)
-					if(texto == "OK"){
-						trackerController.setOkList(arrivedID);
-						
-					}else if (texto == "ER"){
-						trackerController.getOkList().clear();
-					
-					}
-					
 					
 				}
+			}
 					
 	}catch (Exception ex) {
 		System.err.println("# TopicListener error: " + ex.getMessage());
