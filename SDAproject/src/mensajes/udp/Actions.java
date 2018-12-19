@@ -19,6 +19,7 @@ import udp.AnnounceRequest;
 import udp.AnnounceResponse;
 import udp.ConnectRequest;
 import udp.ConnectResponse;
+import udp.Error;
 
 public class Actions extends Thread{
 	private TrackerController myTracker;
@@ -28,7 +29,7 @@ public class Actions extends Thread{
 		super();
 		this.myTracker = new TrackerController(myTracker);
 	}
-	
+
 	@Override
 	public void run() {
 		super.run();
@@ -45,58 +46,59 @@ public class Actions extends Thread{
 			if (packetAnnounce.getLength() >= 98) {
 				AnnounceRequest announceR = AnnounceRequest.parse(packetAnnounce.getData());
 				if(announceR.getAction().toString()=="ANNOUNCE") {
-					if (announceR.getTransactionId()==myTracker.getTransactionID() && (announceR.getConnectionId()==myTracker.getConnectionID()||announceR.getConnectionId()==myTracker.getOldConnectionID()))
+					if (announceR.getTransactionId()==myTracker.getTransactionID() && (announceR.getConnectionId()==myTracker.getConnectionID()||announceR.getConnectionId()==myTracker.getOldConnectionID())) {
 						bufferOut.append("Announce Request\n - Action: ");
-					bufferOut.append(announceR.getAction());
-					bufferOut.append("\n - TransactionID: ");
-					bufferOut.append(announceR.getTransactionId());
-					bufferOut.append("\n - ConnectionID: ");
-					bufferOut.append(announceR.getConnectionId());
-					bufferOut.append("\n - InfoHash: ");
-					bufferOut.append(ByteUtils.arrayToInt(announceR.getInfoHash()));
-					bufferOut.append("\n - PeerID: ");
-					bufferOut.append(announceR.getPeerId());
-					bufferOut.append("\n - Downloaded: ");
-					bufferOut.append(announceR.getDownloaded());
-					bufferOut.append("\n - Left: ");
-					bufferOut.append(announceR.getLeft());
-					bufferOut.append("\n - Uploaded: ");
-					bufferOut.append(announceR.getUploaded());
-					bufferOut.append("\n - Event: ");
-					bufferOut.append(announceR.getEvent());
-					bufferOut.append("\n - Key: ");
-					bufferOut.append(announceR.getKey());
-					bufferOut.append("\n - NumWant: ");
-					bufferOut.append(announceR.getNumWant());
-					bufferOut.append("\n - IPAddress: ");
-					bufferOut.append(announceR.getPeerInfo().getIpAddress());
-					bufferOut.append("\n - Port: ");
-					bufferOut.append(announceR.getPeerInfo().getPort());
-					bufferOut.append("\n - Bytes: ");
-					bufferOut.append(ByteUtils.toHexString(announceBytes));
-					
-					Peer peer = new Peer(Integer.parseInt(announceR.getPeerId()), 
-							ByteUtils.intToIpAddress(announceR.getPeerInfo().getIpAddress()), 
-							announceR.getPeerInfo().getPort(), announceR.getDownloaded(), announceR.getLeft(), announceR.getUploaded(), announceR.getSwarmId());
-					PeerController peerController = new PeerController(peer);
-					
-					myTracker.setPeer(peerController.getModel());
-					
-					Swarm swarm = new Swarm(ByteUtils.arrayToInt(announceR.getInfoHash()));
-					SwarmController swarmController = new SwarmController(swarm);
-					
-					myTracker.setSwarm(swarmController.getModel());
-					
-					//TODO Metodo añadir a Peer a BD
-					
-					if(myTracker.isMaster()) {
-						myTracker.getModel().readySend = new ReadyPublisher(myTracker.getModel());
-						myTracker.getModel().readySend.start();
-					}else {
-						myTracker.getModel().readyRecieve = new ReadySubscriber(myTracker.getModel());
-						myTracker.getModel().readyRecieve.start();
+						bufferOut.append(announceR.getAction());
+						bufferOut.append("\n - TransactionID: ");
+						bufferOut.append(announceR.getTransactionId());
+						bufferOut.append("\n - ConnectionID: ");
+						bufferOut.append(announceR.getConnectionId());
+						bufferOut.append("\n - InfoHash: ");
+						bufferOut.append(ByteUtils.arrayToInt(announceR.getInfoHash()));
+						bufferOut.append("\n - PeerID: ");
+						bufferOut.append(announceR.getPeerId());
+						bufferOut.append("\n - Downloaded: ");
+						bufferOut.append(announceR.getDownloaded());
+						bufferOut.append("\n - Left: ");
+						bufferOut.append(announceR.getLeft());
+						bufferOut.append("\n - Uploaded: ");
+						bufferOut.append(announceR.getUploaded());
+						bufferOut.append("\n - Event: ");
+						bufferOut.append(announceR.getEvent());
+						bufferOut.append("\n - Key: ");
+						bufferOut.append(announceR.getKey());
+						bufferOut.append("\n - NumWant: ");
+						bufferOut.append(announceR.getNumWant());
+						bufferOut.append("\n - IPAddress: ");
+						bufferOut.append(announceR.getPeerInfo().getIpAddress());
+						bufferOut.append("\n - Port: ");
+						bufferOut.append(announceR.getPeerInfo().getPort());
+						bufferOut.append("\n - Bytes: ");
+						bufferOut.append(ByteUtils.toHexString(announceBytes));
+
+						Peer peer = new Peer(Integer.parseInt(announceR.getPeerId()), 
+								ByteUtils.intToIpAddress(announceR.getPeerInfo().getIpAddress()), 
+								announceR.getPeerInfo().getPort(), announceR.getDownloaded(), announceR.getLeft(), announceR.getUploaded(), announceR.getSwarmId(), announceR.getEvent());
+						PeerController peerController = new PeerController(peer);
+
+						myTracker.setPeer(peerController.getModel());
+
+						Swarm swarm = new Swarm(ByteUtils.arrayToInt(announceR.getInfoHash()));
+						SwarmController swarmController = new SwarmController(swarm);
+
+						myTracker.setSwarm(swarmController.getModel());
+
+						//TODO Metodo añadir a Peer a BD
+
+						if(myTracker.isMaster()) {
+							myTracker.getModel().readySend = new ReadyPublisher(myTracker.getModel());
+							myTracker.getModel().readySend.start();
+						}else {
+							myTracker.getModel().readyRecieve = new ReadySubscriber(myTracker.getModel());
+							myTracker.getModel().readyRecieve.start();
+						}
+						myTracker.setMulticast(true);
 					}
-					myTracker.setMulticast(true);
 				}
 			}else {
 				bufferOut.append("- ERROR: Response length to small ");
@@ -104,9 +106,9 @@ public class Actions extends Thread{
 			}
 
 			if(packetAnnounce.getLength() >= 8) {
-				AnnounceRequest announceR = AnnounceRequest.parse(packetAnnounce.getData());
+				Error announceR = Error.parse(packetAnnounce.getData());
 				if (announceR.getAction().toString()=="ERROR");{
-					
+					System.out.println(announceR.getMessage());
 				}
 			}else {
 				bufferOut.append("- ERROR: Response length to small ");

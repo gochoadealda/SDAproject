@@ -229,4 +229,15 @@ public class TrackerController {
 	public void setOldConnectionIDs(HashMap<String, Long> oldConnectionIDs) {
 		model.setOldConnectionIDs(oldConnectionIDs);
 	}
+	public long getConnectionID(String key){
+		return model.getConnectionID(key);
+	}
+	
+	public void putOldConnectionID(String key, long con){
+		model.putOldConnectionID(key, con);
+	}
+	
+	public void putConnectionID(String key, long con){
+		model.putConnectionID(key, con);
+	}
 }

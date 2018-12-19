@@ -10,6 +10,7 @@ import java.util.Random;
 
 import bitTorrent.util.ByteUtils;
 import controller.TrackerController;
+import mensajes.topic.ConnectionIDPublisher;
 import modelo.Tracker;
 import udp.ConnectRequest;
 import udp.ConnectResponse;
@@ -51,7 +52,7 @@ public class Connect extends Thread{
 					bufferOut.append(ByteUtils.toHexString(requestBytes));
 					myTracker.setTransactionID(request.getTransactionId());
 					HashMap<String, Integer> transactionIDs = myTracker.getTransactionIDs();
-					transactionIDs.put(peerIP.getHostAddress(), request.getTransactionId());
+					transactionIDs.put(peerIP.getHostAddress()+peerPort, request.getTransactionId());
 					myTracker.setTransactionIDs(transactionIDs);
 				} else {
 					bufferOut.append("- ERROR: Response length to small ");
@@ -71,8 +72,10 @@ public class Connect extends Thread{
 
 					HashMap<String, Long> oldConnectionIDs = myTracker.getOldConnectionIDs();
 					HashMap<String, Long> connectionIDs = myTracker.getConnectionIDs();
-					oldConnectionIDs.put(peerIP.getHostAddress(), connectionIDs.get(peerIP.getHostAddress()));
-					connectionIDs.put(peerIP.getHostAddress(), connectionID);
+					oldConnectionIDs.put(peerIP.getHostAddress()+peerPort, connectionIDs.get(peerIP.getHostAddress()));
+					connectionIDs.put(peerIP.getHostAddress()+peerPort, connectionID);
+					myTracker.getModel().conSend = new ConnectionIDPublisher(peerIP.getHostAddress()+peerPort, connectionID, myTracker);
+					myTracker.getModel().conSend.start();
 					myTracker.setOldConnectionIDs(oldConnectionIDs);
 					myTracker.setConnectionIDs(connectionIDs);
 					

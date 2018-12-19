@@ -11,6 +11,8 @@ import mensajes.queue.DieReceiver;
 import mensajes.queue.DieSender;
 import mensajes.queue.OkErrorReceiver;
 import mensajes.queue.OkErrorSender;
+import mensajes.topic.ConnectionIDPublisher;
+import mensajes.topic.ConnectionIDSubscriber;
 import mensajes.topic.KeepAlivePublisher;
 import mensajes.topic.KeepAliveSubscriber;
 import mensajes.topic.NewMasterPublisher;
@@ -49,6 +51,8 @@ public class Tracker {
 	public ReadySubscriber readyRecieve;
 	public DieReceiver dieRecieve;
 	public DieSender dieSend;
+	public ConnectionIDPublisher conSend;
+	public ConnectionIDSubscriber conRecieve;
 	public Connect udpConnect;
 	public Actions udpActions;
 	public ViewThread trackerView;
@@ -120,6 +124,8 @@ public class Tracker {
 		kaSend = new KeepAlivePublisher(this);
 
 		kaSend.start();
+		conRecieve = new ConnectionIDSubscriber(this);
+		conRecieve.start();
 		udpConnect = new Connect(this);
 		udpConnect.start();
 		
@@ -341,6 +347,14 @@ public class Tracker {
 	public void setOldConnectionIDs(HashMap<String, Long> oldConnectionIDs) {
 		this.oldConnectionIDs = oldConnectionIDs;
 	}
-	
+	public long getConnectionID(String key) {
+		return this.connectionIDs.get(key);
+	}
+	public void putOldConnectionID(String key, long con){
+		this.oldConnectionIDs.put(key, con);
+	}
+	public void putConnectionID(String key, long con){
+		this.connectionIDs.put(key, con);
+	}
 	
 }

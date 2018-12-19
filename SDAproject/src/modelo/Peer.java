@@ -9,8 +9,9 @@ public class Peer {
 	private double bytesPen;
 	private double bytesUp;
 	private int idSwarm;
+	private int event;
 	
-	public Peer(int idPeer, String ip, int puerto, double bytesDes, double bytesPen, double bytesUp, int idSwarm) {
+	public Peer(int idPeer, String ip, int puerto, double bytesDes, double bytesPen, double bytesUp, int idSwarm, int event) {
 		super();
 		this.idPeer = idPeer;
 		this.ip = ip;
@@ -19,6 +20,7 @@ public class Peer {
 		this.bytesPen = bytesPen;
 		this.bytesUp = bytesUp;
 		this.idSwarm = idSwarm;
+		this.event = event;
 	}
 	public int getID() {
 		return idPeer;

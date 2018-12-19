@@ -28,6 +28,8 @@ public class Peer {
 	private int leechers;
 	private int interval;
 	private List<PeerInfo> swarmPeers;
+	private boolean primerConnect;
+	private boolean primerAnnounce;
 
 	public Peer() {
 		super();
@@ -56,25 +58,10 @@ public class Peer {
 	}
 	public void start() {
 		this.active = true;
+		this.primerConnect = true;
+		this.primerAnnounce = true;
 		udpConnect = new Connect(this);
 		udpConnect.start();
-		try {
-			Thread.sleep(500);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		while(active) {
-			//System.out.println(System.currentTimeMillis()-lastconnection);
-			if(System.currentTimeMillis()-lastconnection >= 60000 ) {
-				udpConnect = new Connect(this);
-				udpConnect.start();
-				try {
-					Thread.sleep(500);
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-			}
-		}
 	}
 	public String getPeerId() {
 		return peerId;
@@ -203,6 +190,22 @@ public class Peer {
 
 	public void setSwarmPeers(List<PeerInfo> swarmPeers) {
 		this.swarmPeers = swarmPeers;
+	}
+
+	public boolean isPrimerConnect() {
+		return primerConnect;
+	}
+
+	public void setPrimerConnect(boolean primerConnect) {
+		this.primerConnect = primerConnect;
+	}
+
+	public boolean isPrimerAnnounce() {
+		return primerAnnounce;
+	}
+
+	public void setPrimerAnnounce(boolean primerAnnounce) {
+		this.primerAnnounce = primerAnnounce;
 	}
 	
 
