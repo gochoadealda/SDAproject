@@ -173,6 +173,27 @@ public class TrackerDAO implements TrackerDAOInterface {
 		}
 		return swarmList;
 	}
+	
+	
+	@Override
+	public Swarm selectSwarm(Integer idSwarm) {
+
+		String sqlString = "Select * from Swarm WHERE idSwarm =" + idSwarm + ";";
+		Swarm swarm = null;
+		try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				swarm = new Swarm(rs.getInt("idSwarm"), rs.getString("nomCont"), rs.getInt("tamano"),
+						rs.getInt("seeders"), rs.getInt("leechers"));
+				System.out.println("Swarm ID:" + swarm.getID() + " nomCont:" + swarm.getNomCont() + " Tamaño:"
+						+ swarm.getTamano());
+			}
+			return swarm;
+		} catch (SQLException ex) {
+			System.err.println("# Error retrieving swarm from database: " + ex.getMessage());
+		}
+		return swarm;
+	}
 
 	@Override
 	public void updateP(Peer p) {
@@ -284,8 +305,10 @@ public class TrackerDAO implements TrackerDAOInterface {
 					}
 				}
 			}
-			swarmList.get(i).setLeechers(leechers);
-			swarmList.get(i).setSeeders(seeders);
+			Swarm swarm= new Swarm(swarmList.get(i).getID(), swarmList.get(i).getNomCont(), swarmList.get(i).getTamano(), seeders, leechers);
+			updateS(swarm);
+			//swarmList.get(i).setLeechers(leechers);
+			//swarmList.get(i).setSeeders(seeders);
 			seeders=0;
 			leechers=0;
 		}

@@ -17,6 +17,7 @@ public interface TrackerDAOInterface {
 	public void deleteS(Integer idSwarm);
 	public ArrayList<Peer> selectPeers();
 	public ArrayList<Swarm> selectSwarms();
+	public Swarm selectSwarm(Integer idSwarm);
 	public void seedersleechers();
 	public List<PeerInfo> selectPeersFromSwarm(int idSwarm);
 }
