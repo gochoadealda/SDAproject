@@ -23,7 +23,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 		String url = "jdbc:sqlite:db/" + dbname;
 
 		String sql1 = "CREATE TABLE IF NOT EXISTS Peer (\n" + "	idPeer integer PRIMARY KEY,\n" + "	ip text NOT NULL,\n"
-				+ "	bytesDes real,\n" + "	bytesPen real,\n" + "	puerto integer,\n"
+				+ "	bytesDes real,\n" + "	bytesPen real,\n" + "	bytesUp real,\n"+ "	puerto integer,\n"
 				+ " swarm_idTracker integer, FOREIGN KEY (swarm_idTracker) REFERENCES Swarm(idSwarm)" + ");";
 		String sql2 = "CREATE TABLE IF NOT EXISTS Swarm (\n" + "	idSwarm integer PRIMARY KEY,\n"
 				+ "	nomCont text NOT NULL,\n" + "	tamano integer,\n" + "	seeders integer,\n" + "	leechers integer\n"
@@ -76,7 +76,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 	public void insertP(Peer p) {
 		if (p != null) {
 
-			String sqlString = "INSERT INTO Peer ('idPeer', 'ip', 'bytesDes', 'bytesPen', 'bytesUp', 'puerto', 'idSwarm') VALUES (?,?,?,?,?,?,?)";
+			String sqlString = "INSERT INTO Peer ('idPeer', 'ip', 'bytesDes', 'bytesPen', 'bytesUp', 'puerto', 'swarm_idTracker') VALUES (?,?,?,?,?,?,?)";
 
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 				stmt.setString(1, String.valueOf(p.getID()));
@@ -141,7 +141,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				peer = new Peer(rs.getInt("idPeer"), rs.getString("ip"), rs.getInt("puerto"), rs.getInt("bytesDes"),
-						rs.getInt("bytesPen"), rs.getInt("bytesUp"), rs.getInt("idSwarm"), 0);
+						rs.getInt("bytesPen"), rs.getInt("bytesUp"), rs.getInt("swarm_idTracker"), 0);
 				System.out.println("Peer ID:" + peer.getID() + " IP:" + peer.getIp() + " Port:" + peer.getPuerto());
 				peerList.add(peer);
 			}
@@ -290,7 +290,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 
 	@Override
 	public void seedersleechers() {
-		int [] seedersLeechersList= new int[2];
+		
 		int seeders=0;
 		int leechers=0;
 		ArrayList<Swarm> swarmList= selectSwarms();
@@ -329,8 +329,8 @@ public class TrackerDAO implements TrackerDAOInterface {
 	}
 
 	public static void main(String[] args) {
-		//		System.out.println("Prueba");
-		//		TrackerDAO manager = new TrackerDAO("db/tracker.db");
+				System.out.println("Prueba");
+				TrackerDAO manager = new TrackerDAO("/tracker1542815698871.db");
 		//		Peer p= new Peer(1, "ipppp", 8080, 90.4, 90.6);
 		//		manager.insertP(p);
 		//		manager.selectPeers();
@@ -338,6 +338,23 @@ public class TrackerDAO implements TrackerDAOInterface {
 		//		manager.deleteP(0);
 		//		manager.deleteP(1);
 		//		manager.closeConnection();
+
+				/*Peer p= new Peer(1, "ip", 8080, 10000, 0, 0, 1, 0);//2 seed y 1 leech
+				Peer p2= new Peer(2, "ipp", 8081, 0, 10, 0, 1, 0);
+				Peer p3= new Peer(3, "ippp", 8082, 10000, 0, 0, 1, 0);
+				manager.insertP(p);
+				manager.insertP(p2);
+				manager.insertP(p3);
+				Swarm s=new Swarm(4, "Asier", 3, 0, 0);
+				manager.insertS(s);
+				
+				manager.seedersleechers();
+				System.out.println("terminado");
+				Swarm a=manager.selectSwarm(4);
+				System.out.println(a.getID());
+				System.out.println(a.getLeechers());
+				System.out.println(a.getSeeders());
+				System.out.println(a.getNomCont());*/
 	}
 
 }
