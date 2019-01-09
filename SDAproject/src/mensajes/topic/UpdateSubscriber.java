@@ -11,7 +11,20 @@ import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
+
 public class UpdateSubscriber extends Thread{
+	
+	private TrackerController myTracker;
+	
+	
+
+	public UpdateSubscriber(TrackerController myTracker) {
+		super();
+		this.myTracker = myTracker;
+	}
+
+
 
 	@Override
 	public void run() {
@@ -49,14 +62,14 @@ public class UpdateSubscriber extends Thread{
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
 
 			//Topic Listener
-			
+			UpdateListener listener = new UpdateListener(myTracker);
 
 			//Set the same message listener for the non-durable subscriber
-			//topicNONDurableSubscriber.setMessageListener(listener);
+			topicNONDurableSubscriber.setMessageListener(listener);
 
 			//Begin message delivery
 			topicConnection.start();
-
+			Thread.sleep(2000);
 		} catch (Exception e) {
 			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
 		} finally {

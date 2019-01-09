@@ -34,7 +34,7 @@ public class Actions extends Thread{
 	public void run() {
 		super.run();
 		StringBuffer bufferOut = new StringBuffer();
-		try (MulticastSocket udpSocket = new MulticastSocket(55557)){
+		try (MulticastSocket udpSocket = new MulticastSocket(55558)){
 			udpSocket.joinGroup(InetAddress.getByName("230.0.0.1"));
 			udpSocket.setSoTimeout(15000);
 
@@ -78,7 +78,7 @@ public class Actions extends Thread{
 
 						Peer peer = new Peer(Integer.parseInt(announceR.getPeerId()), 
 								ByteUtils.intToIpAddress(announceR.getPeerInfo().getIpAddress()), 
-								announceR.getPeerInfo().getPort(), announceR.getDownloaded(), announceR.getLeft(), announceR.getUploaded(), announceR.getSwarmId(), announceR.getEvent());
+								announceR.getPeerInfo().getPort(), announceR.getDownloaded(), announceR.getLeft(), announceR.getUploaded(), announceR.getSwarmId(), announceR.getEvent().value());
 						PeerController peerController = new PeerController(peer);
 
 						myTracker.setPeer(peerController.getModel());
@@ -89,15 +89,16 @@ public class Actions extends Thread{
 						myTracker.setSwarm(swarmController.getModel());
 
 						//TODO Metodo añadir a Peer a BD
-
-						if(myTracker.isMaster()) {
-							myTracker.getModel().readySend = new ReadyPublisher(myTracker.getModel());
-							myTracker.getModel().readySend.start();
-						}else {
-							myTracker.getModel().readyRecieve = new ReadySubscriber(myTracker.getModel());
-							myTracker.getModel().readyRecieve.start();
+						if(myTracker.getTrackerList().size() >1) {
+							if(myTracker.isMaster()) {
+								myTracker.getModel().readySend = new ReadyPublisher(myTracker.getModel());
+								myTracker.getModel().readySend.start();
+							}else {
+								myTracker.getModel().readyRecieve = new ReadySubscriber(myTracker.getModel());
+								myTracker.getModel().readyRecieve.start();
+							}
+							myTracker.setMulticast(true);
 						}
-						myTracker.setMulticast(true);
 					}
 				}
 			}else {
@@ -120,12 +121,9 @@ public class Actions extends Thread{
 
 		if(myTracker.isMaster()) {
 
-			Random random = new Random();
-			long connectionID = random.nextLong();
-
 			AnnounceResponse response = new AnnounceResponse();
 			response.setTransactionId(myTracker.getTransactionID());
-			response.setInterval(30);
+			response.setInterval(30000);
 			//sacar datos de la bd
 			//TODO sacar datos de la bd
 			//response.setLeechers();

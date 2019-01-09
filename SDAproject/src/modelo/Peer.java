@@ -70,4 +70,11 @@ public class Peer {
 	public void setIdSwarm(int idSwarm) {
 		this.idSwarm = idSwarm;
 	}
+	public int getEvent() {
+		return event;
+	}
+	public void setEvent(int event) {
+		this.event = event;
+	}
+	
 }

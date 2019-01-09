@@ -11,6 +11,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import controller.TrackerController;
+import mensajes.topic.UpdateSubscriber;
 import modelo.Tracker;
 
 public class OkErrorSender extends Thread {
@@ -79,6 +80,8 @@ public class OkErrorSender extends Thread {
 				queueConnection.close();
 				System.out.println("- Queue resources closed!");	
 				trackerController.getModel().okSend = null;
+				trackerController.getModel().updateRecieve = new UpdateSubscriber(trackerController);
+				trackerController.getModel().updateRecieve.start();
 			} catch (Exception ex) {
 				System.err.println("# QueueOkErrorSenderTest Error: " + ex.getMessage());
 			}			

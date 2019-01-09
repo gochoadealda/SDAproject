@@ -77,7 +77,7 @@ public class Connect extends Thread{
 					System.out.println(bufferOut.toString());
 
 				}catch (Exception e) {
-					System.err.println("Error: " + e.getMessage());
+					System.err.println("ErrorCon: " + e.getMessage());
 				}
 				if(myPeer.isPrimerConnect()) {
 					myPeer.udpActions = new Actions(myPeer);

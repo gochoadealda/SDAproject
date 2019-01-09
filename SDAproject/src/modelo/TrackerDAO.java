@@ -141,7 +141,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				peer = new Peer(rs.getInt("idPeer"), rs.getString("ip"), rs.getInt("puerto"), rs.getInt("bytesDes"),
-						rs.getInt("bytesPen"), rs.getInt("bytesUp"), rs.getInt("idSwarm"));
+						rs.getInt("bytesPen"), rs.getInt("bytesUp"), rs.getInt("idSwarm"), 0);
 				System.out.println("Peer ID:" + peer.getID() + " IP:" + peer.getIp() + " Port:" + peer.getPuerto());
 				peerList.add(peer);
 			}

@@ -44,6 +44,7 @@ public class Peer {
 		this.uploaded = uploaded;
 		this.downloaded = downloaded;
 		this.left = left;
+		this.interval=0;
 	}
 
 	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left, int event) {
@@ -55,6 +56,12 @@ public class Peer {
 		this.downloaded = downloaded;
 		this.left = left;
 		this.event = event;
+		this.interval=0;
+	}
+	public Peer(String peerId) {
+		super();
+		this.peerId = peerId;
+		this.interval = 60000;
 	}
 	public void start() {
 		this.active = true;

@@ -7,12 +7,13 @@ import java.net.InetAddress;
 import bitTorrent.util.ByteUtils;
 import modelo.Peer;
 import udp.AnnounceRequest;
+import udp.AnnounceRequest.Event;
 import udp.AnnounceResponse;
 import udp.Error;
 
 public class Actions extends Thread{
 	public static final String TRACKER_NAME = "230.0.0.1";
-	public static final int TRACKER_PORT = 55557;
+	public static final int TRACKER_PORT = 55558;
 	public static final String INFO_HASH = "1959A52BAD89DE0D6C5FA65B57C99D85AC642EF5";
 	private Peer myPeer;
 
@@ -41,10 +42,12 @@ public class Actions extends Thread{
 					request.setDownloaded(myPeer.getDownloaded());
 					request.setLeft(myPeer.getLeft());
 					request.setUploaded(myPeer.getUploaded());
-					request.setEvent(request.getEvent());
+					if(myPeer.isPrimerAnnounce()) {
+						request.setEvent(Event.parseInt(2));
+					}
 					request.setKey(0);
-					//request.setNumWant();
-					byte[] requestBytes = request.getBytes();			
+					request.setNumWant(2);
+					byte[] requestBytes = new byte[98];			
 					DatagramPacket packet = new DatagramPacket(requestBytes, requestBytes.length, serverHost, TRACKER_PORT);
 					udpSocket.send(packet);
 					bufferOut.append("Announce Request\n - Action: ");
@@ -75,7 +78,7 @@ public class Actions extends Thread{
 					bufferOut.append(request.getPeerInfo().getPort());
 					bufferOut.append("\n - Bytes: ");
 					bufferOut.append(ByteUtils.toHexString(requestBytes));
-
+					myPeer.setPrimerAnnounce(false);
 					byte[] responseBytes = new byte[512]; //16 bytes is the size of Connect Response Message
 					packet = new DatagramPacket(responseBytes, responseBytes.length);
 					udpSocket.receive(packet);
@@ -118,7 +121,8 @@ public class Actions extends Thread{
 					System.out.println(packet.getPort());
 					System.out.println(bufferOut.toString());
 				}catch (Exception e) {
-					System.err.println("Error: " + e.getMessage());
+					System.err.println("ErrorAnn: " + e.getMessage());
+					e.printStackTrace();
 					myPeer.udpConnect = null;
 				}
 			}

@@ -2,6 +2,7 @@ package mensajes.topic;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.command.ActiveMQTextMessage;
 
@@ -28,16 +29,17 @@ public class ReadyListener implements MessageListener{
 
 				//Depending on the type of the message the process is different
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
-					if(trackercontroller.isMaster()) {
-						trackercontroller.getModel().okRecieve = new OkErrorReceiver(trackercontroller.getModel());
-						trackercontroller.getModel().okRecieve.start();
+					String mes = ((TextMessage)message).getText();
+					if(mes == "Ready") {
+						trackercontroller.setReady(true);
 					}else {
-						trackercontroller.getModel().okSend = new OkErrorSender(trackercontroller.getModel());
-						trackercontroller.getModel().okSend.start();
+						trackercontroller.setReady(false);
 					}
-					trackercontroller.setReady(true);
+				}else {
+					trackercontroller.setReady(false);
 				}
-
+				trackercontroller.getModel().okSend = new OkErrorSender(trackercontroller.getModel());
+				trackercontroller.getModel().okSend.start();
 			}catch (Exception ex) {
 				System.err.println("# TopicListener error: " + ex.getMessage());
 			}

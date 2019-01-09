@@ -11,6 +11,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import controller.TrackerController;
+import mensajes.queue.OkErrorReceiver;
 import modelo.Tracker;
 
 public class ReadyPublisher extends Thread {
@@ -71,8 +72,9 @@ public class ReadyPublisher extends Thread {
 				topicSession.close();
 				topicConnection.close();
 				System.out.println("- Topic resources closed!");
-				
 				trackerController.getModel().readySend = null;
+				trackerController.getModel().okRecieve = new OkErrorReceiver(trackerController.getModel());
+				trackerController.getModel().okRecieve.start();
 			} catch (Exception ex) {
 				System.err.println("# TopicPublisherTest Error: " + ex.getMessage());
 			}			

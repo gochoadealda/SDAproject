@@ -19,7 +19,9 @@ public class PeerInfo {
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
-
+	public PeerInfo() {
+		
+	}
 	public int getIpAddress() {
 		return ipAddress;
 	}

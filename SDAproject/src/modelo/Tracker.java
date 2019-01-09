@@ -35,6 +35,7 @@ public class Tracker {
 	private ArrayList<Integer> trackerList;
 	private ArrayList<Integer> okList;         //SOBRA???
 	private ArrayList<Long> timeList;
+	private HashMap<Integer, String> votos;
 	private TrackerDAO trackerDB;
 	private boolean active;
 	public KeepAliveSubscriber kaRecive;
@@ -104,9 +105,6 @@ public class Tracker {
 		kaRecive = new KeepAliveSubscriber(this);
 		kaRecive.start();
 
-		dieRecieve = new DieReceiver(this);
-		dieRecieve.start();
-
 		transactionIDs = new HashMap<>();
 		connectionIDs = new HashMap<>();
 		oldConnectionIDs = new HashMap<>();
@@ -120,15 +118,18 @@ public class Tracker {
 		if(!master) {
 			recieveDB = new DBQueueFileReceiver(this);
 			recieveDB.start();
+			conRecieve = new ConnectionIDSubscriber(this);
+			conRecieve.start();
 		}
 		kaSend = new KeepAlivePublisher(this);
 
 		kaSend.start();
-		conRecieve = new ConnectionIDSubscriber(this);
-		conRecieve.start();
+		dieRecieve = new DieReceiver(this);
+		dieRecieve.start();
 		udpConnect = new Connect(this);
 		udpConnect.start();
-		
+		udpActions = new Actions(this);
+		udpActions.start();
 	
 	}
 	
@@ -355,6 +356,13 @@ public class Tracker {
 	}
 	public void putConnectionID(String key, long con){
 		this.connectionIDs.put(key, con);
+	}
+	public HashMap<Integer, String> getVotos() {
+		return votos;
+	}
+
+	public void setVotos(HashMap<Integer, String> votos) {
+		this.votos = votos;
 	}
 	
 }

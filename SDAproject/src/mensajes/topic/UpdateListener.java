@@ -2,10 +2,22 @@ package mensajes.topic;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.command.ActiveMQTextMessage;
 
+import controller.TrackerController;
+
 public class UpdateListener implements MessageListener{
+	
+	private TrackerController myTracker;
+	
+
+	public UpdateListener(TrackerController myTracker) {
+		super();
+		this.myTracker = myTracker;
+	}
+
 
 	@Override
 	public void onMessage(Message message) {
@@ -16,7 +28,21 @@ public class UpdateListener implements MessageListener{
 
 				//Depending on the type of the message the process is different
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
-					
+					String mes = ((TextMessage)message).getText();
+					if(mes == "UPDATE") {
+						int event = myTracker.getModel().getPeer().getEvent();
+						if(event ==2) {
+							myTracker.getModel().getTrackerDB().insertP(myTracker.getModel().getPeer());
+						}else if(event == 0) {
+							myTracker.getModel().getTrackerDB().updateP(myTracker.getModel().getPeer());
+						}else if(event == 1) {
+							
+						}else if(event == 3) {
+							myTracker.getModel().getTrackerDB().deleteP(myTracker.getModel().getPeer().getID());
+						}
+					}else if(mes == "NO UPDATE") {
+						
+					}
 				}
 
 			}catch (Exception ex) {
