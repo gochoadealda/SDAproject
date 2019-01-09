@@ -34,7 +34,8 @@ public class Actions extends Thread{
 	public void run() {
 		super.run();
 		StringBuffer bufferOut = new StringBuffer();
-		try (MulticastSocket udpSocket = new MulticastSocket(55558)){
+		int SwarmId = 0;
+		try (MulticastSocket udpSocket = new MulticastSocket(60000)){
 			udpSocket.joinGroup(InetAddress.getByName("230.0.0.1"));
 			udpSocket.setSoTimeout(15000);
 
@@ -80,7 +81,7 @@ public class Actions extends Thread{
 								ByteUtils.intToIpAddress(announceR.getPeerInfo().getIpAddress()), 
 								announceR.getPeerInfo().getPort(), announceR.getDownloaded(), announceR.getLeft(), announceR.getUploaded(), announceR.getSwarmId(), announceR.getEvent().value());
 						PeerController peerController = new PeerController(peer);
-
+						SwarmId = ByteUtils.arrayToInt(announceR.getInfoHash());
 						myTracker.setPeer(peerController.getModel());
 
 						Swarm swarm = new Swarm(ByteUtils.arrayToInt(announceR.getInfoHash()));
@@ -126,9 +127,10 @@ public class Actions extends Thread{
 			response.setInterval(30000);
 			//sacar datos de la bd
 			//TODO sacar datos de la bd
-			//response.setLeechers();
-			//response.getSeeders();
-			//response.setPeers(peers);
+			Swarm mySwarm = myTracker.getTrackerDB().selectSwarm(SwarmId);
+			response.setLeechers(mySwarm.getLeechers());
+			response.setSeeders(mySwarm.getSeeders());
+			response.setPeers(myTracker.getTrackerDB().selectPeersFromSwarm(SwarmId));
 
 			try (DatagramSocket udpDataSocket = new DatagramSocket()){
 				byte[] responseBytes = response.getBytes();			

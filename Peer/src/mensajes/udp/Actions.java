@@ -13,7 +13,7 @@ import udp.Error;
 
 public class Actions extends Thread{
 	public static final String TRACKER_NAME = "230.0.0.1";
-	public static final int TRACKER_PORT = 55558;
+	public static final int TRACKER_PORT = 60000;
 	public static final String INFO_HASH = "1959A52BAD89DE0D6C5FA65B57C99D85AC642EF5";
 	private Peer myPeer;
 
@@ -44,10 +44,12 @@ public class Actions extends Thread{
 					request.setUploaded(myPeer.getUploaded());
 					if(myPeer.isPrimerAnnounce()) {
 						request.setEvent(Event.parseInt(2));
+					}else {
+						request.setEvent(Event.parseInt(0));
 					}
 					request.setKey(0);
 					request.setNumWant(2);
-					byte[] requestBytes = new byte[98];			
+					byte[] requestBytes = request.getBytes();			
 					DatagramPacket packet = new DatagramPacket(requestBytes, requestBytes.length, serverHost, TRACKER_PORT);
 					udpSocket.send(packet);
 					bufferOut.append("Announce Request\n - Action: ");
