@@ -19,9 +19,9 @@ public class Swarm {
 		this.seeders = seeders;
 		this.leechers = leechers;
 	}
-	public Swarm(int idSwarm) {
+	public Swarm(String nomCont) {
 		super();
-		this.idSwarm = idSwarm;
+		this.nomCont = nomCont;
 	}
 	
 	public int getID() {
