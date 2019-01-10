@@ -32,6 +32,7 @@ public class UpdateListener implements MessageListener{
 					if(mes == "UPDATE") {
 						int event = myTracker.getModel().getPeer().getEvent();
 						if(event ==2) {
+							//Comprobar si hay el swarm al que pertenece el peer si si hay guardar y actualizar el swarm si no hay crear el swarm en la bd y actualizarlo
 							myTracker.getModel().getTrackerDB().insertP(myTracker.getModel().getPeer());
 						}else if(event == 0) {
 							myTracker.getModel().getTrackerDB().updateP(myTracker.getModel().getPeer());

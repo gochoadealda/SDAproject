@@ -8,10 +8,10 @@ public class Peer {
 	private double bytesDes;
 	private double bytesPen;
 	private double bytesUp;
-	private int idSwarm;
+	private String idSwarm;
 	private int event;
 	
-	public Peer(int idPeer, String ip, int puerto, double bytesDes, double bytesPen, double bytesUp, int idSwarm, int event) {
+	public Peer(int idPeer, String ip, int puerto, double bytesDes, double bytesPen, double bytesUp, String idSwarm, int event) {
 		super();
 		this.idPeer = idPeer;
 		this.ip = ip;

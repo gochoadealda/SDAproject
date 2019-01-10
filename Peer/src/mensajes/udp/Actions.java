@@ -37,7 +37,7 @@ public class Actions extends Thread{
 					AnnounceRequest request = new AnnounceRequest();
 					request.setTransactionId(myPeer.getTransactionID());
 					request.setConnectionId(myPeer.getConnectionID());
-					request.setInfoHash(new byte[20]);
+					request.setInfoHash(INFO_HASH.getBytes());
 					request.setPeerId(myPeer.getPeerId());
 					request.setDownloaded(myPeer.getDownloaded());
 					request.setLeft(myPeer.getLeft());
