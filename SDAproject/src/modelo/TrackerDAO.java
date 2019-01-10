@@ -24,7 +24,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 
 		String sql1 = "CREATE TABLE IF NOT EXISTS Peer (\n" + "	idPeer integer PRIMARY KEY,\n" + "	ip text NOT NULL,\n"
 				+ "	bytesDes real,\n" + "	bytesPen real,\n" + "	bytesUp real,\n"+ "	puerto integer,\n"
-				+ " swarm_idTracker integer, FOREIGN KEY (swarm_idTracker) REFERENCES Swarm(idSwarm)" + ");";
+				+ " idSwarm text, FOREIGN KEY (idSwarm) REFERENCES Swarm(nomCont)" + ");";//llamar idSwarm a swarm_idTracker
 		String sql2 = "CREATE TABLE IF NOT EXISTS Swarm (\n" + "	idSwarm integer PRIMARY KEY,\n"
 				+ "	nomCont text NOT NULL,\n" + "	tamano integer,\n" + "	seeders integer,\n" + "	leechers integer\n"
 				+ ");";
@@ -76,7 +76,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 	public void insertP(Peer p) {
 		if (p != null) {
 
-			String sqlString = "INSERT INTO Peer ('idPeer', 'ip', 'bytesDes', 'bytesPen', 'bytesUp', 'puerto', 'swarm_idTracker') VALUES (?,?,?,?,?,?,?)";
+			String sqlString = "INSERT INTO Peer ('idPeer', 'ip', 'bytesDes', 'bytesPen', 'bytesUp', 'puerto', 'idSwarm') VALUES (?,?,?,?,?,?,?)";
 
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 				stmt.setString(1, String.valueOf(p.getID()));
@@ -141,7 +141,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				peer = new Peer(rs.getInt("idPeer"), rs.getString("ip"), rs.getInt("puerto"), rs.getInt("bytesDes"),
-						rs.getInt("bytesPen"), rs.getInt("bytesUp"), rs.getInt("swarm_idTracker"), 0);
+						rs.getInt("bytesPen"), rs.getInt("bytesUp"), rs.getInt("idSwarm"), 0);
 				System.out.println("Peer ID:" + peer.getID() + " IP:" + peer.getIp() + " Port:" + peer.getPuerto());
 				peerList.add(peer);
 			}
@@ -176,9 +176,9 @@ public class TrackerDAO implements TrackerDAOInterface {
 	
 	
 	@Override
-	public Swarm selectSwarm(Integer idSwarm) {
+	public Swarm selectSwarm(String nomCont) {
 
-		String sqlString = "Select * from Swarm WHERE idSwarm =" + idSwarm + ";";
+		String sqlString = "Select * from Swarm WHERE idSwarm =" + nomCont + ";";
 		Swarm swarm = null;
 		try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 			ResultSet rs = stmt.executeQuery();
