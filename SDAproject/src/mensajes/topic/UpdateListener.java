@@ -6,7 +6,10 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.command.ActiveMQTextMessage;
 
+import com.sun.xml.internal.ws.encoding.MtomCodec.MtomXMLStreamReaderEx;
+
 import controller.TrackerController;
+import modelo.Swarm;
 
 public class UpdateListener implements MessageListener{
 	
@@ -32,12 +35,24 @@ public class UpdateListener implements MessageListener{
 					if(mes == "UPDATE") {
 						int event = myTracker.getModel().getPeer().getEvent();
 						if(event ==2) {
-							//Comprobar si hay el swarm al que pertenece el peer si si hay guardar y actualizar el swarm si no hay crear el swarm en la bd y actualizarlo
+							Swarm s = myTracker.getModel().getTrackerDB().selectSwarm(myTracker.getModel().getPeer().getIdSwarm());
+							if(s == null) {
+								Swarm sw = new Swarm(myTracker.getModel().getPeer().getIdSwarm());
+								myTracker.getModel().getTrackerDB().insertS(sw);
+							}else {
+								Swarm swa = myTracker.getModel().getTrackerDB().selectSwarm(myTracker.getModel().getPeer().getIdSwarm());
+								swa.setLeechers(swa.getLeechers()+1);
+								myTracker.getModel().getTrackerDB().updateS(swa);;
+							}
 							myTracker.getModel().getTrackerDB().insertP(myTracker.getModel().getPeer());
 						}else if(event == 0) {
 							myTracker.getModel().getTrackerDB().updateP(myTracker.getModel().getPeer());
 						}else if(event == 1) {
-							
+							Swarm s = myTracker.getModel().getTrackerDB().selectSwarm(myTracker.getModel().getPeer().getIdSwarm());
+							s.setSeeders(s.getSeeders()+1);
+							s.setLeechers(s.getLeechers()-1);
+							myTracker.getModel().getTrackerDB().updateS(s);
+							myTracker.getModel().getTrackerDB().updateP(myTracker.getModel().getPeer());
 						}else if(event == 3) {
 							myTracker.getModel().getTrackerDB().deleteP(myTracker.getModel().getPeer().getID());
 						}

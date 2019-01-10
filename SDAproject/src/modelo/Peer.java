@@ -64,10 +64,10 @@ public class Peer {
 	public void setIdPeer(int idPeer) {
 		this.idPeer = idPeer;
 	}
-	public int getIdSwarm() {
+	public String getIdSwarm() {
 		return idSwarm;
 	}
-	public void setIdSwarm(int idSwarm) {
+	public void setIdSwarm(String idSwarm) {
 		this.idSwarm = idSwarm;
 	}
 	public int getEvent() {
