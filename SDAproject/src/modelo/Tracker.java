@@ -32,7 +32,7 @@ public class Tracker {
 	private boolean master;
 	private int masterID;
 	private int keepAliveTimer;
-	private ArrayList<Integer> trackerList;
+	private ArrayList<Integer> trackerList, trackerListDIE;
 	private ArrayList<Integer> okList;         //SOBRA???
 	private ArrayList<Long> timeList;
 	private HashMap<Integer, String> votos;
@@ -67,6 +67,7 @@ public class Tracker {
 	private Peer peer;
 	private Swarm swarm;
 	private boolean multicast, ready;
+	private int okVotoUpdate, errorVotoUpdate;
 
 
 	public Tracker(String iP, int puertoCom) {
@@ -364,5 +365,31 @@ public class Tracker {
 	public void setVotos(HashMap<Integer, String> votos) {
 		this.votos = votos;
 	}
+
+	public ArrayList<Integer> getTrackerListDIE() {
+		return trackerListDIE;
+	}
+
+	public void setTrackerListDIE(ArrayList<Integer> trackerListDIE) {
+		this.trackerListDIE = trackerListDIE;
+	}
+
+	public int getOkVotoUpdate() {
+		return okVotoUpdate;
+	}
+
+	public void setOkVotoUpdate(int okVotoUpdate) {
+		this.okVotoUpdate = okVotoUpdate;
+	}
+
+	public int getErrorVotoUpdate() {
+		return errorVotoUpdate;
+	}
+
+	public void setErrorVotoUpdate(int errorVotoUpdate) {
+		this.errorVotoUpdate = errorVotoUpdate;
+	}
+	
+	
 	
 }

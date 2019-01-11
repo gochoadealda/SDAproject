@@ -42,11 +42,13 @@ public class OkErrorListener implements MessageListener {
 					int arrivedID = Integer.parseInt(messageString.substring(3));
 					String texto = messageString.substring(0,1);
 
-					//TODO no se pondra a 0???
-					ArrayList<Integer> IDlist = trackerController.getTrackerList();
+					// no se pondra a 0??? En el constructor 
+					//ArrayList<Integer> IDlist = trackerController.getTrackerList();
 
-					HashMap<Integer, String> votos = new HashMap<Integer, String>();
+					HashMap<Integer, String> votos = trackerController.getVotos();
 					votos.put(arrivedID, texto);
+					trackerController.setVotos(votos);
+					
 					Iterator<?> it = votos.entrySet().iterator();
 					while(it.hasNext()) {
 						@SuppressWarnings("unchecked")
@@ -63,27 +65,22 @@ public class OkErrorListener implements MessageListener {
 							}
 						}
 					}
+					trackerController.setTrackerListDIE(IDlist);
 					
 					//Comparar si todos han votado
 					//TODO y si hay los mismos?????
-					if((ok+error) != trackerController.getTrackerList().size()) {
-						if(trackerController.isMaster()) {
-							for(int i=0; i<IDlist.size(); i++) {
-								int trackerID = IDlist.get(i);
-								//TODO por donde le paso el id de que tracker es???
-								trackerController.getModel().dieSend = new DieSender(trackerController.getModel());
-								trackerController.getModel().dieSend.start();
-							}
-						}
-					}
-					String update;
-					if(ok > error) {
-						update = "UPDATE";
-					}else {
-						update = "NO UPDATE";
-					}
-					trackerController.getModel().updateSend = new UpdatePublisher(update);
-					trackerController.getModel().updateSend.start();
+//					if((ok+error) != trackerController.getTrackerList().size()) {
+//						if(trackerController.isMaster()) {
+//							for(int i=0; i<IDlist.size(); i++) {
+//								int trackerID = IDlist.get(i);
+//								//TODO por donde le paso el id de que tracker es???
+//								trackerController.getModel().dieSend = new DieSender(trackerController.getModel());
+//								trackerController.getModel().dieSend.start();
+//							}
+//						}
+//					}
+					trackerController.setOkVotoUpdate(ok);
+					trackerController.setErrorVotoUpdate(error);
 				}
 			}catch (Exception ex) {
 				System.err.println("# TopicListener error: " + ex.getMessage());

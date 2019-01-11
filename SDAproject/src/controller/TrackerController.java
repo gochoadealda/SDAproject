@@ -240,4 +240,36 @@ public class TrackerController {
 	public void putConnectionID(String key, long con){
 		model.putConnectionID(key, con);
 	}
+	
+	public HashMap<Integer, String> getVotos() {
+		return model.getVotos();
+	}
+
+	public void setVotos(HashMap<Integer, String> votos) {
+		model.setVotos(votos);;
+	}
+	
+	public ArrayList<Integer> getTrackerListDIE() {
+		return model.getTrackerList();
+	}
+
+	public void setTrackerListDIE(ArrayList<Integer> trackerListDIE) {
+		model.setTrackerListDIE(trackerListDIE);
+	}
+	
+	public int getOkVotoUpdate() {
+		return model.getOkVotoUpdate();
+	}
+
+	public void setOkVotoUpdate(int okVotoUpdate) {
+		model.setOkVotoUpdate(okVotoUpdate);
+	}
+
+	public int getErrorVotoUpdate() {
+		return model.getErrorVotoUpdate();
+	}
+
+	public void setErrorVotoUpdate(int errorVotoUpdate) {
+		model.setErrorVotoUpdate(errorVotoUpdate);
+	}
 }

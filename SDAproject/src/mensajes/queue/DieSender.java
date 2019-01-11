@@ -1,5 +1,7 @@
 package mensajes.queue;
 
+import java.util.ArrayList;
+
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
@@ -11,6 +13,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import controller.TrackerController;
+import mensajes.topic.UpdatePublisher;
 import modelo.Tracker;
 
 public class DieSender extends Thread{
@@ -55,17 +58,32 @@ public class DieSender extends Thread{
 			System.out.println("- QueueSender created!");
 			TextMessage textMessage = queueSession.createTextMessage();
 			
-				//alive
-				if(this.isAlive()){		
-					textMessage.setText("ALIVE");
-					queueSender.send(textMessage);
-					System.out.println("- TextMessage sent to the Queue!");
-				//No esta alive
-				}else if(!this.isAlive()){
-					textMessage.setText("DIE");
-					queueSender.send(textMessage);
-					System.out.println("- TextMessage sent to the Queue!");	
+//TODO Borrar directamente de la lista vivos // mirar la de keepAlive			
+			
+			for(int i = 0; i < trackerController.getTrackerListDIE().size(); i++) {
+				int trackerID = trackerController.getTrackerListDIE().get(i);
+				for(int j=0; j < trackerController.getTrackerList().size(); j++) {
+					if(trackerController.getID() == trackerID) {
+						trackerController.deleteIDfromList(j);
+						textMessage.setText("DIE");
+						queueSender.send(textMessage);
+						System.out.println("- TextMessage sent to the Queue!");
+					}
 				}		
+			}
+			//TODO Vaciar el ArrayList trackerListDIE
+			ArrayList<Integer> newtrackerListDIE = new ArrayList<>();
+			trackerController.setTrackerListDIE(newtrackerListDIE);
+			
+			String update;
+			if(trackerController.getOkVotoUpdate() > trackerController.getErrorVotoUpdate()) {
+				update = "UPDATE";
+			}else {
+				update = "NO UPDATE";
+			}
+			trackerController.getModel().updateSend = new UpdatePublisher(update);
+			trackerController.getModel().updateSend.start();
+		
 		} catch (Exception e) {
 			System.err.println("# QueueOkErrorSenderTest Error: " + e.getMessage());
 		} finally {

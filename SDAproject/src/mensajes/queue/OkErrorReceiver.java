@@ -1,5 +1,7 @@
 package mensajes.queue;
 
+import java.util.ArrayList;
+
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
@@ -66,6 +68,14 @@ public class OkErrorReceiver extends Thread{
 				queueSession.close();
 				queueConnection.close();
 				System.out.println("- Queue resources closed!");				
+				
+//TODO aqui generar los DIE y Update
+				if(trackerController.isMaster()) {
+					trackerController.getModel().dieSend = new DieSender(trackerController.getModel());
+					trackerController.getModel().dieSend.start();
+				}
+				
+				
 			} catch (Exception ex) {
 				System.err.println("# QueueReceiverTest Error: " + ex.getMessage());
 			}
