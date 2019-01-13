@@ -57,7 +57,7 @@ public class UpdateListener implements MessageListener{
 							myTracker.getModel().getTrackerDB().deleteP(myTracker.getModel().getPeer().getID());
 						}
 					}else if(mes == "NO UPDATE") {
-						
+						System.out.println("No update");
 					}
 				}
 

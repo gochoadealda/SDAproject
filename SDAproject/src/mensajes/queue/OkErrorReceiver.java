@@ -12,6 +12,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import controller.TrackerController;
+import mensajes.topic.UpdatePublisher;
 import modelo.Tracker;
 
 public class OkErrorReceiver extends Thread{
@@ -70,11 +71,20 @@ public class OkErrorReceiver extends Thread{
 				System.out.println("- Queue resources closed!");				
 				
 //TODO aqui generar los DIE y Update
-				if(trackerController.isMaster()) {
+				ArrayList<Integer> dieList = trackerController.getTrackerListDIE();
+				if(dieList.size()>0) {
 					trackerController.getModel().dieSend = new DieSender(trackerController.getModel());
 					trackerController.getModel().dieSend.start();
 				}
-				
+				int oks = trackerController.getModel().ok;
+				int errs = trackerController.getModel().error;
+				if(oks>=errs) {
+					trackerController.getModel().updateSend = new UpdatePublisher("UPDATE");
+					trackerController.getModel().updateSend.start();
+				}else if(oks<errs) {
+					trackerController.getModel().updateSend = new UpdatePublisher("NO UPDATE");
+					trackerController.getModel().updateSend.start();
+				}
 				
 			} catch (Exception ex) {
 				System.err.println("# QueueReceiverTest Error: " + ex.getMessage());

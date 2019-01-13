@@ -29,6 +29,7 @@ public class Tracker {
 	private String IP;
 	private int puertoCom;
 	private int ID;
+	public int ok, error;
 	private boolean master;
 	private int masterID;
 	private int keepAliveTimer;
