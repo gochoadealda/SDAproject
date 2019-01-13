@@ -34,7 +34,7 @@ public class Actions extends Thread{
 	public void run() {
 		super.run();
 		StringBuffer bufferOut = new StringBuffer();
-		int SwarmId = 0;
+		String SwarmId = null;
 		try (MulticastSocket udpSocket = new MulticastSocket(60000)){
 			udpSocket.joinGroup(InetAddress.getByName("230.0.0.1"));
 			udpSocket.setSoTimeout(15000);
@@ -82,7 +82,8 @@ public class Actions extends Thread{
 								ByteUtils.intToIpAddress(announceR.getPeerInfo().getIpAddress()), 
 								announceR.getPeerInfo().getPort(), announceR.getDownloaded(), announceR.getLeft(), announceR.getUploaded(), info_hash, announceR.getEvent().value());
 						PeerController peerController = new PeerController(peer);
-						SwarmId = ByteUtils.arrayToInt(announceR.getInfoHash());
+						//SwarmId = ByteUtils.arrayToInt(announceR.getInfoHash());
+						SwarmId = ByteUtils.toHexString(announceR.getInfoHash());//he modificado de int a hexString porque hay que pasar String
 						myTracker.setPeer(peerController.getModel());
 
 						Swarm swarm = new Swarm(info_hash);

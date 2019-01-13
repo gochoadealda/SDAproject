@@ -19,5 +19,5 @@ public interface TrackerDAOInterface {
 	public ArrayList<Swarm> selectSwarms();
 	public Swarm selectSwarm(String nomCont);
 	public void seedersleechers();
-	public List<PeerInfo> selectPeersFromSwarm(int idSwarm);
+	public List<PeerInfo> selectPeersFromSwarm(String idSwarm);
 }

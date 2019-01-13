@@ -141,7 +141,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				peer = new Peer(rs.getInt("idPeer"), rs.getString("ip"), rs.getInt("puerto"), rs.getInt("bytesDes"),
-						rs.getInt("bytesPen"), rs.getInt("bytesUp"), rs.getInt("idSwarm"), 0);
+						rs.getInt("bytesPen"), rs.getInt("bytesUp"), rs.getString("idSwarm"), 0);
 				System.out.println("Peer ID:" + peer.getID() + " IP:" + peer.getIp() + " Port:" + peer.getPuerto());
 				peerList.add(peer);
 			}
@@ -297,7 +297,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 		ArrayList<Peer> peerList= selectPeers();
 		for(int i=0;i<swarmList.size();i++) {
 			for(int j=0;j<peerList.size();j++) {
-				if(swarmList.get(i).getID()==peerList.get(j).getIdSwarm()) {//coger el id del swarm relacionado en el peer
+				if(String.valueOf(swarmList.get(i).getID())==peerList.get(j).getIdSwarm()) {//coger el id del swarm relacionado en el peer
 					if(peerList.get(j).getBytesDes()!=0 && peerList.get(j).getBytesPen()==0) {
 						seeders++;
 					}else if(peerList.get(j).getBytesPen()!=0) {
@@ -316,11 +316,11 @@ public class TrackerDAO implements TrackerDAOInterface {
 
 
 	@Override
-	public List<PeerInfo> selectPeersFromSwarm(int idSwarm) {
+	public List<PeerInfo> selectPeersFromSwarm(String nomCont) {
 		List<PeerInfo> peersFromSwarm = new ArrayList<PeerInfo>();
 		ArrayList<Peer> peerList= selectPeers();
 		for(int j=0;j<peerList.size();j++) {
-			if(peerList.get(j).getIdSwarm()==idSwarm) {
+			if(peerList.get(j).getIdSwarm()==nomCont) {
 				PeerInfo peerinfo= new PeerInfo(Integer.parseInt(peerList.get(j).getIp()), peerList.get(j).getPuerto());
 				peersFromSwarm.add(peerinfo);
 			}
