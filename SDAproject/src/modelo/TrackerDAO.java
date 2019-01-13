@@ -178,7 +178,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 	@Override
 	public Swarm selectSwarm(String nomCont) {
 
-		String sqlString = "Select * from Swarm WHERE idSwarm =" + nomCont + ";";
+		String sqlString = "Select * from Swarm WHERE nomCont =" + nomCont + ";";
 		Swarm swarm = null;
 		try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 			ResultSet rs = stmt.executeQuery();
