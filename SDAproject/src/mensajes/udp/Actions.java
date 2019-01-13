@@ -100,6 +100,30 @@ public class Actions extends Thread{
 								myTracker.getModel().readyRecieve.start();
 							}
 							myTracker.setMulticast(true);
+						}else {
+							int event = myTracker.getModel().getPeer().getEvent();
+							if(event ==2) {
+								Swarm s = myTracker.getModel().getTrackerDB().selectSwarm(myTracker.getModel().getPeer().getIdSwarm());
+								if(s == null) {
+									Swarm sw = new Swarm(myTracker.getModel().getPeer().getIdSwarm());
+									myTracker.getModel().getTrackerDB().insertS(sw);
+								}else {
+									Swarm swa = myTracker.getModel().getTrackerDB().selectSwarm(myTracker.getModel().getPeer().getIdSwarm());
+									swa.setLeechers(swa.getLeechers()+1);
+									myTracker.getModel().getTrackerDB().updateS(swa);;
+								}
+								myTracker.getModel().getTrackerDB().insertP(myTracker.getModel().getPeer());
+							}else if(event == 0) {
+								myTracker.getModel().getTrackerDB().updateP(myTracker.getModel().getPeer());
+							}else if(event == 1) {
+								Swarm s = myTracker.getModel().getTrackerDB().selectSwarm(myTracker.getModel().getPeer().getIdSwarm());
+								s.setSeeders(s.getSeeders()+1);
+								s.setLeechers(s.getLeechers()-1);
+								myTracker.getModel().getTrackerDB().updateS(s);
+								myTracker.getModel().getTrackerDB().updateP(myTracker.getModel().getPeer());
+							}else if(event == 3) {
+								myTracker.getModel().getTrackerDB().deleteP(myTracker.getModel().getPeer().getID());
+							}
 						}
 					}
 				}
