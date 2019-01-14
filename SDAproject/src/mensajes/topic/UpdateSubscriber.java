@@ -28,6 +28,7 @@ public class UpdateSubscriber extends Thread{
 
 	@Override
 	public void run() {
+		System.out.println("Update slave");
 		String connectionFactoryName = "TopicConnectionFactory";
 		//This name is defined in jndi.properties file
 		String topicJNDIName = "jndi.update.topic";
@@ -77,6 +78,7 @@ public class UpdateSubscriber extends Thread{
 				topicNONDurableSubscriber.close();
 				topicSession.close();
 				topicConnection.close();
+				myTracker.getModel().updateRecieve = null;
 				System.out.println("- Topic resources closed!");				
 			} catch (Exception ex) {
 				System.err.println("# TopicSubscriberTest Error: " + ex.getMessage());

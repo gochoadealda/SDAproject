@@ -51,10 +51,11 @@ public class Actions extends Thread{
 					System.out.println("Llega2");
 					AnnounceRequest announceR = AnnounceRequest.parse(packetAnnounce.getData());
 					if(announceR.getAction().toString()=="ANNOUNCE") {
+						System.out.println(peerIP.getHostAddress());
 						System.out.println(announceR.getTransactionId() + " " + myTracker.getTransactionID());
-						System.out.println(announceR.getConnectionId() + " " + myTracker.getConnectionID());
-						System.out.println(announceR.getConnectionId() + " " + myTracker.getOldConnectionID());
-						if (announceR.getTransactionId()==myTracker.getTransactionID() && (announceR.getConnectionId()==myTracker.getConnectionID()||announceR.getConnectionId()==myTracker.getOldConnectionID())) {
+						System.out.println(announceR.getConnectionId() + " " + myTracker.getConnectionIDs().get(peerIP.getHostAddress()));
+						System.out.println(announceR.getConnectionId() + " " + myTracker.getOldConnectionIDs().get(peerIP.getHostAddress()));
+						if (announceR.getTransactionId()==myTracker.getTransactionID() && (announceR.getConnectionId()==myTracker.getConnectionIDs().get(peerIP.getHostAddress())||announceR.getConnectionId()==myTracker.getOldConnectionIDs().get(peerIP.getHostAddress()))) {
 							System.out.println("Entra");
 							bufferOut.append("Announce Request\n - Action: ");
 							bufferOut.append(announceR.getAction());

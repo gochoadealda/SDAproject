@@ -10,16 +10,21 @@ import javax.jms.TopicSession;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import controller.TrackerController;
+
 public class UpdatePublisher extends Thread{
 	private String update;
+	private TrackerController myTracker;
 
-	public UpdatePublisher(String update) {
+	public UpdatePublisher(String update, TrackerController myTracker) {
 		super();
 		this.update = update;
+		this.myTracker = myTracker;
 	}
 
 	@Override
 	public void run() {
+		System.out.println("Update master");
 		String connectionFactoryName = "TopicConnectionFactory";
 		//This name is defined in jndi.properties file
 		String topicJNDIName = "jndi.update.topic";		
@@ -66,6 +71,7 @@ public class UpdatePublisher extends Thread{
 				topicPublisher.close();
 				topicSession.close();
 				topicConnection.close();
+				myTracker.getModel().updateSend = null;
 				System.out.println("- Topic resources closed!");				
 			} catch (Exception ex) {
 				System.err.println("# TopicPublisherTest Error: " + ex.getMessage());

@@ -26,6 +26,7 @@ public class ReadySubscriber extends Thread{
 
 	@Override
 	public void run() {
+		System.out.println("Ready slave");
 		String connectionFactoryName = "TopicConnectionFactory";
 		//This name is defined in jndi.properties file
 		String topicJNDIName = "jndi.ready.topic";
@@ -68,7 +69,7 @@ public class ReadySubscriber extends Thread{
 			//Begin message delivery
 			topicConnection.start();
 			
-			Thread.sleep(1000);
+			Thread.sleep(3000);
 			
 		} catch (Exception e) {
 			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			

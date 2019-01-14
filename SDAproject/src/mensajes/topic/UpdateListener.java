@@ -32,6 +32,7 @@ public class UpdateListener implements MessageListener{
 				//Depending on the type of the message the process is different
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
 					String mes = ((TextMessage)message).getText();
+					System.out.println(mes);
 					if(mes == "UPDATE") {
 						int event = myTracker.getModel().getPeer().getEvent();
 						if(event ==2) {

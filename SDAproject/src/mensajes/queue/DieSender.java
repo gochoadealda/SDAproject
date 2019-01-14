@@ -81,8 +81,10 @@ public class DieSender extends Thread{
 			}else {
 				update = "NO UPDATE";
 			}
+			/*
 			trackerController.getModel().updateSend = new UpdatePublisher(update);
 			trackerController.getModel().updateSend.start();
+			*/
 		
 		} catch (Exception e) {
 			System.err.println("# QueueOkErrorSenderTest Error: " + e.getMessage());

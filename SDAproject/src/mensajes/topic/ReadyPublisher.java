@@ -24,6 +24,7 @@ public class ReadyPublisher extends Thread {
 
 	@Override
 	public void run() {
+		System.out.println("Ready master");
 		String connectionFactoryName = "TopicConnectionFactory";
 		//This name is defined in jndi.properties file
 		String topicJNDIName = "jndi.ready.topic";		

@@ -72,9 +72,16 @@ public class Connect extends Thread{
 
 					HashMap<String, Long> oldConnectionIDs = myTracker.getOldConnectionIDs();
 					HashMap<String, Long> connectionIDs = myTracker.getConnectionIDs();
-					oldConnectionIDs.put(peerIP.getHostAddress()+peerPort, connectionIDs.get(peerIP.getHostAddress()));
-					connectionIDs.put(peerIP.getHostAddress()+peerPort, connectionID);
-					myTracker.getModel().conSend = new ConnectionIDPublisher(peerIP.getHostAddress()+peerPort, connectionID, myTracker);
+					System.out.println(peerIP.getHostAddress());
+					if(connectionIDs.get(peerIP.getHostAddress()) == null) {
+						long l = 0;
+						oldConnectionIDs.put(peerIP.getHostAddress(), l);
+					}else {
+						oldConnectionIDs.put(peerIP.getHostAddress(), connectionIDs.get(peerIP.getHostAddress()));
+					}
+					
+					connectionIDs.put(peerIP.getHostAddress(), connectionID);
+					myTracker.getModel().conSend = new ConnectionIDPublisher(peerIP.getHostAddress(), connectionID, myTracker);
 					myTracker.getModel().conSend.start();
 					myTracker.setOldConnectionIDs(oldConnectionIDs);
 					myTracker.setConnectionIDs(connectionIDs);

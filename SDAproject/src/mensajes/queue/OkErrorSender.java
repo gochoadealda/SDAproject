@@ -26,6 +26,7 @@ public class OkErrorSender extends Thread {
 	
 	@Override
 	public void run() {		
+		System.out.println("OK slave");
 		String connectionFactoryName = "QueueConnectionFactory";
 		String queueJNDIName = "jndi.okerror.queue";		
 		

@@ -80,15 +80,16 @@ public class Connect extends Thread{
 					System.err.println("ErrorCon: " + e.getMessage());
 				}
 				if(myPeer.isPrimerConnect()) {
+					try {
+						Thread.sleep(3000);
+					}catch(Exception e) {
+
+					}
 					myPeer.udpActions = new Actions(myPeer);
 					myPeer.udpActions.start();
 				}
 				myPeer.setPrimerConnect(false);
-				try {
-					Thread.sleep(500);
-				}catch(Exception e) {
-
-				}
+				
 			}
 		}
 		myPeer.udpConnect = null;

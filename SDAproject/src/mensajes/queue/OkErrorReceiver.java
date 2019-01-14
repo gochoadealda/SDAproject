@@ -13,6 +13,7 @@ import javax.naming.InitialContext;
 
 import controller.TrackerController;
 import mensajes.topic.UpdatePublisher;
+import modelo.Swarm;
 import modelo.Tracker;
 
 public class OkErrorReceiver extends Thread{
@@ -25,40 +26,39 @@ public class OkErrorReceiver extends Thread{
 
 	@Override
 	public void run(){
-	String connectionFactoryName = "QueueConnectionFactory";
-	String queueJNDIName = "jndi.okerror.queue";
-	
-	QueueConnection queueConnection = null;
-	QueueSession queueSession = null;
-	QueueReceiver queueReceiver = null;	
-	
-	try{
-		
-		Context ctx = new InitialContext();
-	
-		QueueConnectionFactory queueConnectionFactory = (QueueConnectionFactory) ctx.lookup(connectionFactoryName);			
-		
-		Queue myQueue = (Queue) ctx.lookup(queueJNDIName);			
+		System.out.println("OK master");
+		String connectionFactoryName = "QueueConnectionFactory";
+		String queueJNDIName = "jndi.okerror.queue";
 
-		queueConnection = queueConnectionFactory.createQueueConnection();
-		System.out.println("- Queue Connection created!");
-		
-		queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);			
-		System.out.println("- Queue Session created!");
-		
-		queueReceiver = queueSession.createReceiver(myQueue);
-		System.out.println("- QueueReceiver created!");
-		
-		OkErrorListener listener = new OkErrorListener(trackerController.getModel());			
-		queueReceiver.setMessageListener(listener);
-		
-		
-		queueConnection.start();
-		
-		
-		while(trackerController.isActive()) {
-			
-		}
+		QueueConnection queueConnection = null;
+		QueueSession queueSession = null;
+		QueueReceiver queueReceiver = null;	
+
+		try{
+
+			Context ctx = new InitialContext();
+
+			QueueConnectionFactory queueConnectionFactory = (QueueConnectionFactory) ctx.lookup(connectionFactoryName);			
+
+			Queue myQueue = (Queue) ctx.lookup(queueJNDIName);			
+
+			queueConnection = queueConnectionFactory.createQueueConnection();
+			System.out.println("- Queue Connection created!");
+
+			queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);			
+			System.out.println("- Queue Session created!");
+
+			queueReceiver = queueSession.createReceiver(myQueue);
+			System.out.println("- QueueReceiver created!");
+
+			OkErrorListener listener = new OkErrorListener(trackerController.getModel());			
+			queueReceiver.setMessageListener(listener);
+
+
+			queueConnection.start();
+
+
+			Thread.sleep(3000);
 
 		} catch (Exception e) {
 			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
@@ -69,8 +69,8 @@ public class OkErrorReceiver extends Thread{
 				queueSession.close();
 				queueConnection.close();
 				System.out.println("- Queue resources closed!");				
-				
-//TODO aqui generar los DIE y Update
+
+				//TODO aqui generar los DIE y Update
 				ArrayList<Integer> dieList = trackerController.getTrackerListDIE();
 				if(dieList.size()>0) {
 					trackerController.getModel().dieSend = new DieSender(trackerController.getModel());
@@ -79,13 +79,37 @@ public class OkErrorReceiver extends Thread{
 				int oks = trackerController.getModel().ok;
 				int errs = trackerController.getModel().error;
 				if(oks>=errs) {
-					trackerController.getModel().updateSend = new UpdatePublisher("UPDATE");
+					int event = trackerController.getModel().getPeer().getEvent();
+					if(event ==2) {
+						Swarm s = trackerController.getModel().getTrackerDB().selectSwarm(trackerController.getModel().getPeer().getIdSwarm());
+						if(s == null) {
+							Swarm sw = new Swarm(trackerController.getModel().getPeer().getIdSwarm());
+							trackerController.getModel().getTrackerDB().insertS(sw);
+						}else {
+							Swarm swa = trackerController.getModel().getTrackerDB().selectSwarm(trackerController.getModel().getPeer().getIdSwarm());
+							swa.setLeechers(swa.getLeechers()+1);
+							trackerController.getModel().getTrackerDB().updateS(swa);;
+						}
+						trackerController.getModel().getTrackerDB().insertP(trackerController.getModel().getPeer());
+					}else if(event == 0) {
+						trackerController.getModel().getTrackerDB().updateP(trackerController.getModel().getPeer());
+					}else if(event == 1) {
+						Swarm s = trackerController.getModel().getTrackerDB().selectSwarm(trackerController.getModel().getPeer().getIdSwarm());
+						s.setSeeders(s.getSeeders()+1);
+						s.setLeechers(s.getLeechers()-1);
+						trackerController.getModel().getTrackerDB().updateS(s);
+						trackerController.getModel().getTrackerDB().updateP(trackerController.getModel().getPeer());
+					}else if(event == 3) {
+						trackerController.getModel().getTrackerDB().deleteP(trackerController.getModel().getPeer().getID());
+					}
+					trackerController.getModel().updateSend = new UpdatePublisher("UPDATE", trackerController);
 					trackerController.getModel().updateSend.start();
 				}else if(oks<errs) {
-					trackerController.getModel().updateSend = new UpdatePublisher("NO UPDATE");
+					trackerController.getModel().updateSend = new UpdatePublisher("NO UPDATE", trackerController);
 					trackerController.getModel().updateSend.start();
 				}
-				
+				trackerController.getModel().okRecieve = null;
+
 			} catch (Exception ex) {
 				System.err.println("# QueueReceiverTest Error: " + ex.getMessage());
 			}
