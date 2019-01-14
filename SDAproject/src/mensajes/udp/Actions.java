@@ -124,12 +124,13 @@ public class Actions extends Thread{
 										Swarm sw = new Swarm(myTracker.getModel().getPeer().getIdSwarm());
 										System.out.println(sw.getNomCont());
 										myTracker.getModel().getTrackerDB().insertS(sw);
+										myTracker.getModel().getTrackerDB().insertP(myTracker.getModel().getPeer());
 									}else {
 										Swarm swa = myTracker.getModel().getTrackerDB().selectSwarm(myTracker.getModel().getPeer().getIdSwarm());
 										swa.setLeechers(swa.getLeechers()+1);
 										myTracker.getModel().getTrackerDB().updateS(swa);
+										myTracker.getModel().getTrackerDB().insertP(myTracker.getModel().getPeer());
 									}
-									myTracker.getModel().getTrackerDB().insertP(myTracker.getModel().getPeer());
 								}else if(event == 0) {
 									System.out.println("Event0");
 									myTracker.getModel().getTrackerDB().updateP(myTracker.getModel().getPeer());
