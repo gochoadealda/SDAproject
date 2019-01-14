@@ -92,7 +92,6 @@ public class Tracker {
 			masterID = ID;
 			this.bdtimestamp=System.currentTimeMillis();
 			this.trackerDB = new TrackerDAO("tracker"+bdtimestamp+".db");
-			trackerDB.createDatabase();
 		}else {
 			for (int i = 0; i < idList.size(); i++) {
 				if (idList.get(i)>maxid) {

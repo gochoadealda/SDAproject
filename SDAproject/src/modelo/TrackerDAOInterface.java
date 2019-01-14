@@ -13,11 +13,11 @@ public interface TrackerDAOInterface {
 	public void insertS(Swarm s);
 	public void updateP(Peer p);
 	public void updateS(Swarm s);
-	public void deleteP(Integer idPeer);
+	public void deleteP(String idPeer);
 	public void deleteS(Integer idSwarm);
 	public ArrayList<Peer> selectPeers();
 	public ArrayList<Swarm> selectSwarms();
 	public Swarm selectSwarm(String nomCont);
-	public void seedersleechers();
+	//public void seedersleechers();
 	public List<PeerInfo> selectPeersFromSwarm(String idSwarm);
 }

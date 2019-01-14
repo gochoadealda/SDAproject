@@ -2,7 +2,7 @@ package modelo;
 
 public class Peer {
 	
-	private int idPeer;
+	private String idPeer;
 	private String ip;
 	private int puerto;
 	private double bytesDes;
@@ -11,7 +11,7 @@ public class Peer {
 	private String idSwarm;
 	private int event;
 	
-	public Peer(int idPeer, String ip, int puerto, double bytesDes, double bytesPen, double bytesUp, String idSwarm, int event) {
+	public Peer(String idPeer, String ip, int puerto, double bytesDes, double bytesPen, double bytesUp, String idSwarm, int event) {
 		super();
 		this.idPeer = idPeer;
 		this.ip = ip;
@@ -22,10 +22,10 @@ public class Peer {
 		this.idSwarm = idSwarm;
 		this.event = event;
 	}
-	public int getID() {
+	public String getID() {
 		return idPeer;
 	}
-	public void setID(int iD) {
+	public void setID(String iD) {
 		idPeer = iD;
 	}
 	public String getIp() {
@@ -58,10 +58,10 @@ public class Peer {
 	public void setBytesUp(double bytesUp) {
 		this.bytesUp = bytesUp;
 	}
-	public int getIdPeer() {
+	public String getIdPeer() {
 		return idPeer;
 	}
-	public void setIdPeer(int idPeer) {
+	public void setIdPeer(String idPeer) {
 		this.idPeer = idPeer;
 	}
 	public String getIdSwarm() {

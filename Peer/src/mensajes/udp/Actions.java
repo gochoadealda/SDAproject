@@ -25,9 +25,10 @@ public class Actions extends Thread{
 	@Override
 	public void run() {
 		super.run();
-		myPeer.setLastannounce(System.currentTimeMillis());
+		System.out.println(INFO_HASH.getBytes());
 		while(myPeer.isActive()) {
 			if(System.currentTimeMillis()-myPeer.getLastannounce()>=myPeer.getInterval() || myPeer.isPrimerAnnounce()) {
+				myPeer.setLastannounce(System.currentTimeMillis());
 				StringBuffer bufferOut = new StringBuffer();
 				try (DatagramSocket udpSocket = new DatagramSocket()) {
 					udpSocket.setSoTimeout(15000);

@@ -22,6 +22,10 @@ public class Swarm {
 	public Swarm(String nomCont) {
 		super();
 		this.nomCont = nomCont;
+		this.idSwarm = 0;
+		this.leechers= 0;
+		this.seeders = 0;
+		this.tamano = 0;
 	}
 	
 	public int getID() {

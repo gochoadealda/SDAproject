@@ -19,10 +19,10 @@ public class PeerController {
 		this.model = model;
 	}
 	
-	public int getID() {
+	public String getID() {
 		return model.getID();
 	}
-	public void setID(int iD) {
+	public void setID(String iD) {
 		model.setID(iD);
 	}
 	public String getIp() {

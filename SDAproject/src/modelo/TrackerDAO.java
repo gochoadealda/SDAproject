@@ -42,6 +42,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 		super();
 		con = null;
 		this.dbname = dbname;
+		createDatabase();
 		try {
 			Class.forName("org.sqlite.JDBC");
 			con = DriverManager.getConnection("jdbc:sqlite:" +"db/"+ dbname);
@@ -79,7 +80,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			String sqlString = "INSERT INTO Peer ('idPeer', 'ip', 'bytesDes', 'bytesPen', 'bytesUp', 'puerto', 'idSwarm') VALUES (?,?,?,?,?,?,?)";
 
 			try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
-				stmt.setString(1, String.valueOf(p.getID()));
+				stmt.setString(1, p.getID());
 				stmt.setString(2, p.getIp());
 				stmt.setString(3, String.valueOf(p.getBytesDes()));
 				stmt.setString(4, String.valueOf(p.getBytesPen()));
@@ -117,14 +118,15 @@ public class TrackerDAO implements TrackerDAOInterface {
 				stmt.setString(5, String.valueOf(s.getLeechers()));
 
 				if (stmt.executeUpdate() == 1) {
-					System.out.println("- A new swarm was inserted. :)");
 					con.commit();
+					System.out.println("- A new swarm was inserted. :)");
 				} else {
 					System.err.println("- The swarm wasn't inserted. :(");
 					con.rollback();
 				}
 			} catch (Exception ex) {
 				System.err.println("# Error storing data in the db: " + ex.getMessage());
+				ex.printStackTrace();
 			}
 		} else {
 			System.err.println("# Error inserting a new swarm: some parameters are 'null' or 'empty'.");
@@ -140,7 +142,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 		try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				peer = new Peer(rs.getInt("idPeer"), rs.getString("ip"), rs.getInt("puerto"), rs.getInt("bytesDes"),
+				peer = new Peer(rs.getString("idPeer"), rs.getString("ip"), rs.getInt("puerto"), rs.getInt("bytesDes"),
 						rs.getInt("bytesPen"), rs.getInt("bytesUp"), rs.getString("idSwarm"), 0);
 				System.out.println("Peer ID:" + peer.getID() + " IP:" + peer.getIp() + " Port:" + peer.getPuerto());
 				peerList.add(peer);
@@ -178,7 +180,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 	@Override
 	public Swarm selectSwarm(String nomCont) {
 
-		String sqlString = "Select * from Swarm WHERE nomCont =" + nomCont + ";";
+		String sqlString = "Select * from Swarm WHERE nomCont = '" + nomCont + "'";
 		Swarm swarm = null;
 		try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
 			ResultSet rs = stmt.executeQuery();
@@ -251,7 +253,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 	}
 
 	@Override
-	public void deleteP(Integer idPeer) {
+	public void deleteP(String idPeer) {
 		String sqlString = "DELETE FROM Peer WHERE idPeer =" + idPeer + ";";
 
 		try (PreparedStatement stmt = con.prepareStatement(sqlString)) {
@@ -287,7 +289,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			System.err.println("# Error cleaning the db: " + ex.getMessage());
 		}
 	}
-
+/*
 	@Override
 	public void seedersleechers() {
 		
@@ -313,7 +315,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			leechers=0;
 		}
 	}
-
+*/
 
 	@Override
 	public List<PeerInfo> selectPeersFromSwarm(String nomCont) {
