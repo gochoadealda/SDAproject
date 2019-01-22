@@ -33,7 +33,7 @@ public class UpdateListener implements MessageListener{
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
 					String mes = ((TextMessage)message).getText();
 					System.out.println(mes);
-					if(mes == "UPDATE") {
+					if(mes.equals("UPDATE")) {
 						int event = myTracker.getModel().getPeer().getEvent();
 						if(event ==2) {
 							Swarm s = myTracker.getModel().getTrackerDB().selectSwarm(myTracker.getModel().getPeer().getIdSwarm());
@@ -57,7 +57,7 @@ public class UpdateListener implements MessageListener{
 						}else if(event == 3) {
 							myTracker.getModel().getTrackerDB().deleteP(myTracker.getModel().getPeer().getID());
 						}
-					}else if(mes == "NO UPDATE") {
+					}else if(mes.equals("NO UPDATE")) {
 						System.out.println("No update");
 					}
 				}

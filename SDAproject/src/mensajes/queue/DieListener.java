@@ -31,7 +31,7 @@ public class DieListener implements MessageListener {
 
 					//int arrivedID = Integer.parseInt(messageString.substring(3));
 					String texto = messageString.substring(0,2);
-					if(texto == "DIE"){
+					if(texto.equals("DIE")){
 						this.trackerController.setActive(false);				
 					int arrivedID = Integer.parseInt(messageString.substring(3));
 					

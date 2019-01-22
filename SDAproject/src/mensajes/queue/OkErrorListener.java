@@ -48,7 +48,7 @@ public class OkErrorListener implements MessageListener {
 					}
 					
 					trackerController.setTrackerListDIE(IDlist);
-					if(texto == "OK") {
+					if(texto.equals("OK")) {
 						trackerController.getModel().ok++;
 					}else {
 						trackerController.getModel().error++;

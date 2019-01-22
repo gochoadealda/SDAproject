@@ -31,7 +31,7 @@ public class ReadyListener implements MessageListener{
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
 					String mes = ((TextMessage)message).getText();
 					System.out.println(mes);
-					if(mes == "Ready") {
+					if(mes.equals("Ready")) {
 						trackercontroller.setReady(true);
 					}else {
 						trackercontroller.setReady(false);

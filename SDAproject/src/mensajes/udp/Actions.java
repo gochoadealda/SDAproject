@@ -50,7 +50,7 @@ public class Actions extends Thread{
 				if (packetAnnounce.getLength() >= 98) {
 					System.out.println("Llega2");
 					AnnounceRequest announceR = AnnounceRequest.parse(packetAnnounce.getData());
-					if(announceR.getAction().toString()=="ANNOUNCE") {
+					if(announceR.getAction().toString().equals("ANNOUNCE")) {
 						System.out.println(peerIP.getHostAddress());
 						System.out.println(announceR.getTransactionId() + " " + myTracker.getTransactionID());
 						System.out.println(announceR.getConnectionId() + " " + myTracker.getConnectionIDs().get(peerIP.getHostAddress()));
@@ -156,7 +156,7 @@ public class Actions extends Thread{
 
 				if(packetAnnounce.getLength() >= 8) {
 					Error announceR = Error.parse(packetAnnounce.getData());
-					if (announceR.getAction().toString()=="ERROR");{
+					if (announceR.getAction().toString().equals("ERROR"));{
 						System.out.println(announceR.getMessage());
 					}
 				}else {

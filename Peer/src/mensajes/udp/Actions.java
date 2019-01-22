@@ -88,7 +88,7 @@ public class Actions extends Thread{
 
 					if (packet.getLength() >= 8) {
 						AnnounceResponse response = AnnounceResponse.parse(packet.getData());
-						if(response.getAction().toString() == "ANNOUNCE" && response.getTransactionId()==myPeer.getTransactionID()) {
+						if(response.getAction().toString().equals("ANNOUNCE") && response.getTransactionId()==myPeer.getTransactionID()) {
 							bufferOut.append("\n\nAnnounce Response\n - Action: ");
 							bufferOut.append(response.getAction());
 							bufferOut.append("\n - TransactionID: ");
