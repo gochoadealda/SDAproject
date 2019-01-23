@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -39,20 +40,24 @@ public class PeerGestor extends JFrame implements ActionListener {
 	private DefaultTableModel modelSwarms;
 	private JTable tablePeers;
 	private PeerController peerController;
+	private Peer peer;
 	private boolean isTheMaster;
 	private Object[][] dataTabla1;
 	@SuppressWarnings("rawtypes")
 	private Class[] columnClassTabla1;
 	private String[] columnsTabla1;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private JTextField tfIp;
+	private JTextField tfPort;
+	private JTextField tfID;
+	private JLabel lblFileName;
+	private File file;
 
 	
 	public PeerGestor(Peer peer) {
 		super(); // usamos el contructor de la clase padre JFrame
 
 		this.peerController = new PeerController(peer);
+		//this.peer = new Peer(peer);
 		configurarVentana(); // configuramos la ventana
 		inicializarComponentes(); // inicializamos los atributos o componentes
 
@@ -109,39 +114,41 @@ public class PeerGestor extends JFrame implements ActionListener {
 		
 		
 		
-	      
+	    
 
 		
 		
-		FileDialog dialog = new FileDialog((Frame) getContentPane(), "Select File to Open");
-		Button showFileDialogButton = new Button("Open File");
+		
+		Button showFileDialogButton = new Button("Select File");
 	      showFileDialogButton.addActionListener(new ActionListener() {
 	         @Override
 	         public void actionPerformed(ActionEvent e) {
-	        	 dialog.setVisible(true);
+	        	JFileChooser chooser = new JFileChooser();
+	        	chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+	        	
+	 	        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+	 	                "Torrent files", "torrent");
+	 	        chooser.setFileFilter(filter);
+	 	        int returnVal = chooser.showOpenDialog(null);
+	 	        if(returnVal == JFileChooser.APPROVE_OPTION) {
+	 	        	file=chooser.getSelectedFile();
+	 	        	lblFileName.setText(file.getName());
+	 	            System.out.println("Fichero elegido:  " +
+	 	                    chooser.getSelectedFile().getName());
+	 	        }
+	 	    //chooser.setBounds(70, 390, 266, 37);
+	 	    //panel3.add(chooser);
 	         }
 	      });
-	    dialog.setMode(FileDialog.LOAD);
-	    dialog.setVisible(true);
-	    String file = dialog.getFile();
-	    showFileDialogButton.setBounds(51, 201, 307, 48);
+
+	    showFileDialogButton.setBounds(51, 284, 307, 48);
 	    panel3.add(showFileDialogButton);
 	    
-		 JFileChooser chooser = new JFileChooser();
-	        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	                "JPG & GIF Images", "jpg", "gif");
-	        chooser.setFileFilter(filter);
-	        int returnVal = chooser.showOpenDialog(null);
-	        if(returnVal == JFileChooser.APPROVE_OPTION) {
-	            System.out.println("You chose to open this file: " +
-	                    chooser.getSelectedFile().getName());
-	        }
-	    //chooser.setBounds(70, 390, 266, 37);
-	    panel3.add(chooser);
-
+		
+	    
 		JLabel lblSwarmsActivos = new JLabel("Active Swarms");
 		lblSwarmsActivos.setFont(new Font("Consolas", Font.PLAIN, 33));
-		lblSwarmsActivos.setBounds(62, 345, 266, 37);
+		lblSwarmsActivos.setBounds(61, 494, 266, 37);
 		panel3.add(lblSwarmsActivos);
 
 		// headers for the table
@@ -178,7 +185,7 @@ public class PeerGestor extends JFrame implements ActionListener {
 					return values[index];
 				}
 			});
-			swarmList.setBounds(62, 414, 296, 487);
+			swarmList.setBounds(62, 563, 296, 272);
 			panel3.add(swarmList);
 
 			tableSwarms = new JTable(new DefaultTableModel(
@@ -232,38 +239,42 @@ public class PeerGestor extends JFrame implements ActionListener {
 			label.setBounds(51, 37, 86, 37);
 			panel3.add(label);
 			
-			textField = new JTextField();
-			textField.setText((String) null);
-			textField.setColumns(10);
-			textField.setBounds(181, 40, 177, 37);
-			panel3.add(textField);
+			tfIp = new JTextField();
+			tfIp.setText(String.valueOf(peerController.getIp()));
+			tfIp.setColumns(10);
+			tfIp.setBounds(181, 40, 177, 37);
+			panel3.add(tfIp);
 			
 			JLabel label_1 = new JLabel("Port");
 			label_1.setFont(new Font("Consolas", Font.PLAIN, 33));
 			label_1.setBounds(51, 92, 118, 37);
 			panel3.add(label_1);
 			
-			textField_1 = new JTextField();
-			textField_1.setText((String) null);
-			textField_1.setColumns(10);
-			textField_1.setBounds(181, 95, 177, 37);
-			panel3.add(textField_1);
+			tfPort = new JTextField();
+			tfPort.setText(String.valueOf(peerController.getPuerto()));
+			tfPort.setColumns(10);
+			tfPort.setBounds(181, 95, 177, 37);
+			panel3.add(tfPort);
 			
 			JLabel label_2 = new JLabel("ID");
 			label_2.setFont(new Font("Consolas", Font.PLAIN, 33));
 			label_2.setBounds(51, 142, 86, 37);
 			panel3.add(label_2);
 			
-			textField_2 = new JTextField();
-			textField_2.setText((String) null);
-			textField_2.setColumns(10);
-			textField_2.setBounds(182, 145, 177, 37);
-			panel3.add(textField_2);
+			tfID = new JTextField();
+			tfID.setText(peerController.getPeerId());
+			tfID.setColumns(10);
+			tfID.setBounds(182, 145, 177, 37);
+			panel3.add(tfID);
 			
-			JButton button = new JButton("Stop");
-			button.setFont(new Font("Consolas", Font.PLAIN, 33));
-			button.setBounds(51, 262, 307, 54);
-			panel3.add(button);
+			JButton bttnStop = new JButton("Stop");
+			bttnStop.setFont(new Font("Consolas", Font.PLAIN, 33));
+			bttnStop.setBounds(51, 210, 307, 54);
+			panel3.add(bttnStop);
+			
+			lblFileName = new JLabel("File not selected yet");
+			lblFileName.setBounds(51, 358, 307, 48);
+			panel3.add(lblFileName);
 			tablePeers.getColumnModel().getColumn(3).setPreferredWidth(97);
 			tablePeers.getColumnModel().getColumn(4).setPreferredWidth(105);
 
@@ -335,5 +346,4 @@ public class PeerGestor extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 	}
-	
 }
