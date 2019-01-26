@@ -23,7 +23,6 @@ public class ReadyListener implements MessageListener{
 	@Override
 	public void onMessage(Message message) {
 		if (message != null) {
-
 			try {
 				System.out.println("   - TopicListener: " + message.getClass().getSimpleName() + " received!");
 
