@@ -220,7 +220,13 @@ public class MainMenu extends JFrame implements ActionListener {
 					new String[] {
 							"Id", "Content name", "Size", "Seeders", "Leechers"
 					}
-					));
+					) {
+				@Override
+			    public boolean isCellEditable(int row, int column) {
+			       //all cells false
+			       return false;
+			    }
+			});
 			JScrollPane scrollPaneTabla2 = new JScrollPane(tableSwarms);
 			scrollPaneTabla2.setBounds(595, 148, 726, 43);
 			panel3.add(scrollPaneTabla2);
@@ -264,6 +270,11 @@ public class MainMenu extends JFrame implements ActionListener {
 				public Class getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
 				}
+				@Override
+			    public boolean isCellEditable(int row, int column) {
+			       //all cells false
+			       return false;
+			    }
 			});
 
 			JLabel lblPeersInfo = new JLabel("Peers Info");

@@ -31,6 +31,7 @@ import java.awt.Frame;
 import javax.swing.JTable;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class PeerGestor extends JFrame implements ActionListener {
@@ -50,7 +51,7 @@ public class PeerGestor extends JFrame implements ActionListener {
 	private JTextField tfPort;
 	private JTextField tfID;
 	private JLabel lblFileName;
-	private File file;
+	private File file=null;
 
 	
 	public PeerGestor(Peer peer) {
@@ -79,45 +80,10 @@ public class PeerGestor extends JFrame implements ActionListener {
 		tabbedPane.setBounds(0, 0, 1917, 1002);
 		getContentPane().add(tabbedPane);
 
-		// headers for the table
-		columnsTabla1 = new String[] { "Id","Time" };
-
-		
-		//		dataTabla1 = new Object[][] { { myTracker.getID(),isMaster , "1s", isActive }, { 2, "Slave", "1s", true },
-		//			{ 3, "Slave", "1s", true }, { 4, "Slave", "4s", false }, };
-		//
-		columnClassTabla1 = new Class[] { Integer.class , String.class};
-		//			modelTrackers = new DefaultTableModel(dataTabla1, columnsTabla1) {
-		//				@Override
-		//				public boolean isCellEditable(int row, int column) {
-		//					return false;
-		//				}
-		//
-		//				@Override
-		//				public Class<?> getColumnClass(int columnIndex) {
-		//					return columnClassTabla1[columnIndex];
-		//				}
-		//			};
-		//
-		//			tableTrackers = new JTable(modelTrackers);
-		//			JScrollPane scrollPaneTabla1 = new JScrollPane(tableTrackers);
-		//			scrollPaneTabla1.setBounds(32, 28, 452, 431);
-		//			panel2.add(scrollPaneTabla1);
-		// panel2.add(table);
-		
-		
-
 		JPanel panel3 = new JPanel();
 		panel3.setForeground(Color.BLACK);
 		tabbedPane.addTab("Peers gestor", null, panel3, null);
 		panel3.setLayout(null);
-		
-		
-		
-	    
-
-		
-		
 		
 		Button showFileDialogButton = new Button("Select File");
 	      showFileDialogButton.addActionListener(new ActionListener() {
@@ -136,20 +102,18 @@ public class PeerGestor extends JFrame implements ActionListener {
 	 	            System.out.println("Fichero elegido:  " +
 	 	                    chooser.getSelectedFile().getName());
 	 	        }
-	 	    //chooser.setBounds(70, 390, 266, 37);
-	 	    //panel3.add(chooser);
 	         }
 	      });
 
-	    showFileDialogButton.setBounds(51, 284, 307, 48);
+	    showFileDialogButton.setBounds(51, 246, 307, 48);
 	    panel3.add(showFileDialogButton);
 	    
 		
 	    
-		JLabel lblSwarmsActivos = new JLabel("Active Swarms");
+		/*JLabel lblSwarmsActivos = new JLabel("Active Swarms");
 		lblSwarmsActivos.setFont(new Font("Consolas", Font.PLAIN, 33));
 		lblSwarmsActivos.setBounds(61, 494, 266, 37);
-		panel3.add(lblSwarmsActivos);
+		panel3.add(lblSwarmsActivos);*/
 
 		// headers for the table
 		String[] columnsTabla2 = new String[] { "Id", "Content name", "Size", "Number of seeders",
@@ -174,7 +138,7 @@ public class PeerGestor extends JFrame implements ActionListener {
 			};
 
 			
-			JList swarmList = new JList();
+			/*JList swarmList = new JList();
 			swarmList.setFont(new Font("Tahoma", Font.PLAIN, 20));
 			swarmList.setModel(new AbstractListModel() {
 				String[] values = new String[] {"Swarm1", "Swarm2", "Swarm3", "Swarm4"};
@@ -186,7 +150,7 @@ public class PeerGestor extends JFrame implements ActionListener {
 				}
 			});
 			swarmList.setBounds(62, 563, 296, 272);
-			panel3.add(swarmList);
+			panel3.add(swarmList);*/
 
 			tableSwarms = new JTable(new DefaultTableModel(
 					new Object[][] {
@@ -195,13 +159,20 @@ public class PeerGestor extends JFrame implements ActionListener {
 					new String[] {
 							"Id", "Content name", "Size", "Seeders", "Leechers"
 					}
-					));
+					) {
+				@Override
+			    public boolean isCellEditable(int row, int column) {
+			       //all cells false
+			       return false;
+			    }
+			});
+			
 			JScrollPane scrollPaneTabla2 = new JScrollPane(tableSwarms);
-			scrollPaneTabla2.setBounds(595, 97, 1249, 197);
+			scrollPaneTabla2.setBounds(595, 97, 1249, 48);
 			panel3.add(scrollPaneTabla2);
 
 			JScrollPane scrollPaneTabla3 = new JScrollPane();
-			scrollPaneTabla3.setBounds(595, 414, 1249, 421);
+			scrollPaneTabla3.setBounds(595, 269, 1249, 421);
 			panel3.add(scrollPaneTabla3);
 
 			tablePeers = new JTable();
@@ -222,11 +193,16 @@ public class PeerGestor extends JFrame implements ActionListener {
 				public Class getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
 				}
+				@Override
+			    public boolean isCellEditable(int row, int column) {
+			       //all cells false
+			       return false;
+			    }
 			});
 
 			JLabel lblPeersInfo = new JLabel("Peers Info");
 			lblPeersInfo.setFont(new Font("Tahoma", Font.PLAIN, 25));
-			lblPeersInfo.setBounds(595, 337, 121, 48);
+			lblPeersInfo.setBounds(595, 192, 121, 48);
 			panel3.add(lblPeersInfo);
 
 			JLabel lblSwarmInfo = new JLabel("Swarm Info");
@@ -269,12 +245,25 @@ public class PeerGestor extends JFrame implements ActionListener {
 			
 			JButton bttnStop = new JButton("Stop");
 			bttnStop.setFont(new Font("Consolas", Font.PLAIN, 33));
-			bttnStop.setBounds(51, 210, 307, 54);
+			bttnStop.setBounds(51, 378, 307, 54);
 			panel3.add(bttnStop);
 			
 			lblFileName = new JLabel("File not selected yet");
-			lblFileName.setBounds(51, 358, 307, 48);
+			lblFileName.setHorizontalAlignment(SwingConstants.CENTER);
+			lblFileName.setBounds(51, 192, 307, 48);
 			panel3.add(lblFileName);
+			
+			JButton button = new JButton("Start");
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if (file!=null) {
+						peerController.getModel().leerTorrent(file);
+					}
+				}
+			});
+			button.setFont(new Font("Consolas", Font.PLAIN, 33));
+			button.setBounds(51, 311, 307, 54);
+			panel3.add(button);
 			tablePeers.getColumnModel().getColumn(3).setPreferredWidth(97);
 			tablePeers.getColumnModel().getColumn(4).setPreferredWidth(105);
 

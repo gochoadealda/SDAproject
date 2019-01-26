@@ -1,8 +1,17 @@
 package modelo;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import bitTorrent.metainfo.handler.MetainfoHandler;
+import bitTorrent.metainfo.handler.MetainfoHandlerMultipleFile;
+import bitTorrent.metainfo.handler.MetainfoHandlerSingleFile;
 import mensajes.udp.Actions;
 import mensajes.udp.Connect;
 import udp.PeerInfo;
@@ -12,10 +21,11 @@ public class Peer {
 	private String peerId;
 	private int ip;
 	private int puerto;
-	private int uploaded;  	//The total amount uploaded so far, encoded in base ten ascii.
-	private int downloaded;	//The total amount downloaded so far, encoded in base ten ascii.
-	private int left;			//The number of bytes this peer still has to download, encoded in base ten ascii.
-	private int event;		// 0: none; 1: completed; 2: started; 3: stopped
+	private int uploaded; // The total amount uploaded so far, encoded in base ten ascii.
+	private int downloaded; // The total amount downloaded so far, encoded in base ten ascii.
+	private int left; // The number of bytes this peer still has to download, encoded in base ten
+						// ascii.
+	private int event; // 0: none; 1: completed; 2: started; 3: stopped
 	private int transactionID;
 	private long connectionID;
 	public Connect udpConnect;
@@ -44,7 +54,7 @@ public class Peer {
 		this.uploaded = uploaded;
 		this.downloaded = downloaded;
 		this.left = left;
-		this.interval=0;
+		this.interval = 0;
 	}
 
 	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left, int event) {
@@ -56,13 +66,15 @@ public class Peer {
 		this.downloaded = downloaded;
 		this.left = left;
 		this.event = event;
-		this.interval=0;
+		this.interval = 0;
 	}
+
 	public Peer(String peerId) {
 		super();
 		this.peerId = peerId;
 		this.interval = 60000;
 	}
+
 	public void start() {
 		this.active = true;
 		this.primerConnect = true;
@@ -70,9 +82,54 @@ public class Peer {
 		udpConnect = new Connect(this);
 		udpConnect.start();
 	}
+
+	public void leerTorrent(File torrent) {
+		MetainfoHandler<?> handler = null;
+		try {
+			if (torrent.getPath().contains(".torrent")) {
+				handler = new MetainfoHandlerSingleFile();
+				handler.parseTorrenFile(torrent.getPath());
+			}
+		} catch (Exception ex) {
+			System.out.println(" Peer: Couldn't parse file as single, trying multiple");
+			if (torrent.getPath().contains(".torrent")) {
+				handler = new MetainfoHandlerMultipleFile();
+				handler.parseTorrenFile(torrent.getPath());
+			}
+		}
+		if (handler != null) {
+			System.out.println("#######################################\n" + torrent.getPath());
+			System.out.println(handler.getMetainfo());
+			int tamaño = handler.getMetainfo().getInfo().getLength();
+			File newFile = new File("downloads/" + handler.getMetainfo().getInfo().getName());
+			if (!newFile.exists()) {
+				System.out.println("El archivo no existe por lo que guardamos la memoria necesaria, que es " + tamaño);
+				try {
+					FileOutputStream fos = new FileOutputStream(newFile);
+					fos.write(new byte[tamaño]);
+					fos.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.out.println("Existe, por lo que lo leemos");
+				left = 0;
+				try {
+					FileInputStream fis = new FileInputStream(newFile);
+					fis.read(new byte[(int) newFile.length()]);
+					fis.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
 	public String getPeerId() {
 		return peerId;
 	}
+
 	public void setPeerId(String peerId) {
 		this.peerId = peerId;
 	}
@@ -80,6 +137,7 @@ public class Peer {
 	public int getIp() {
 		return ip;
 	}
+
 	public void setIp(int ip) {
 		this.ip = ip;
 	}
@@ -87,6 +145,7 @@ public class Peer {
 	public int getPuerto() {
 		return puerto;
 	}
+
 	public void setPuerto(int puerto) {
 		this.puerto = puerto;
 	}
@@ -94,6 +153,7 @@ public class Peer {
 	public int getUploaded() {
 		return uploaded;
 	}
+
 	public void setUploaded(int uploaded) {
 		this.uploaded = uploaded;
 	}
@@ -101,6 +161,7 @@ public class Peer {
 	public int getLeft() {
 		return left;
 	}
+
 	public void setLeft(int left) {
 		this.left = left;
 	}
@@ -108,6 +169,7 @@ public class Peer {
 	public int getDownloaded() {
 		return downloaded;
 	}
+
 	public void setDownloaded(int downloaded) {
 		this.downloaded = downloaded;
 	}
@@ -115,6 +177,7 @@ public class Peer {
 	public int getEvent() {
 		return event;
 	}
+
 	public void setEvent(int event) {
 		this.event = event;
 	}
@@ -214,7 +277,5 @@ public class Peer {
 	public void setPrimerAnnounce(boolean primerAnnounce) {
 		this.primerAnnounce = primerAnnounce;
 	}
-	
-
 
 }
