@@ -52,10 +52,10 @@ public class Actions extends Thread{
 					AnnounceRequest announceR = AnnounceRequest.parse(packetAnnounce.getData());
 					if(announceR.getAction().toString().equals("ANNOUNCE")) {
 						System.out.println(peerIP.getHostAddress());
-						System.out.println(announceR.getTransactionId() + " " + myTracker.getTransactionID());
+						System.out.println(announceR.getTransactionId() + " " + myTracker.getTransactionIDs().get(peerIP.getHostAddress()));
 						System.out.println(announceR.getConnectionId() + " " + myTracker.getConnectionIDs().get(peerIP.getHostAddress()));
 						System.out.println(announceR.getConnectionId() + " " + myTracker.getOldConnectionIDs().get(peerIP.getHostAddress()));
-						if (announceR.getTransactionId()==myTracker.getTransactionID() && (announceR.getConnectionId()==myTracker.getConnectionIDs().get(peerIP.getHostAddress())||announceR.getConnectionId()==myTracker.getOldConnectionIDs().get(peerIP.getHostAddress()))) {
+						if (announceR.getTransactionId()==myTracker.getTransactionIDs().get(peerIP.getHostAddress()) && (announceR.getConnectionId()==myTracker.getConnectionIDs().get(peerIP.getHostAddress())||announceR.getConnectionId()==myTracker.getOldConnectionIDs().get(peerIP.getHostAddress()))) {
 							System.out.println("Entra");
 							bufferOut.append("Announce Request\n - Action: ");
 							bufferOut.append(announceR.getAction());
@@ -168,15 +168,20 @@ public class Actions extends Thread{
 				ex.printStackTrace();
 				System.out.println(ex.toString());
 			}
-
+			try {
+				Thread.sleep(3000);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
 			if(myTracker.isMaster()) {
-
+				System.out.println("announce request");
 				AnnounceResponse response = new AnnounceResponse();
 				response.setTransactionId(myTracker.getTransactionID());
 				response.setInterval(30000);
 				//sacar datos de la bd
 				//TODO sacar datos de la bd
 				Swarm mySwarm = myTracker.getTrackerDB().selectSwarm(SwarmId);
+				System.out.println(mySwarm);
 				response.setLeechers(mySwarm.getLeechers());
 				response.setSeeders(mySwarm.getSeeders());
 				response.setPeers(myTracker.getTrackerDB().selectPeersFromSwarm(SwarmId));

@@ -24,7 +24,7 @@ public class DBQueueFileSender extends Thread {
 	public DBQueueFileSender(Tracker model) {
 		super();
 		this.trackerController = new TrackerController(model);
-		SRC_FILE = "./db/tracker"+trackerController.getID()+".db";
+		SRC_FILE = "./db/tracker"+trackerController.getModel().getBdtimestamp()+".db";
 	}
 	//private int ID = mytracker.getID();
 	

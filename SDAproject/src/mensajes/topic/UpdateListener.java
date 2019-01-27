@@ -36,7 +36,9 @@ public class UpdateListener implements MessageListener{
 					if(mes.equals("UPDATE")) {
 						int event = myTracker.getModel().getPeer().getEvent();
 						if(event ==2) {
-							Swarm s = myTracker.getModel().getTrackerDB().selectSwarm(myTracker.getModel().getPeer().getIdSwarm());
+							Swarm s = null;
+							s = myTracker.getModel().getTrackerDB().selectSwarm(myTracker.getModel().getPeer().getIdSwarm());
+							System.out.println(s);
 							if(s == null) {
 								Swarm sw = new Swarm(myTracker.getModel().getPeer().getIdSwarm());
 								myTracker.getModel().getTrackerDB().insertS(sw);
@@ -63,7 +65,7 @@ public class UpdateListener implements MessageListener{
 				}
 
 			}catch (Exception ex) {
-				System.err.println("# TopicListener error: " + ex.getMessage());
+				System.err.println("# TopicListener error update: " + ex.getMessage());
 			}
 		}
 		

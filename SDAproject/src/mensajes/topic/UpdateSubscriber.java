@@ -53,11 +53,11 @@ public class UpdateSubscriber extends Thread{
 			System.out.println(uuid);
 
 			topicConnection.setClientID("Client-"+uuid);
-			System.out.println("- Topic Connection created!");
+			System.out.println("- Topic Connection created update!");
 
 			//Sessions
 			topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-			System.out.println("- Topic Session created!");
+			System.out.println("- Topic Session created update!");
 
 			//Define a non-durable connection using a filter (the filter is optional)
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
@@ -72,16 +72,16 @@ public class UpdateSubscriber extends Thread{
 			topicConnection.start();
 			Thread.sleep(2000);
 		} catch (Exception e) {
-			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
+			System.err.println("# TopicSubscriberTest Error update: " + e.getMessage());			
 		} finally {
 			try {
 				topicNONDurableSubscriber.close();
 				topicSession.close();
 				topicConnection.close();
 				myTracker.getModel().updateRecieve = null;
-				System.out.println("- Topic resources closed!");				
+				System.out.println("- Topic resources closed update!");				
 			} catch (Exception ex) {
-				System.err.println("# TopicSubscriberTest Error: " + ex.getMessage());
+				System.err.println("# TopicSubscriberTest Error update: " + ex.getMessage());
 			}
 		}
 	}

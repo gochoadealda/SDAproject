@@ -38,11 +38,13 @@ public class TrackerDAO implements TrackerDAOInterface {
 		}
 	}
 
-	public TrackerDAO(String dbname) {
+	public TrackerDAO(String dbname, boolean type) {
 		super();
 		con = null;
 		this.dbname = dbname;
-		createDatabase();
+		if(type) {
+			createDatabase();
+		}
 		try {
 			Class.forName("org.sqlite.JDBC");
 			con = DriverManager.getConnection("jdbc:sqlite:" +"db/"+ dbname);
@@ -51,6 +53,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 		} catch (Exception ex) {
 			System.err.println(" # Unable to create SQLiteDBManager: " + ex.getMessage());
 		}
+
 	}
 
 	public void closeConnection() {
@@ -175,8 +178,8 @@ public class TrackerDAO implements TrackerDAOInterface {
 		}
 		return swarmList;
 	}
-	
-	
+
+
 	@Override
 	public Swarm selectSwarm(String nomCont) {
 
@@ -289,10 +292,10 @@ public class TrackerDAO implements TrackerDAOInterface {
 			System.err.println("# Error cleaning the db: " + ex.getMessage());
 		}
 	}
-/*
+	/*
 	@Override
 	public void seedersleechers() {
-		
+
 		int seeders=0;
 		int leechers=0;
 		ArrayList<Swarm> swarmList= selectSwarms();
@@ -315,7 +318,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 			leechers=0;
 		}
 	}
-*/
+	 */
 
 	@Override
 	public List<PeerInfo> selectPeersFromSwarm(String nomCont) {
@@ -331,8 +334,8 @@ public class TrackerDAO implements TrackerDAOInterface {
 	}
 
 	public static void main(String[] args) {
-				System.out.println("Prueba");
-				TrackerDAO manager = new TrackerDAO("/tracker1542815698871.db");
+		System.out.println("Prueba");
+		TrackerDAO manager = new TrackerDAO("/tracker1542815698871.db", true);
 		//		Peer p= new Peer(1, "ipppp", 8080, 90.4, 90.6);
 		//		manager.insertP(p);
 		//		manager.selectPeers();
@@ -341,7 +344,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 		//		manager.deleteP(1);
 		//		manager.closeConnection();
 
-				/*Peer p= new Peer(1, "ip", 8080, 10000, 0, 0, 1, 0);//2 seed y 1 leech
+		/*Peer p= new Peer(1, "ip", 8080, 10000, 0, 0, 1, 0);//2 seed y 1 leech
 				Peer p2= new Peer(2, "ipp", 8081, 0, 10, 0, 1, 0);
 				Peer p3= new Peer(3, "ippp", 8082, 10000, 0, 0, 1, 0);
 				manager.insertP(p);
@@ -349,7 +352,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 				manager.insertP(p3);
 				Swarm s=new Swarm(4, "Asier", 3, 0, 0);
 				manager.insertS(s);
-				
+
 				manager.seedersleechers();
 				System.out.println("terminado");
 				Swarm a=manager.selectSwarm(4);

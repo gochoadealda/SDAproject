@@ -250,7 +250,7 @@ public class TrackerController {
 	}
 	
 	public ArrayList<Integer> getTrackerListDIE() {
-		return model.getTrackerList();
+		return model.getTrackerListDIE();
 	}
 
 	public void setTrackerListDIE(ArrayList<Integer> trackerListDIE) {

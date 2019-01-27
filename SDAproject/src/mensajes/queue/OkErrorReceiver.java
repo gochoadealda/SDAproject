@@ -58,7 +58,7 @@ public class OkErrorReceiver extends Thread{
 			queueConnection.start();
 
 
-			Thread.sleep(3000);
+			Thread.sleep(1000);
 
 		} catch (Exception e) {
 			System.err.println("# QueueReceiverTest Error: " + e.getMessage());
@@ -72,41 +72,47 @@ public class OkErrorReceiver extends Thread{
 
 				//TODO aqui generar los DIE y Update
 				ArrayList<Integer> dieList = trackerController.getTrackerListDIE();
+				System.out.println("Tamaño die list"+dieList.size());
 				if(dieList.size()>0) {
 					trackerController.getModel().dieSend = new DieSender(trackerController.getModel());
 					trackerController.getModel().dieSend.start();
 				}
 				int oks = trackerController.getModel().ok;
 				int errs = trackerController.getModel().error;
-				if(oks>=errs) {
-					int event = trackerController.getModel().getPeer().getEvent();
-					if(event ==2) {
-						Swarm s = trackerController.getModel().getTrackerDB().selectSwarm(trackerController.getModel().getPeer().getIdSwarm());
-						if(s == null) {
-							Swarm sw = new Swarm(trackerController.getModel().getPeer().getIdSwarm());
-							trackerController.getModel().getTrackerDB().insertS(sw);
-						}else {
-							Swarm swa = trackerController.getModel().getTrackerDB().selectSwarm(trackerController.getModel().getPeer().getIdSwarm());
-							swa.setLeechers(swa.getLeechers()+1);
-							trackerController.getModel().getTrackerDB().updateS(swa);;
+				System.out.println(oks);
+				System.out.println(errs);
+				if((oks>0||errs>0)) {
+					System.out.println("Recive oks y errs");
+					if(oks>=errs) {
+						int event = trackerController.getModel().getPeer().getEvent();
+						if(event ==2) {
+							Swarm s = trackerController.getModel().getTrackerDB().selectSwarm(trackerController.getModel().getPeer().getIdSwarm());
+							if(s == null) {
+								Swarm sw = new Swarm(trackerController.getModel().getPeer().getIdSwarm());
+								trackerController.getModel().getTrackerDB().insertS(sw);
+							}else {
+								Swarm swa = trackerController.getModel().getTrackerDB().selectSwarm(trackerController.getModel().getPeer().getIdSwarm());
+								swa.setLeechers(swa.getLeechers()+1);
+								trackerController.getModel().getTrackerDB().updateS(swa);;
+							}
+							trackerController.getModel().getTrackerDB().insertP(trackerController.getModel().getPeer());
+						}else if(event == 0) {
+							trackerController.getModel().getTrackerDB().updateP(trackerController.getModel().getPeer());
+						}else if(event == 1) {
+							Swarm s = trackerController.getModel().getTrackerDB().selectSwarm(trackerController.getModel().getPeer().getIdSwarm());
+							s.setSeeders(s.getSeeders()+1);
+							s.setLeechers(s.getLeechers()-1);
+							trackerController.getModel().getTrackerDB().updateS(s);
+							trackerController.getModel().getTrackerDB().updateP(trackerController.getModel().getPeer());
+						}else if(event == 3) {
+							trackerController.getModel().getTrackerDB().deleteP(trackerController.getModel().getPeer().getID());
 						}
-						trackerController.getModel().getTrackerDB().insertP(trackerController.getModel().getPeer());
-					}else if(event == 0) {
-						trackerController.getModel().getTrackerDB().updateP(trackerController.getModel().getPeer());
-					}else if(event == 1) {
-						Swarm s = trackerController.getModel().getTrackerDB().selectSwarm(trackerController.getModel().getPeer().getIdSwarm());
-						s.setSeeders(s.getSeeders()+1);
-						s.setLeechers(s.getLeechers()-1);
-						trackerController.getModel().getTrackerDB().updateS(s);
-						trackerController.getModel().getTrackerDB().updateP(trackerController.getModel().getPeer());
-					}else if(event == 3) {
-						trackerController.getModel().getTrackerDB().deleteP(trackerController.getModel().getPeer().getID());
+						trackerController.getModel().updateSend = new UpdatePublisher("UPDATE", trackerController);
+						trackerController.getModel().updateSend.start();
+					}else if(oks<errs) {
+						trackerController.getModel().updateSend = new UpdatePublisher("NO UPDATE", trackerController);
+						trackerController.getModel().updateSend.start();
 					}
-					trackerController.getModel().updateSend = new UpdatePublisher("UPDATE", trackerController);
-					trackerController.getModel().updateSend.start();
-				}else if(oks<errs) {
-					trackerController.getModel().updateSend = new UpdatePublisher("NO UPDATE", trackerController);
-					trackerController.getModel().updateSend.start();
 				}
 				trackerController.getModel().okRecieve = null;
 

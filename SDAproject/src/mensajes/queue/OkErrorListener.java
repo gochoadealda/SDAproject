@@ -26,7 +26,14 @@ public class OkErrorListener implements MessageListener {
 	public OkErrorListener(Tracker model) {
 		super();
 		this.trackerController = new TrackerController(model);
-		this.IDlist = trackerController.getTrackerList();
+		Iterator<Integer> list = trackerController.getTrackerList().iterator();
+		this.IDlist = new ArrayList<>();
+		while(list.hasNext()) {
+			int id = list.next();
+			if(id != trackerController.getID()) {
+				this.IDlist.add(id);
+			}
+		}
 	}
 
 	public void onMessage(Message message) {
@@ -39,8 +46,9 @@ public class OkErrorListener implements MessageListener {
 					System.out.println(((TextMessage)message).getText());
 					String messageString = ((TextMessage)message).getText();
 					int arrivedID = Integer.parseInt(messageString.substring(3));
-					String texto = messageString.substring(0,1);
-					
+					String texto = messageString.substring(0,2);
+					System.out.println(arrivedID);
+					System.out.println(texto);
 					for(int i=0; i<IDlist.size(); i++){
 						if(IDlist.get(i)==arrivedID) {
 							IDlist.remove(i);
@@ -55,7 +63,7 @@ public class OkErrorListener implements MessageListener {
 					}
 				}
 			}catch (Exception ex) {
-				System.err.println("# TopicListener error: " + ex.getMessage());
+				System.err.println("# TopicListener error okErr: " + ex.getMessage());
 			}
 		}
 	}

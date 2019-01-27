@@ -45,39 +45,39 @@ public class ReadyPublisher extends Thread {
 			
 			//Connection			
 			topicConnection = topicConnectionFactory.createTopicConnection();
-			System.out.println("- Topic Connection created!");
+			System.out.println("- Topic Connection created ready!");
 			
 			//Session
 			topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-			System.out.println("- Topic Session created!");
+			System.out.println("- Topic Session created ready!");
 
 			//Message Publisher
 			topicPublisher = topicSession.createPublisher(myTopic);
-			System.out.println("- TopicPublisher created!");
+			System.out.println("- TopicPublisher created ready!");
 			//Text Message
 			TextMessage textMessage = topicSession.createTextMessage();
-			
+			Thread.sleep(500);
 			//Message Body
 			textMessage.setText("Ready");
 			topicPublisher.publish(textMessage);
-			System.out.println("- TextMessage sent to the Queue!");
+			System.out.println("- TextMessage sent to the Queue ready!");
 			
 
 			
 		} catch (Exception e) {
-			System.err.println("# TopicPublisherTest Error: " + e.getMessage());
+			System.err.println("# TopicPublisherTest Error ready: " + e.getMessage());
 		} finally {
 			try {
 				//Close resources
 				topicPublisher.close();
 				topicSession.close();
 				topicConnection.close();
-				System.out.println("- Topic resources closed!");
+				System.out.println("- Topic resources closed ready!");
 				trackerController.getModel().readySend = null;
 				trackerController.getModel().okRecieve = new OkErrorReceiver(trackerController.getModel());
 				trackerController.getModel().okRecieve.start();
 			} catch (Exception ex) {
-				System.err.println("# TopicPublisherTest Error: " + ex.getMessage());
+				System.err.println("# TopicPublisherTest Error ready: " + ex.getMessage());
 			}			
 		}
 	}

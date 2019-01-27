@@ -45,26 +45,26 @@ public class UpdatePublisher extends Thread{
 
 			//Connection			
 			topicConnection = topicConnectionFactory.createTopicConnection();
-			System.out.println("- Topic Connection created!");
+			System.out.println("- Topic Connection created update!");
 
 			//Session
 			topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-			System.out.println("- Topic Session created!");
+			System.out.println("- Topic Session created update!");
 
 			//Message Publisher
 			topicPublisher = topicSession.createPublisher(myTopic);
-			System.out.println("- TopicPublisher created!");
+			System.out.println("- TopicPublisher created update!");
 			//Text Message
 			TextMessage textMessage = topicSession.createTextMessage();
 			//Message Body
 			textMessage.setText(update);
 			topicPublisher.publish(textMessage);
-			System.out.println("- TextMessage sent to the Queue!");
+			System.out.println("- TextMessage sent to the Queue update!");
 
 
 
 		} catch (Exception e) {
-			System.err.println("# TopicPublisherTest Error: " + e.getMessage());
+			System.err.println("# TopicPublisherTest Error update: " + e.getMessage());
 		} finally {
 			try {
 				//Close resources
@@ -72,9 +72,9 @@ public class UpdatePublisher extends Thread{
 				topicSession.close();
 				topicConnection.close();
 				myTracker.getModel().updateSend = null;
-				System.out.println("- Topic resources closed!");				
+				System.out.println("- Topic resources closed update!");				
 			} catch (Exception ex) {
-				System.err.println("# TopicPublisherTest Error: " + ex.getMessage());
+				System.err.println("# TopicPublisherTest Error update: " + ex.getMessage());
 			}			
 		}
 	}

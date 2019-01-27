@@ -52,7 +52,7 @@ public class Connect extends Thread{
 					bufferOut.append(ByteUtils.toHexString(requestBytes));
 					myTracker.setTransactionID(request.getTransactionId());
 					HashMap<String, Integer> transactionIDs = myTracker.getTransactionIDs();
-					transactionIDs.put(peerIP.getHostAddress()+peerPort, request.getTransactionId());
+					transactionIDs.put(peerIP.getHostAddress(), request.getTransactionId());
 					myTracker.setTransactionIDs(transactionIDs);
 				} else {
 					bufferOut.append("- ERROR: Response length to small ");
@@ -81,7 +81,7 @@ public class Connect extends Thread{
 					}
 					
 					connectionIDs.put(peerIP.getHostAddress(), connectionID);
-					myTracker.getModel().conSend = new ConnectionIDPublisher(peerIP.getHostAddress(), connectionID, myTracker);
+					myTracker.getModel().conSend = new ConnectionIDPublisher(peerIP.getHostAddress(), connectionID, myTracker, false);
 					myTracker.getModel().conSend.start();
 					myTracker.setOldConnectionIDs(oldConnectionIDs);
 					myTracker.setConnectionIDs(connectionIDs);

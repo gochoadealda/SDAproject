@@ -51,11 +51,11 @@ public class ReadySubscriber extends Thread{
 			System.out.println(uuid);
 					
 			topicConnection.setClientID("Client-"+uuid);
-			System.out.println("- Topic Connection created!");
+			System.out.println("- Topic Connection created ready!");
 			
 			//Sessions
 			topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-			System.out.println("- Topic Session created!");
+			System.out.println("- Topic Session created ready!");
 
 			//Define a non-durable connection using a filter (the filter is optional)
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
@@ -69,20 +69,20 @@ public class ReadySubscriber extends Thread{
 			//Begin message delivery
 			topicConnection.start();
 			
-			Thread.sleep(3000);
+			Thread.sleep(1500);
 			
 		} catch (Exception e) {
-			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
+			System.err.println("# TopicSubscriberTest Error ready: " + e.getMessage());			
 		} finally {
 			try {
 				topicNONDurableSubscriber.close();
 				topicSession.close();
 				topicConnection.close();
-				System.out.println("- Topic resources closed!");
+				System.out.println("- Topic resources closed ready!");
 				
 				trackerController.getModel().readyRecieve = null;
 			} catch (Exception ex) {
-				System.err.println("# TopicSubscriberTest Error: " + ex.getMessage());
+				System.err.println("# TopicSubscriberTest Error ready: " + ex.getMessage());
 			}
 		}
 	}

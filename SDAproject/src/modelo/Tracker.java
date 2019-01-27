@@ -33,7 +33,8 @@ public class Tracker {
 	private boolean master;
 	private int masterID;
 	private int keepAliveTimer;
-	private ArrayList<Integer> trackerList, trackerListDIE;
+	private ArrayList<Integer> trackerList;
+	private ArrayList<Integer> trackerListDIE;
 	private ArrayList<Integer> okList;         //SOBRA???
 	private ArrayList<Long> timeList;
 	private HashMap<Integer, String> votos;
@@ -91,7 +92,7 @@ public class Tracker {
 			ID = 0;
 			masterID = ID;
 			this.bdtimestamp=System.currentTimeMillis();
-			this.trackerDB = new TrackerDAO("tracker"+bdtimestamp+".db");
+			this.trackerDB = new TrackerDAO("tracker"+bdtimestamp+".db", true);
 		}else {
 			for (int i = 0; i < idList.size(); i++) {
 				if (idList.get(i)>maxid) {
@@ -259,7 +260,7 @@ public class Tracker {
 	}
 	
 	public void createConnectionDB() {
-		this.trackerDB = new TrackerDAO("tracker"+bdtimestamp+".db");
+		this.trackerDB = new TrackerDAO("tracker"+bdtimestamp+".db", false);
 	}
 	
 	public long getBdtimestamp() {

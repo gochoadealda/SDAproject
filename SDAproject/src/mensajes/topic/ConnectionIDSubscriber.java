@@ -51,11 +51,11 @@ public class ConnectionIDSubscriber extends Thread {
 			System.out.println(uuid);
 					
 			topicConnection.setClientID("Client-"+uuid);
-			System.out.println("- Topic Connection created!");
+			System.out.println("- Topic Connection created connection!");
 			
 			//Sessions
 			topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-			System.out.println("- Topic Session created!");
+			System.out.println("- Topic Session created connection!");
 
 			//Define a non-durable connection using a filter (the filter is optional)
 			topicNONDurableSubscriber = topicSession.createSubscriber(myTopic);
@@ -72,17 +72,17 @@ public class ConnectionIDSubscriber extends Thread {
 				
 			}
 		} catch (Exception e) {
-			System.err.println("# TopicSubscriberTest Error: " + e.getMessage());			
+			System.err.println("# TopicSubscriberTest Error connection: " + e.getMessage());			
 		} finally {
 			try {
 				
 				topicNONDurableSubscriber.close();
 				topicSession.close();
 				topicConnection.close();
-				System.out.println("- Topic resources closed!");
+				System.out.println("- Topic resources closed connection!");
 				trackerController.getModel().conRecieve = null;
 			} catch (Exception ex) {
-				System.err.println("# TopicSubscriberTest Error: " + ex.getMessage());
+				System.err.println("# TopicSubscriberTest Error connection: " + ex.getMessage());
 			}
 		}
 	}

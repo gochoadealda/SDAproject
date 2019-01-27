@@ -24,7 +24,7 @@ public class ReadyListener implements MessageListener{
 	public void onMessage(Message message) {
 		if (message != null) {
 			try {
-				System.out.println("   - TopicListener: " + message.getClass().getSimpleName() + " received!");
+				System.out.println("   - TopicListenerReady: " + message.getClass().getSimpleName() + " received!");
 
 				//Depending on the type of the message the process is different
 				if (message.getClass().getCanonicalName().equals(ActiveMQTextMessage.class.getCanonicalName())) {
@@ -38,6 +38,7 @@ public class ReadyListener implements MessageListener{
 				}else {
 					trackercontroller.setReady(false);
 				}
+				System.out.println("llega hasta este punto");
 				trackercontroller.getModel().okSend = new OkErrorSender(trackercontroller.getModel());
 				trackercontroller.getModel().okSend.start();
 			}catch (Exception ex) {

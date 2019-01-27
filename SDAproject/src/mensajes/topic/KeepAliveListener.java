@@ -65,6 +65,8 @@ public class KeepAliveListener implements MessageListener {
 							trackerController.addTimeList(actualtime);
 							if (trackerController.isMaster()) {
 								trackerController.sendDB();
+								trackerController.getModel().conSend = new ConnectionIDPublisher(trackerController.getConnectionIDs(), trackerController.getTransactionIDs(), trackerController.getOldConnectionIDs(),true);
+								trackerController.getModel().conSend.start();
 							}
 						} else {
 							actualtime = System.currentTimeMillis();
