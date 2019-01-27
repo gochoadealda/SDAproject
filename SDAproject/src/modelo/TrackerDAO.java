@@ -238,7 +238,7 @@ public class TrackerDAO implements TrackerDAOInterface {
 				stmt.setString(1, String.valueOf(s.getTamano()));
 				stmt.setString(2, String.valueOf(s.getSeeders()));
 				stmt.setString(3, String.valueOf(s.getLeechers()));
-				stmt.setString(4, String.valueOf(s.getID()));
+				stmt.setString(4, String.valueOf(s.getNomCont()));
 
 				if (stmt.executeUpdate() != 0) {
 					System.out.println("- Swarm's data was updated. :)");
