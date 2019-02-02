@@ -3,32 +3,35 @@ package mensajes.udp;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
 import java.util.Random;
 
 import udp.ConnectRequest;
 import udp.ConnectResponse;
 import bitTorrent.util.ByteUtils;
+import controller.PeerController;
+import controller.SwarmController;
 import modelo.Peer;
+import modelo.Swarm;
 
 public class Connect extends Thread{
 	public static final String TRACKER_NAME = "230.0.0.1";
 	public static final int TRACKER_PORT = 55557;
 	public static final String INFO_HASH = "1959A52BAD89DE0D6C5FA65B57C99D85AC642EF5";
-	private Peer myPeer;
+	private SwarmController swarmController;
+	private PeerController peerController;
 
-	public Connect(Peer myPeer) {
+	public Connect(Peer peerModel, Swarm swarmModel) {
 		super();
-		this.myPeer = myPeer;
+		this.peerController = new PeerController(peerModel);
+		this.swarmController = new SwarmController(swarmModel);
 	}
 
 	@Override
 	public void run() {
 		super.run();
-		while(myPeer.isActive()) {
-			if(System.currentTimeMillis()-myPeer.getLastconnection()>=60000 || myPeer.isPrimerConnect()) {
-				myPeer.setLastconnection(System.currentTimeMillis());
+		while(peerController.isActive()) {
+			if(System.currentTimeMillis()-peerController.getLastconnection()>=60000 || peerController.isPrimerConnect()) {
+				peerController.setLastconnection(System.currentTimeMillis());
 				StringBuffer bufferOut = new StringBuffer();
 				try (DatagramSocket udpSocket = new DatagramSocket()) {
 					udpSocket.setSoTimeout(15000);
@@ -37,7 +40,7 @@ public class Connect extends Thread{
 					Random random = new Random();
 					int transactionID = random.nextInt(Integer.MAX_VALUE);
 
-					myPeer.setTransactionID(transactionID);
+					peerController.setTransactionID(transactionID);
 					ConnectRequest request = new ConnectRequest();
 					request.setTransactionId(transactionID);
 					byte[] requestBytes = request.getBytes();			
@@ -67,7 +70,7 @@ public class Connect extends Thread{
 						bufferOut.append(response.getConnectionId());
 						bufferOut.append("\n - Bytes: ");
 						bufferOut.append(ByteUtils.toHexString(responseBytes));
-						myPeer.setConnectionID(response.getConnectionId());
+						peerController.setConnectionID(response.getConnectionId());
 					} else {
 						bufferOut.append("- ERROR: Response length to small ");
 						bufferOut.append(packet.getLength());
@@ -79,20 +82,20 @@ public class Connect extends Thread{
 				}catch (Exception e) {
 					System.err.println("ErrorCon: " + e.getMessage());
 				}
-				if(myPeer.isPrimerConnect()) {
+				if(peerController.isPrimerConnect()) {
 					try {
 						Thread.sleep(3000);
 					}catch(Exception e) {
 
 					}
-					myPeer.udpActions = new Actions(myPeer);
-					myPeer.udpActions.start();
+					peerController.getModel().udpActions = new Actions(swarmController.getModel(), peerController.getModel());
+					peerController.getModel().udpActions.start();
 				}
-				myPeer.setPrimerConnect(false);
+				peerController.setPrimerConnect(false);
 				
 			}
 		}
-		myPeer.udpConnect = null;
+		peerController.getModel().udpConnect = null;
 	}
 
 

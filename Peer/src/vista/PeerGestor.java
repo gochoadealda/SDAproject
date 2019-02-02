@@ -257,7 +257,7 @@ public class PeerGestor extends JFrame implements ActionListener {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					if (file!=null) {
-						peerController.getModel().leerTorrent(file);
+						peerController.leerTorrent(file);
 					}
 				}
 			});

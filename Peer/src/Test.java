@@ -1,4 +1,5 @@
 
+import controller.PeerController;
 import modelo.Peer;
 import vista.PeerGestor;
 
@@ -8,7 +9,9 @@ public class Test {
 		Peer peer = new Peer("0");
 		PeerGestor peerView = new PeerGestor(peer);
 		peerView.setVisible(true);
-		peer.start();
+		
+		PeerController peerControler = new PeerController(peer, peerView);
+		peerControler.start();
 
 		
 	}

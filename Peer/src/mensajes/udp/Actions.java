@@ -5,7 +5,10 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 import bitTorrent.util.ByteUtils;
+import controller.PeerController;
+import controller.SwarmController;
 import modelo.Peer;
+import modelo.Swarm;
 import udp.AnnounceRequest;
 import udp.AnnounceRequest.Event;
 import udp.AnnounceResponse;
@@ -15,20 +18,22 @@ public class Actions extends Thread{
 	public static final String TRACKER_NAME = "230.0.0.1";
 	public static final int TRACKER_PORT = 60000;
 	public static final String INFO_HASH = "1959A52BAD89DE0D6C5FA65B57C99D85AC642EF5";
-	private Peer myPeer;
+	private SwarmController swarmController;
+	private PeerController peerController;
 
-	public Actions(Peer myPeer) {
+	public Actions(Swarm swarmModel,Peer peerModel) {
 		super();
-		this.myPeer = myPeer;
+		this.swarmController = new SwarmController(swarmModel);
+		this.peerController = new PeerController(peerModel);
 	}
 
 	@Override
 	public void run() {
 		super.run();
 		System.out.println(INFO_HASH.getBytes());
-		while(myPeer.isActive()) {
-			if(System.currentTimeMillis()-myPeer.getLastannounce()>=myPeer.getInterval() || myPeer.isPrimerAnnounce()) {
-				myPeer.setLastannounce(System.currentTimeMillis());
+		while(peerController.isActive()) {
+			if(System.currentTimeMillis()-peerController.getLastannounce()>=peerController.getInterval() || peerController.isPrimerAnnounce()) {
+				peerController.setLastannounce(System.currentTimeMillis());
 				StringBuffer bufferOut = new StringBuffer();
 				try (DatagramSocket udpSocket = new DatagramSocket()) {
 					udpSocket.setSoTimeout(15000);
@@ -36,14 +41,14 @@ public class Actions extends Thread{
 					InetAddress serverHost = InetAddress.getByName(TRACKER_NAME);
 
 					AnnounceRequest request = new AnnounceRequest();
-					request.setTransactionId(myPeer.getTransactionID());
-					request.setConnectionId(myPeer.getConnectionID());
+					request.setTransactionId(peerController.getTransactionID());
+					request.setConnectionId(peerController.getConnectionID());
 					request.setInfoHash(INFO_HASH.getBytes());
-					request.setPeerId(myPeer.getPeerId());
-					request.setDownloaded(myPeer.getDownloaded());
-					request.setLeft(myPeer.getLeft());
-					request.setUploaded(myPeer.getUploaded());
-					if(myPeer.isPrimerAnnounce()) {
+					request.setPeerId(peerController.getPeerId());
+					request.setDownloaded(peerController.getDownloaded());
+					request.setLeft(peerController.getLeft());
+					request.setUploaded(peerController.getUploaded());
+					if(peerController.isPrimerAnnounce()) {
 						request.setEvent(Event.parseInt(2));
 					}else {
 						request.setEvent(Event.parseInt(0));
@@ -81,14 +86,14 @@ public class Actions extends Thread{
 					bufferOut.append(request.getPeerInfo().getPort());
 					bufferOut.append("\n - Bytes: ");
 					bufferOut.append(ByteUtils.toHexString(requestBytes));
-					myPeer.setPrimerAnnounce(false);
+					peerController.setPrimerAnnounce(false);
 					byte[] responseBytes = new byte[512]; //16 bytes is the size of Connect Response Message
 					packet = new DatagramPacket(responseBytes, responseBytes.length);
 					udpSocket.receive(packet);
 
 					if (packet.getLength() >= 8) {
 						AnnounceResponse response = AnnounceResponse.parse(packet.getData());
-						if(response.getAction().toString().equals("ANNOUNCE") && response.getTransactionId()==myPeer.getTransactionID()) {
+						if(response.getAction().toString().equals("ANNOUNCE") && response.getTransactionId()==peerController.getTransactionID()) {
 							bufferOut.append("\n\nAnnounce Response\n - Action: ");
 							bufferOut.append(response.getAction());
 							bufferOut.append("\n - TransactionID: ");
@@ -103,11 +108,11 @@ public class Actions extends Thread{
 							bufferOut.append(response.getPeers());
 							bufferOut.append("\n - Bytes: ");
 							bufferOut.append(ByteUtils.toHexString(responseBytes));
-							myPeer.setInterval(response.getInterval());
-							myPeer.setSeeders(response.getSeeders());
-							myPeer.setLeechers(response.getLeechers());
-							myPeer.setSwarmPeers(response.getPeers());
-						}else if(response.getAction().toString() == "ERROR" && response.getTransactionId()==myPeer.getTransactionID()){
+							peerController.setInterval(response.getInterval());
+							peerController.setSeeders(response.getSeeders());
+							peerController.setLeechers(response.getLeechers());
+							peerController.setSwarmPeers(response.getPeers());
+						}else if(response.getAction().toString() == "ERROR" && response.getTransactionId()==peerController.getTransactionID()){
 							Error error = Error.parse(packet.getData());
 							bufferOut.append("\n\nAnnounce Response\n - Action: ");
 							bufferOut.append(error.getAction());
@@ -126,7 +131,7 @@ public class Actions extends Thread{
 				}catch (Exception e) {
 					System.err.println("ErrorAnn: " + e.getMessage());
 					e.printStackTrace();
-					myPeer.udpConnect = null;
+					peerController.getModel().udpConnect = null;
 				}
 			}
 			try {
@@ -135,7 +140,7 @@ public class Actions extends Thread{
 				
 			}
 		}
-		myPeer.udpConnect = null;
+		peerController.getModel().udpConnect = null;
 	}
 
 }

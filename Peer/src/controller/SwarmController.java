@@ -13,6 +13,13 @@ public class SwarmController {
 		this.model = model;
 	}
 	
+		
+	public Swarm getModel() {
+		return model;
+	}
+	public void setModel(Swarm model) {
+		this.model = model;
+	}
 	public int getID() {
 		return model.getID();
 	}
@@ -46,8 +53,8 @@ public class SwarmController {
 	public ArrayList<Peer> getPeerList() {
 		return model.getPeerList();
 	}
-	public void setPeerList(ArrayList<Peer> peerList) {
-		model.setPeerList(peerList);
+	public void setPeerList(Peer peer) {
+		model.setPeerList(peer);
 	}
 	
 }
