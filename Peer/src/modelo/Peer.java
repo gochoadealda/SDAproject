@@ -3,6 +3,12 @@ package modelo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+<<<<<<< Updated upstream
+=======
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.InetAddress;
+>>>>>>> Stashed changes
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +22,7 @@ import udp.PeerInfo;
 public class Peer {
 
 	private String peerId;
-	private int ip;
+	private InetAddress ip;
 	private int puerto;
 	private int uploaded; // The total amount uploaded so far, encoded in base ten ascii.
 	private int downloaded; // The total amount downloaded so far, encoded in base ten ascii.
@@ -44,7 +50,7 @@ public class Peer {
 		swarmPeers = new ArrayList<>();
 	}
 
-	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left) {
+	public Peer(String peerId, InetAddress ip, int puerto, int uploaded, int downloaded, int left) {
 		super();
 		this.peerId = peerId;
 		this.ip = ip;
@@ -55,7 +61,7 @@ public class Peer {
 		this.interval = 0;
 	}
 
-	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left, int event) {
+	public Peer(String peerId, InetAddress ip, int puerto, int uploaded, int downloaded, int left, int event) {
 		super();
 		this.peerId = peerId;
 		this.ip = ip;
@@ -132,11 +138,11 @@ public class Peer {
 		this.peerId = peerId;
 	}
 
-	public int getIp() {
+	public InetAddress getIp() {
 		return ip;
 	}
 
-	public void setIp(int ip) {
+	public void setIp(InetAddress ip) {
 		this.ip = ip;
 	}
 
