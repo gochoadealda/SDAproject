@@ -54,13 +54,11 @@ public class TCPBitTorrentPacket implements BitTorrentPacket{
  public void construct(int id, int size) throws IOException {  
   switch (id) {  
   case 0:  
-  // packet = new Choke(); break; 
+   packet = new Choke(); break; 
   case 1:  
    packet = new UnChoke(); break;  
   case 2:  
    packet = new Interested(); break;  
-  case 3:  
-  // packet = new NotInterested(); break; 
   case 4:  
    packet = new Have(input, size); break; 
   case 5:  
@@ -69,15 +67,11 @@ public class TCPBitTorrentPacket implements BitTorrentPacket{
    packet = new Request(input, size); break;  
   case 7:  
    packet = new Piece(input, size); break; 
-  case 8:  
- //  packet = new Cancel(input, size); break; 
   case 9:  
    packet = new Port(input, size); break; 
-  case 20:  
-   packet = new Extended(input, size); break; 
   default:  
-   // TODO: need to handle if this is an continuous data 
-   // ASSUMPTION: if not original packet, it has to be continuous packet 
+   // need to handle if this is an continuous data 
+   // if not original packet, it has to be continuous packet 
    System.out.println("id = " + id); 
    System.out.println("size = " + size); 
    Util.read(input, size - 1); 
