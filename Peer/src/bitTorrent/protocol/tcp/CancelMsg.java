@@ -1,4 +1,4 @@
-package bitTorrent.protocol.udp;
+package bitTorrent.protocol.tcp;
 
 /**
  * cancel: <len=0013><id=8><index><begin><length>
