@@ -3,12 +3,10 @@ package modelo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-<<<<<<< Updated upstream
-=======
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.InetAddress;
->>>>>>> Stashed changes
 import java.util.ArrayList;
 import java.util.List;
 
