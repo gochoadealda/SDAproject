@@ -15,8 +15,7 @@ import java.util.Formatter;
 import java.util.Map; 
 import java.util.TreeMap; 
 
-import org.ardverk.coding.BencodingInputStream; 
-import org.ardverk.coding.BencodingOutputStream; 
+
 
 import bitTorrent.peer.Constant; 
 
@@ -168,7 +167,7 @@ public static void debug(String str) {
 
 public static void printDecode(String fileName) throws IOException { 
  // TODO Auto-generated method stub 
- BencodingInputStream stream = new BencodingInputStream( 
+/*BencodingInputStream stream = new BencodingInputStream( 
    new FileInputStream(fileName)); 
  stream.skip(1); 
  TreeMap map = (TreeMap) stream.readMap(); 
@@ -197,15 +196,15 @@ public static byte[] loadData(String fileName) throws IOException {
 
  input.readFully(data); 
  input.close(); 
- return data; 
+ return data; */
 } 
 
 public static byte[] saveData(TreeMap tree) throws IOException { 
  // TODO Auto-generated method stub 
  ByteArrayOutputStream data = new ByteArrayOutputStream(); 
- BencodingOutputStream stream = new BencodingOutputStream(data); 
+ /*BencodingOutputStream stream = new BencodingOutputStream(data); 
 
- stream.writeMap((Map) tree); 
+ stream.writeMap((Map) tree); */
  return data.toByteArray(); 
 } 
 }

@@ -37,15 +37,15 @@ public class MainMenu extends JFrame implements ActionListener {
 	private DefaultTableModel modelTrackers, modelSwarms, modelPeers;
 	private TrackerController trackerController;
 	private boolean isTheMaster;
-	private Object[][] dataTabla1;
-	private Object[][] dataTablaPeer;
+	private Object[][] dataTabla1,dataTabla2;
+	private Object[][] dataTablaPeer,dataTablaSwarm;
 	@SuppressWarnings("rawtypes")
 	private Class[] columnClassTabla1;
 	@SuppressWarnings("rawtypes")
-	private Class[] columnClassTablaPeer;
+	private Class[] columnClassTablaPeer,columnClassTablaSwarm;
 	private JPanel panel2, panel3;
 	private String[] columnsTabla1;
-	private String[] columnsTablaPeer;
+	private String[] columnsTablaPeer,columnsTablaSwarm;
 
 	
 	public MainMenu(Tracker model) {
@@ -182,7 +182,7 @@ public class MainMenu extends JFrame implements ActionListener {
 		panel3.add(lblSwarmsActivos);
 
 		// headers for the table
-		String[] columnsTabla2 = new String[] { "Id", "Content name", "Size", "Number of seeders",
+		/*String[] columnsTabla2 = new String[] { "Id", "Content name", "Size", "Number of seeders",
 		"Leechers" };
 
 		// actual data for the table in a 2d array
@@ -201,7 +201,7 @@ public class MainMenu extends JFrame implements ActionListener {
 				public Class<?> getColumnClass(int columnIndex) {
 					return columnClassTabla2[columnIndex];
 				}
-			};
+			};*/
 
 			
 			JList swarmList = new JList();
@@ -218,7 +218,10 @@ public class MainMenu extends JFrame implements ActionListener {
 			swarmList.setBounds(62, 116, 254, 387);
 			panel3.add(swarmList);
 
-			tableSwarms = new JTable(new DefaultTableModel(
+			
+			columnsTablaSwarm = new String[] { "ID", "Content name", "Size", "Seeders", "Leechers" };
+			columnClassTablaSwarm = new Class[] { String.class, String.class, Integer.class, Double.class, Double.class};
+			/*tableSwarms = new JTable(new DefaultTableModel(
 					new Object[][] {
 						{new Integer(1), "aaaaa", new Integer(1231), new Integer(4), new Integer(8)},
 					},
@@ -234,7 +237,7 @@ public class MainMenu extends JFrame implements ActionListener {
 			});
 			JScrollPane scrollPaneTabla2 = new JScrollPane(tableSwarms);
 			scrollPaneTabla2.setBounds(595, 148, 726, 43);
-			panel3.add(scrollPaneTabla2);
+			panel3.add(scrollPaneTabla2);*/
 
 //			JScrollPane scrollPaneTabla3 = new JScrollPane();
 //			scrollPaneTabla3.setBounds(595, 309, 726, 347);
@@ -362,12 +365,28 @@ public class MainMenu extends JFrame implements ActionListener {
 	public void setDataTabla1(Object[][] dataTabla1) {
 		this.dataTabla1 = dataTabla1;
 	}
+	
+	public Object[][] getDataTabla2() {
+		return dataTabla2;
+	}
+
+	public void setDataTabla2(Object[][] dataTabla2) {
+		this.dataTabla2 = dataTabla2;
+	}
 	public Object[][] getDataTablaPeer() {
 		return dataTablaPeer;
 	}
 
 	public void setDataTablaPeer(Object[][] dataTablaPeer) {
 		this.dataTablaPeer = dataTablaPeer;
+	}
+	
+	public Object[][] getDataTablaSwarm() {
+		return dataTablaSwarm;
+	}
+
+	public void setDataTablaSwarm(Object[][] dataTablaSwarm) {
+		this.dataTablaSwarm = dataTablaSwarm;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -388,6 +407,16 @@ public class MainMenu extends JFrame implements ActionListener {
 	public void setColumnClassTablaPeer(Class[] columnClassTablaPeer) {
 		this.columnClassTablaPeer = columnClassTablaPeer;
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public Class[] getColumnClassTablaSwarm() {
+		return columnClassTablaSwarm;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void setColumnClassTablaSwarm(Class[] columnClassTablaSwarm) {
+		this.columnClassTablaSwarm = columnClassTablaSwarm;
+	}
 
 	public DefaultTableModel getModelTrackers() {
 		return modelTrackers;
@@ -405,6 +434,14 @@ public class MainMenu extends JFrame implements ActionListener {
 		this.modelPeers = modelPeers;
 	}
 	
+	public DefaultTableModel getModelSwarms() {
+		return modelSwarms;
+	}
+
+	public void setModelSwarms(DefaultTableModel modelSwarms) {
+		this.modelSwarms = modelSwarms;
+	}
+	
 	public JTable getTableTrackers() {
 		return tableTrackers;
 	}
@@ -419,6 +456,14 @@ public class MainMenu extends JFrame implements ActionListener {
 
 	public void setTablePeers(JTable tablePeers) {
 		this.tablePeers = tablePeers;
+	}
+	
+	public JTable getTableSwarms() {
+		return tableSwarms;
+	}
+
+	public void setTableSwarms(JTable tableSwarms) {
+		this.tableSwarms = tableSwarms;
 	}
 	
 	public JPanel getPanel2() {
@@ -451,6 +496,14 @@ public class MainMenu extends JFrame implements ActionListener {
 
 	public void setColumnsTablaPeer(String[] columnsTablaPeer) {
 		this.columnsTablaPeer = columnsTablaPeer;
+	}
+	
+	public String[] getColumnsTablaSwarm() {
+		return columnsTablaSwarm;
+	}
+
+	public void setColumnsTablaSwarm(String[] columnsTablaSwarm) {
+		this.columnsTablaSwarm = columnsTablaSwarm;
 	}
 	
 	@Override

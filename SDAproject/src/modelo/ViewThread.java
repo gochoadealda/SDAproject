@@ -14,7 +14,7 @@ import controller.TrackerController;
 
 import vista.MainMenu;
 
-public class ViewThread extends Thread{
+public class ViewThread extends Thread {
 	private TrackerController trackerController;
 
 	public ViewThread(Tracker model) {
@@ -31,29 +31,28 @@ public class ViewThread extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		MainMenu view = new MainMenu(trackerController.getModel());
 		view.setVisible(true);
 		while (true) {
 			try {
 				view.setTheMaster(trackerController.isMaster());
 				if (view.isTheMaster()) {
-					view.setTitle("Tracker Master "+trackerController.getID());
-				}else {
-					view.setTitle("Tracker Slave "+trackerController.getID());
+					view.setTitle("Tracker Master " + trackerController.getID());
+				} else {
+					view.setTitle("Tracker Slave " + trackerController.getID());
 				}
 				Thread.sleep(1000);
-				//Tracker JTable
+				// Tracker JTable
 				ArrayList<Integer> trackerList = trackerController.getTrackerList();
 				ArrayList<Long> timeList = trackerController.getTimeList();
 				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 				Object[][] tableData = new Object[trackerList.size()][2];
-				for (int i=0;i<tableData.length;i++){
-						tableData[i][0] = trackerList.get(i);
-						tableData[i][1] = dateFormat.format(timeList.get(i));
-					
+				for (int i = 0; i < tableData.length; i++) {
+					tableData[i][0] = trackerList.get(i);
+					tableData[i][1] = dateFormat.format(timeList.get(i));
 				}
-				//view.setDataTabla1(new Object[][] { { myTracker.getID() }});
+				// view.setDataTabla1(new Object[][] { { myTracker.getID() }});
 				view.setDataTabla1(tableData);
 				view.setModelTrackers(new DefaultTableModel(view.getDataTabla1(), view.getColumnsTabla1()) {
 					@Override
@@ -62,21 +61,21 @@ public class ViewThread extends Thread{
 					}
 				});
 
-				view.setTableTrackers(new JTable(view.getModelTrackers())); 
+				view.setTableTrackers(new JTable(view.getModelTrackers()));
 				JScrollPane scrollPaneTabla1 = new JScrollPane(view.getTableTrackers());
 				scrollPaneTabla1.setBounds(32, 28, 452, 431);
 				view.getPanel2().add(scrollPaneTabla1);
 				view.getTableTrackers().repaint();
-				
-				//Peer JTable
+
+				// Peer JTable
 				ArrayList<Peer> dataPeer = trackerController.getModel().getTrackerDB().selectPeers();
 				Object[][] peerTableData = new Object[dataPeer.size()][5];
-				for (int i=0;i<peerTableData.length;i++){
-					tableData[i][0] = dataPeer.get(i).getIdPeer();
-					tableData[i][1] = dataPeer.get(i).getIp();
-					tableData[i][2] = dataPeer.get(i).getPuerto();
-					tableData[i][3] = dataPeer.get(i).getBytesPen();
-					tableData[i][4] = dataPeer.get(i).getBytesDes();
+				for (int i = 0; i < peerTableData.length; i++) {
+					peerTableData[i][0] = dataPeer.get(i).getIdPeer();
+					peerTableData[i][1] = dataPeer.get(i).getIp();
+					peerTableData[i][2] = dataPeer.get(i).getPuerto();
+					peerTableData[i][3] = dataPeer.get(i).getBytesPen();
+					peerTableData[i][4] = dataPeer.get(i).getBytesDes();
 				}
 				view.setDataTablaPeer(peerTableData);
 				view.setModelPeers(new DefaultTableModel(view.getDataTablaPeer(), view.getColumnsTablaPeer()) {
@@ -89,9 +88,31 @@ public class ViewThread extends Thread{
 				JScrollPane scrollPaneTabla2 = new JScrollPane(view.getTablePeers());
 				scrollPaneTabla2.setBounds(595, 309, 726, 347);
 				view.getPanel3().add(scrollPaneTabla2);
+				// Swarm JTable
+				ArrayList<Swarm> swarmList = trackerController.getModel().getTrackerDB().selectSwarms();
+				Object[][] swarmTableData = new Object[dataPeer.size()][5];
+				for (int i = 0; i < swarmTableData.length; i++) {
+					swarmTableData[i][0] = swarmList.get(i).getID();
+					swarmTableData[i][1] = swarmList.get(i).getNomCont();
+					swarmTableData[i][2] = swarmList.get(i).getTamano();
+					swarmTableData[i][3] = swarmList.get(i).getSeeders();
+					swarmTableData[i][4] = swarmList.get(i).getLeechers();
+				}
+				view.setDataTablaSwarm(swarmTableData);
+				view.setModelSwarms(new DefaultTableModel(view.getDataTablaSwarm(), view.getColumnsTablaSwarm()) {
+					@Override
+					public boolean isCellEditable(int row, int column) {
+						return false;
+					}
+				});
+				view.setTableSwarms(new JTable(view.getModelSwarms()));
+				JScrollPane scrollPaneTabla3 = new JScrollPane(view.getTableSwarms());
+				scrollPaneTabla3.setBounds(595, 148, 726, 43);
+				view.getPanel3().add(scrollPaneTabla3);
+				
+				
 				view.getTablePeers().repaint();
-				
-				
+
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -101,4 +122,3 @@ public class ViewThread extends Thread{
 	}
 
 }
-

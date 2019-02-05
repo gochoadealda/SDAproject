@@ -2,6 +2,7 @@ package controller;
 
 
 import java.io.File;
+import java.net.InetAddress;
 import java.util.List;
 
 import mensajes.udp.Connect;
@@ -44,10 +45,10 @@ public class PeerController {
 	public void setPeerId(String peerId) {
 		model.setPeerId(peerId);
 	}
-	public int getIp() {
+	public InetAddress getIp() {
 		return model.getIp();
 	}
-	public void setIp(int ip) {
+	public void setIp(InetAddress ip) {
 		model.setIp(ip);
 	}
 	public int getPuerto() {
