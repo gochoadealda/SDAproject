@@ -55,5 +55,5 @@ public class SwarmController {
 	}
 	public void setPeerList(Peer peer) {
 		model.setPeerList(peer);
-	}	
+	}
 }

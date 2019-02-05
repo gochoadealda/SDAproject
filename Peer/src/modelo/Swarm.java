@@ -55,5 +55,5 @@ public class Swarm {
 	}
 	public void setPeerList(Peer peer) {
 		this.peerList.add(peer);
-	}	
+	}
 }
