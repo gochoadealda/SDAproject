@@ -3,6 +3,7 @@ package vista;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,6 +13,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import controller.TrackerController;
+import modelo.Peer;
 import modelo.Tracker;
 
 import javax.swing.JTabbedPane;
@@ -30,17 +32,20 @@ public class MainMenu extends JFrame implements ActionListener {
 	private JTextField tfIp;
 	private JTextField tfPuerto;
 	private JTextField tfID;
-	private JTable tableTrackers, tableSwarms;
+	private JTable tableTrackers, tableSwarms, tablePeers;
 	@SuppressWarnings("unused")
-	private DefaultTableModel modelTrackers, modelSwarms;
-	private JTable tablePeers;
+	private DefaultTableModel modelTrackers, modelSwarms, modelPeers;
 	private TrackerController trackerController;
 	private boolean isTheMaster;
 	private Object[][] dataTabla1;
+	private Object[][] dataTablaPeer;
 	@SuppressWarnings("rawtypes")
 	private Class[] columnClassTabla1;
-	private JPanel panel2;
+	@SuppressWarnings("rawtypes")
+	private Class[] columnClassTablaPeer;
+	private JPanel panel2, panel3;
 	private String[] columnsTabla1;
+	private String[] columnsTablaPeer;
 
 	
 	public MainMenu(Tracker model) {
@@ -166,7 +171,7 @@ public class MainMenu extends JFrame implements ActionListener {
 		//			panel2.add(scrollPaneTabla1);
 		// panel2.add(table);
 
-		JPanel panel3 = new JPanel();
+		panel3 = new JPanel();
 		panel3.setForeground(Color.BLACK);
 		tabbedPane.addTab("Peers gestor", null, panel3, null);
 		panel3.setLayout(null);
@@ -231,51 +236,71 @@ public class MainMenu extends JFrame implements ActionListener {
 			scrollPaneTabla2.setBounds(595, 148, 726, 43);
 			panel3.add(scrollPaneTabla2);
 
-			JScrollPane scrollPaneTabla3 = new JScrollPane();
-			scrollPaneTabla3.setBounds(595, 309, 726, 347);
-			panel3.add(scrollPaneTabla3);
+//			JScrollPane scrollPaneTabla3 = new JScrollPane();
+//			scrollPaneTabla3.setBounds(595, 309, 726, 347);
+//			panel3.add(scrollPaneTabla3);
+			
 
-			tablePeers = new JTable();
-			scrollPaneTabla3.setViewportView(tablePeers);
-			tablePeers.setModel(new DefaultTableModel(
-					new Object[][] {
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-						{null, null, null, null, null},
-					},
-					new String[] {
-							"ID", "ip", "Port", "Bytes pending", "Downloaded Bytes"
-					}
-					) {
-				Class[] columnTypes = new Class[] {
-						Integer.class, String.class, Integer.class, Double.class, Double.class
-				};
-				public Class getColumnClass(int columnIndex) {
-					return columnTypes[columnIndex];
-				}
-				@Override
-			    public boolean isCellEditable(int row, int column) {
-			       //all cells false
-			       return false;
-			    }
-			});
+			
+			// create object of table and table model
+//			tablePeers = new JTable();
+//			scrollPaneTabla3.setViewportView(tablePeers);
+//			// add header in table model 
+			columnsTablaPeer = new String[] { "ID", "ip", "Port", "Bytes pending", "Downloaded Bytes" };
+			columnClassTablaPeer = new Class[] { String.class, String.class, Integer.class, Double.class, Double.class};
+//			
+//			dtmPeers = new DefaultTableModel(0, 0);
+//			// add header of the table
+//			String header[] = new String[] {"ID", "ip", "Port", "Bytes pending", "Downloaded Bytes"};
+//			// add header in table model     
+//			dtmPeers.setColumnIdentifiers(header);
+//			//set model into the table object
+//			tablePeers.setModel(dtmPeers);
+//			
+//			for (Peer p : dataPeer) {
+//		        dtmPeers.addRow(new Object[] { p.getIdPeer(), p.getIp(), p.getPuerto(),
+//		                p.getBytesPen(), p.getBytesDes()});
+//		 }
+//			
+//			tablePeers.setModel(new DefaultTableModel(
+//					new Object[][] {
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//						{null, null, null, null, null},
+//					},
+//					new String[] {
+//							"ID", "ip", "Port", "Bytes pending", "Downloaded Bytes"
+//					}
+//					) {
+//				Class[] columnTypes = new Class[] {
+//						Integer.class, String.class, Integer.class, Double.class, Double.class
+//				};
+//				public Class getColumnClass(int columnIndex) {
+//					return columnTypes[columnIndex];
+//				}
+//				@Override
+//			    public boolean isCellEditable(int row, int column) {
+//			       //all cells false
+//			       return false;
+//			    }
+//			});
 
 			JLabel lblPeersInfo = new JLabel("Peers Info");
 			lblPeersInfo.setFont(new Font("Tahoma", Font.PLAIN, 25));
@@ -286,8 +311,8 @@ public class MainMenu extends JFrame implements ActionListener {
 			lblSwarmInfo.setFont(new Font("Tahoma", Font.PLAIN, 25));
 			lblSwarmInfo.setBounds(595, 100, 135, 37);
 			panel3.add(lblSwarmInfo);
-			tablePeers.getColumnModel().getColumn(3).setPreferredWidth(97);
-			tablePeers.getColumnModel().getColumn(4).setPreferredWidth(105);
+//			tablePeers.getColumnModel().getColumn(3).setPreferredWidth(97);
+//			tablePeers.getColumnModel().getColumn(4).setPreferredWidth(105);
 
 	}
 
@@ -337,6 +362,13 @@ public class MainMenu extends JFrame implements ActionListener {
 	public void setDataTabla1(Object[][] dataTabla1) {
 		this.dataTabla1 = dataTabla1;
 	}
+	public Object[][] getDataTablaPeer() {
+		return dataTablaPeer;
+	}
+
+	public void setDataTablaPeer(Object[][] dataTablaPeer) {
+		this.dataTablaPeer = dataTablaPeer;
+	}
 
 	@SuppressWarnings("rawtypes")
 	public Class[] getColumnClassTabla1() {
@@ -347,6 +379,15 @@ public class MainMenu extends JFrame implements ActionListener {
 	public void setColumnClassTabla1(Class[] columnClassTabla1) {
 		this.columnClassTabla1 = columnClassTabla1;
 	}
+	@SuppressWarnings("rawtypes")
+	public Class[] getColumnClassTablaPeer() {
+		return columnClassTablaPeer;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void setColumnClassTablaPeer(Class[] columnClassTablaPeer) {
+		this.columnClassTablaPeer = columnClassTablaPeer;
+	}
 
 	public DefaultTableModel getModelTrackers() {
 		return modelTrackers;
@@ -355,7 +396,15 @@ public class MainMenu extends JFrame implements ActionListener {
 	public void setModelTrackers(DefaultTableModel modelTrackers) {
 		this.modelTrackers = modelTrackers;
 	}
+	
+	public DefaultTableModel getModelPeers() {
+		return modelPeers;
+	}
 
+	public void setModelPeers(DefaultTableModel modelPeers) {
+		this.modelPeers = modelPeers;
+	}
+	
 	public JTable getTableTrackers() {
 		return tableTrackers;
 	}
@@ -363,7 +412,15 @@ public class MainMenu extends JFrame implements ActionListener {
 	public void setTableTrackers(JTable tableTrackers) {
 		this.tableTrackers = tableTrackers;
 	}
+	
+	public JTable getTablePeers() {
+		return tablePeers;
+	}
 
+	public void setTablePeers(JTable tablePeers) {
+		this.tablePeers = tablePeers;
+	}
+	
 	public JPanel getPanel2() {
 		return panel2;
 	}
@@ -372,12 +429,28 @@ public class MainMenu extends JFrame implements ActionListener {
 		this.panel2 = panel2;
 	}
 	
+	public JPanel getPanel3() {
+		return panel3;
+	}
+
+	public void setPanel3(JPanel panel3) {
+		this.panel3 = panel3;
+	}
+	
 	public String[] getColumnsTabla1() {
 		return columnsTabla1;
 	}
 
 	public void setColumnsTabla1(String[] columnsTabla1) {
 		this.columnsTabla1 = columnsTabla1;
+	}
+	
+	public String[] getColumnsTablaPeer() {
+		return columnsTablaPeer;
+	}
+
+	public void setColumnsTablaPeer(String[] columnsTablaPeer) {
+		this.columnsTablaPeer = columnsTablaPeer;
 	}
 	
 	@Override

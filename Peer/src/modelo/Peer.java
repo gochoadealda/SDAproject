@@ -2,10 +2,7 @@ package modelo;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,10 +37,11 @@ public class Peer {
 	private List<PeerInfo> swarmPeers;
 	private boolean primerConnect;
 	private boolean primerAnnounce;
+	private Swarm swarm;
 
 	public Peer() {
 		super();
-		swarmPeers = new ArrayList<>();
+		this.swarmPeers = new ArrayList<>();
 	}
 
 	public Peer(String peerId, int ip, int puerto, int uploaded, int downloaded, int left) {
@@ -74,14 +72,15 @@ public class Peer {
 		this.peerId = peerId;
 		this.interval = 60000;
 	}
-
+	
 	public void start() {
 		this.active = true;
 		this.primerConnect = true;
 		this.primerAnnounce = true;
-		udpConnect = new Connect(this);
+		udpConnect = new Connect(this, swarm);
 		udpConnect.start();
 	}
+
 
 	public void leerTorrent(File torrent) {
 		MetainfoHandler<?> handler = null;
@@ -277,5 +276,5 @@ public class Peer {
 	public void setPrimerAnnounce(boolean primerAnnounce) {
 		this.primerAnnounce = primerAnnounce;
 	}
-
+	
 }

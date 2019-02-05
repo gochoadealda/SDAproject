@@ -18,6 +18,7 @@ public class Swarm {
 		this.tamano = tamano;
 		this.seeders = seeders;
 		this.leechers = leechers;
+		this.peerList = new ArrayList<Peer>();
 	}
 	public Swarm(String nomCont) {
 		super();
@@ -26,6 +27,7 @@ public class Swarm {
 		this.leechers= 0;
 		this.seeders = 0;
 		this.tamano = 0;
+		this.peerList = new ArrayList<Peer>();
 	}
 	
 	public int getID() {

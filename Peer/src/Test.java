@@ -1,16 +1,17 @@
 
+import controller.PeerController;
 import modelo.Peer;
 import vista.PeerGestor;
 
 public class Test {
 
 	public static void main(String[] args) {
-		Peer peer = new Peer("0");
+		Peer peer = new Peer("1");
 		PeerGestor peerView = new PeerGestor(peer);
 		peerView.setVisible(true);
-		peer.start();
-
 		
+		PeerController peerControler = new PeerController(peer, peerView);
+		peerControler.start();
 	}
 
 }

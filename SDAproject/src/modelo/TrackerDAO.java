@@ -343,7 +343,6 @@ public class TrackerDAO implements TrackerDAOInterface {
 		//		manager.deleteP(0);
 		//		manager.deleteP(1);
 		//		manager.closeConnection();
-
 		/*Peer p= new Peer(1, "ip", 8080, 10000, 0, 0, 1, 0);//2 seed y 1 leech
 				Peer p2= new Peer(2, "ipp", 8081, 0, 10, 0, 1, 0);
 				Peer p3= new Peer(3, "ippp", 8082, 10000, 0, 0, 1, 0);

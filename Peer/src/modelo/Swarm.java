@@ -10,6 +10,7 @@ public class Swarm {
 	private int seeders;
 	private int leechers;
 	private ArrayList<Peer> peerList;
+	
 	public Swarm(int idSwarm, String nomCont, int tamano, int seeders, int leechers) {
 		super();
 		this.idSwarm = idSwarm;
@@ -17,6 +18,7 @@ public class Swarm {
 		this.tamano = tamano;
 		this.seeders = seeders;
 		this.leechers = leechers;
+		this.peerList = new ArrayList<Peer>();
 	}
 	public int getID() {
 		return idSwarm;
@@ -51,9 +53,7 @@ public class Swarm {
 	public ArrayList<Peer> getPeerList() {
 		return peerList;
 	}
-	public void setPeerList(ArrayList<Peer> peerList) {
-		this.peerList = peerList;
-	}
-	
-	
+	public void setPeerList(Peer peer) {
+		this.peerList.add(peer);
+	}	
 }
