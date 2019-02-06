@@ -10,6 +10,9 @@ import java.util.List;
 import bitTorrent.metainfo.handler.MetainfoHandler;
 import bitTorrent.metainfo.handler.MetainfoHandlerMultipleFile;
 import bitTorrent.metainfo.handler.MetainfoHandlerSingleFile;
+import bitTorrent.peer.InfoTracker;
+import bitTorrent.peer.TCPClient;
+import bitTorrent.peer.TCPServer;
 import mensajes.udp.Actions;
 import mensajes.udp.Connect;
 import udp.PeerInfo;
@@ -39,6 +42,8 @@ public class Peer {
 	private boolean primerConnect;
 	private boolean primerAnnounce;
 	private Swarm swarm;
+	private TCPServer server;
+	private TCPClient client;
 
 	public Peer() {
 		super();
@@ -75,11 +80,14 @@ public class Peer {
 	}
 	
 	public void start() {
+		
 		this.active = true;
 		this.primerConnect = true;
 		this.primerAnnounce = true;
 		udpConnect = new Connect(this, swarm);
 		udpConnect.start();
+		//server.start();
+	
 	}
 
 
@@ -105,9 +113,13 @@ public class Peer {
 			if (!newFile.exists()) {
 				System.out.println("El archivo no existe por lo que guardamos la memoria necesaria, que es " + tamaño);
 				try {
-					FileOutputStream fos = new FileOutputStream(newFile);
-					fos.write(new byte[tamaño]);
-					fos.close();
+					InfoTracker infotracker= new InfoTracker();
+					this.client = new TCPClient(this, infotracker);
+					this.client.setFileRute(handler.getMetainfo().getInfo().getName());
+					this.client.start();
+//					FileOutputStream fos = new FileOutputStream(newFile);
+//					fos.write(new byte[tamaño]);
+//					fos.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
