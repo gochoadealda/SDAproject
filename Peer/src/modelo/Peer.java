@@ -86,7 +86,8 @@ public class Peer {
 		this.primerAnnounce = true;
 		udpConnect = new Connect(this, swarm);
 		udpConnect.start();
-		//server.start();
+		this.server = new TCPServer();
+		server.start();
 	
 	}
 
