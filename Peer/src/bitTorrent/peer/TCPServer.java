@@ -32,6 +32,7 @@ public class TCPServer extends Thread{
 						new BufferedReader(new InputStreamReader(sr.getInputStream()));
 				DataOutputStream outToClient = new DataOutputStream(sr.getOutputStream());
 				clientSentence = inFromClient.readLine();
+				System.out.println("------.-------El valor de clientSentence es :"+clientSentence);
 				File newFile= new File("downloads/"+clientSentence);
 				FileInputStream fr = new FileInputStream(newFile);
 				byte b[] = new byte[(int) newFile.length()];
@@ -42,6 +43,7 @@ public class TCPServer extends Thread{
 			}
 		} catch (IOException e) {
 			System.err.println("# TCPServer IO error:" + e.getMessage());
+			System.out.println("333333");
 		}
 	}
 }

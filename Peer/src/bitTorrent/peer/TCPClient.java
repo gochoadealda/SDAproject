@@ -37,6 +37,7 @@ public class TCPClient extends Thread {
 	private static final int DEFAULT_PORT = 8000;
 	private static final String DEFAULT_MESSAGE = "Hello World!";
 	private String fileRute;
+	private DataOutputStream outToServer;
 
 	public String getFileRute() {
 		return fileRute;
@@ -65,7 +66,7 @@ public class TCPClient extends Thread {
 	@Override
 	public void run() {
 		
-		byte[] b = new byte [20002];
+		
 		// args[0] = Server IP
 		String serverIP = TCPClient.DEFAULT_IP;
 		// args[1] = Server socket port
@@ -75,19 +76,23 @@ public class TCPClient extends Thread {
 		Socket sr;
 		try {
 			sr = new Socket(serverIP, serverPort);
-			DataOutputStream outToServer = new DataOutputStream(sr.getOutputStream());
-			outToServer.writeBytes(fileRute);
+			outToServer = new DataOutputStream(sr.getOutputStream());
+			outToServer.writeUTF(fileRute);
 			InputStream is = sr.getInputStream();
-			File newFile= new File("downloads/datosDesdeServer.txt");
+			System.out.println(fileRute);
+			File newFile= new File("downloads/"+fileRute);
 			FileOutputStream fr = new FileOutputStream(newFile);
+			byte[] b = new byte [(int) newFile.length()];
 			is.read(b,0,b.length);
 			fr.write(b,0,b.length);
 			fr.close();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
+			System.out.println("1111111");
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println("22222222");
 			e.printStackTrace();
 		}
 
